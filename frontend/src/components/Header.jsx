@@ -5,15 +5,16 @@ import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 
 const Header = (props) => {
-
   const styles = {
-
     header: {
       display: "flex",
       background: "#d9d9d9",
       padding: "0px 10px 0px 10px",
       justifyContent: "space-between",
-      alignItems: "center"
+      alignItems: "center",
+      shadowColor: "#000",
+      minHeight: "75px"
+//      boxShadow: "1px 3px 1px #9E9E9E"
     },
     segment: { // TODO: rename
       display: "flex",
@@ -30,7 +31,11 @@ const Header = (props) => {
     },
     icon: {
       padding: "10px",
-      width: "75px",
+      width: "40px",
+    },
+    logo: {
+      width: "125px",
+      padding: "10px"
     }
   }
 
@@ -38,7 +43,7 @@ const Header = (props) => {
       <header style={styles.header}>
         <div style={styles.segment}>
           <img src={backButton} style={styles.icon}/>
-          <img src={logo}/>
+          <img src={logo} style={styles.logo}/>
           <nav style={styles.nav}>
             <a style={styles.a}>HOME</a>
             <a style={styles.a}>ABOUT US</a>

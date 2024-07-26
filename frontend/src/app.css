@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    height: 100%;
+}
+
+#root {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    margin: 0;
+    height: 100%;
+}
+
+Header {
+    min-height: 50px;
+}
+
+Footer {
+    min-height: 50px;
+}
