@@ -12,7 +12,7 @@ const Sidebar = (props) => {
             gridTemplateRows: "auto 1frs",
             overflow: "hidden",
             textAlign: "center",
-            maxWidth: "300px",
+            width: "300px",
             backgroundColor: "#e9e9e9",
             borderRight: "solid #b9b9b9 1px",
         },

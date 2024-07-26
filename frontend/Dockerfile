@@ -17,6 +17,6 @@ RUN npm install
 
 
 # Command to run when the container starts:
-CMD ["npm", "run", "dev", "--", "--host"]   # use this option for running the React app in dev mode
-#CMD ["/bin/bash"]                          # use this option to get an interactive shell 
+#CMD ["npm", "run", "dev", "--", "--host"]   # use this option for running the React app in dev mode
+CMD ["/bin/bash"]                          # use this option to get an interactive shell 
                                             # for troubleshooting inside container
