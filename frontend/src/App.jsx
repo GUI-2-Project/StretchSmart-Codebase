@@ -10,7 +10,7 @@ const App = () => {
     <>
       <Header user="USER" />
       <Sidebar muscleGroup="MUSCLEGROUP" />
-      <StretchCard />
+      <StretchCard title="TITLE" info="INFO"/>
       <Footer />
     </>
   )

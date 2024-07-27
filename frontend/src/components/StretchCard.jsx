@@ -1,6 +1,17 @@
 import React from 'react'
 import LikeDislikeButton from './LikeDislikeButton'
 
+/**
+ * Unfinished stretch card element to represent 
+ * stretches on the muscle group overview page and elsewhere.
+ * Contains a LikeDislikeButton in the corner.
+ * 
+ * @param {string} props.title
+ * @param {string} props.info
+ * @returns {JSX.Element} div element containing info about a stretch,
+ *                        an image, and a like/dislike button.
+ */
+
 const StretchCard = (props) => {
     const styles = {
         card: {
@@ -50,8 +61,8 @@ const StretchCard = (props) => {
             <LikeDislikeButton />
         </div>
         <div style={styles.displayArea}>
-            <h4 style={styles.title}>TITLE</h4>     {/* Title */}
-            <p style={styles.text}>PARAGRAPH</p>    {/* Text */}
+            <h4 style={styles.title}>{props.title}</h4>     {/* Title */}
+            <p style={styles.text}>{props.info}</p>    {/* Text */}
             <img style={styles.image} />            {/* Image */}
         </div>
     </div>
