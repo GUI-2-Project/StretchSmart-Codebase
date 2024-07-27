@@ -4,6 +4,18 @@ import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 
+
+/**
+ * Header component to be used site-wide.
+ * 
+ * @param {string} props.user - The user that's signed in.
+ * @returns {JSX.Element} A rendered header element.
+ * 
+ * @example
+ * // Render header for the user John Doe
+ * <Header user="John Doe" />
+ */
+
 const Header = (props) => {
   const styles = {
     header: {

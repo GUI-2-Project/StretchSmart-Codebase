@@ -2,10 +2,19 @@ import React from 'react'
 import SidebarQuestionnaire from './SidebarQuestionnaire'
 import hamstringsImage from '../assets/hamstrings.png'  // TODO: refactor to accept object from backend
 
+/**
+ * Sidebar to display info about the muscle group,
+ * and an embedded SidebarQuestionnaire element.
+ * 
+ * @param {string} props.muscleGroup 
+ * @returns {JSX.Element} aside element
+ * @example
+ * // render sidebar for Hamstrings muscle group
+ * <Sidebar muscleGroup="Hamstrings" />
+ */
+
 const Sidebar = (props) => {
     // TODO: refactor to accept object from backend
-    // props.image
-    // props.muscleGroup
     const styles = {
         aside: {
             display: "grid",

@@ -1,5 +1,13 @@
 import React from 'react'
 
+/**
+ * Unfinished element containing a question and multiple checkboxes
+ * for use in SidebarQuestionnaire
+ * 
+ * @param {string} props.question 
+ * @returns {JSX.Element} div element containing a question and two check boxes
+ */
+
 const SidebarQuestionnaireQuestion = (props) => {
     // TODO: refactor to accept a list/array of options
     const styles = {
