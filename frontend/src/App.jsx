@@ -4,7 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Sidebar from './components/Sidebar'
 import StretchCard from './components/StretchCard'
-import FrontPage from './components/FrontPage'
+import QuestionsPage from './components/QuestionsPage'
 
 const App = () => {
   // this authentication code is just a place holder
@@ -28,7 +28,7 @@ const App = () => {
         onLogout={handleLogout}
         user="USER"
       />
-      {isAuthenticated && <FrontPage />
+      {isAuthenticated && <QuestionsPage />
       }
       {/* <Sidebar muscleGroup="MUSCLEGROUP" /> */}
       {/* <StretchCard /> */}

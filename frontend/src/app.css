@@ -1,12 +1,9 @@
 body {
     margin: 0;
     height: 100%;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 100;
 }
 
 Header {
-    /* min-height: 50px; */
     grid-column: 1 / -1;
 }
 

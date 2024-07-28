@@ -3,7 +3,7 @@ import Header from './Header'
 import bodyImage from '../assets/fullBodyFrontBack.png'
 
 
-function FrontPage() {
+function QuestionsPage() {
     const styles = {
         frontPage: {
             display: 'flex',
@@ -42,8 +42,9 @@ function FrontPage() {
         },
         questionsTitle: {
             color: '#2364E2',
-            fontSize: '40px',
+            fontSize: '30px',
             textAlign: 'center',
+            fontWeight: "700",
         }
     };
 
@@ -62,5 +63,5 @@ function FrontPage() {
     )
 }
 
-export default FrontPage
+export default QuestionsPage
  
