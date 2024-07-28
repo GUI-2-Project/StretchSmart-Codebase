@@ -9,13 +9,13 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
   const styles = {
     header: {
       display: "flex",
-      background: "#d9d9d9",
+      background: "#D9D9D9",
       padding: "0px 10px",
       justifyContent: "space-between",
       alignItems: "center",
       shadowColor: "#000",
       minHeight: "75px",
-//      boxShadow: "1px 3px 1px #9E9E9E"
+     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
     },
     segment: { // TODO: rename
       display: "flex",
