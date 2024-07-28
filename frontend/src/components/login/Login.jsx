@@ -7,11 +7,13 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            setSuccess('Login Successful!')
             // Redirect to home page or dashboard
         } catch (error) {
             setError(error.message);
@@ -137,7 +139,7 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {error ? (<p style={{ color: 'red' }}>{error}</p>) : (<p style={{ color: 'green' }}>{success}</p>)}
                     <button type="submit" style={styles.button}>Sign In</button>
                 </form>
                 <p style={styles.text}> Not a member yet? Click below to Sign Up!</p>

@@ -8,14 +8,18 @@ const Signup = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
 
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
             await createUserWithEmailAndPassword(auth, email, password);
+            setSuccess('Sign Up Was Successful!');
+            setError(null);
             // Redirect to login or home page
         } catch (error) {
             setError(error.message);
+            setSuccess(null);
         }
     };
 
@@ -80,6 +84,10 @@ const Signup = () => {
             color: 'red',
             marginBottom: '10px'
         },
+        success: {
+            color: 'green',
+            marginBottom: '10px'
+        },
         text: {
             textAlign: 'center',
             marginTop: '20px',
@@ -92,7 +100,8 @@ const Signup = () => {
         <div style={styles.container}>
             <div style={styles.formContainer}>
                 <h2 style={styles.title}>Sign Up</h2>
-                {error && <p style={styles.error}>{error}</p>}
+                {error ? (<p style={styles.error}>{error}</p>) :
+                (success && <p style={styles.success}>{success}</p>)}
                 <form style={styles.form} onSubmit={handleSignup}>
                     <input
                         type="text"
