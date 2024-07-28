@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    height: 100%;
+}
+
+Header {
+    grid-column: 1 / -1;
+}
+
+Footer {
+    min-height: 50px;
+    grid-column: 1 / -1;
+}
