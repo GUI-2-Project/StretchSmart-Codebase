@@ -35,28 +35,11 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                {/* <Route path="/questionnaire" element={<QuestionsPage />} /> */}
+                <Route path="/questionnaire" element={<QuestionsPage />} />
             </Routes>
         <Footer />
       </Router>
   )
-    {/*
-    <div className='App'>
-      <Header 
-        isAuthenticated={isAuthenticated}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
-        user="USER"
-      />
-      {isAuthenticated && <QuestionsPage />
-      }
-      */}
-      {/* <Sidebar muscleGroup="MUSCLEGROUP" /> */}
-      {/* <StretchCard /> */}
-      {/* <Footer /> */}
-    {/*
-    </div>
-  ); */}
 }
 
 export default App
