@@ -50,23 +50,6 @@ const App = () => {
         <Footer />
       </Router>
   )
-    {/*
-    <div className='App'>
-      <Header 
-        isAuthenticated={isAuthenticated}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
-        user="USER"
-      />
-      {isAuthenticated && <QuestionsPage />
-      }
-      */}
-      {/* <Sidebar muscleGroup="MUSCLEGROUP" /> */}
-      {/* <StretchCard /> */}
-      {/* <Footer /> */}
-    {/*
-    </div>
-  ); */}
 }
 
 export default App
