@@ -1,6 +1,6 @@
 const express = require('express');
 const colors = require('colors');
-require('dotenv').config();
+require('@dotenvx/dotenvx').config()    // This package allows command substitution in .env files
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema/schema');
 const connectDB = require('./config/db');
