@@ -1,18 +1,22 @@
 import React from 'react'
 import './app.css'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './components/login/Login';
+import Signup from "./components/signup/Signup.jsx";
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Sidebar from './components/Sidebar'
-import StretchCard from './components/StretchCard'
+
 
 const App = () => {
   return (
-    <>
+      <Router>
       <Header user="USER" />
-      <Sidebar muscleGroup="MUSCLEGROUP" />
-      <StretchCard title="TITLE" info="INFO"/>
+          <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+          </Routes>
       <Footer />
-    </>
+      </Router>
   )
 }
 
