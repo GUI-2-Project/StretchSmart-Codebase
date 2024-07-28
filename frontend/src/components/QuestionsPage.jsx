@@ -1,5 +1,4 @@
 import React from 'react'
-import Header from './Header'
 import bodyImage from '../assets/fullBodyFrontBack.png'
 
 
@@ -14,7 +13,7 @@ function QuestionsPage() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            fex: 1,
+            flex: 1,
         },
         leftSide: {
             display: 'flex',

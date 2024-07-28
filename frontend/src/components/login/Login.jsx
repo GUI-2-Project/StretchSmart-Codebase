@@ -2,21 +2,29 @@ import React, { useState } from 'react';
 import health2 from '../../assets/health2.png';
 import { auth } from '../../firebase/FireBase';
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Signup from '../../components/signup/Signup'
 
-const Login = () => {
+const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+    // open sign up as modal instead
+    const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // Redirect to home page or dashboard
+            setSuccess('Login Successful!')
+            onLogin();
         } catch (error) {
             setError(error.message);
         }
     };
+
+    const openSignupModal = () => setIsSignupModalOpen(true);
+    const closeSignupModal = () => setIsSignupModalOpen(false);
 
     const styles = {
         container: {
@@ -138,12 +146,16 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {success && <p style={{ color: 'green' }}>{success}</p>}
                     <button type="submit" style={styles.button}>Sign In</button>
+                    {/* {isAuthenticated && <QuestionsPage />} */}
                 </form>
                 <p style={styles.text}> Not a member yet? Click below to Sign Up!</p>
-                <button style={styles.linkButton} onClick={() => window.location.href='/signup'}>Create Account</button>
+                <button style={styles.linkButton} onClick={openSignupModal}>Create Account</button>
                 <button style={styles.linkButton}>Reset Password</button>
             </div>
+            {/* Signup modal */}
+            <Signup isOpen={isSignupModalOpen} onClose={closeSignupModal} />
         </div>
     );
 };
