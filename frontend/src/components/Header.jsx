@@ -5,6 +5,26 @@ import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+/**
+ * Header component to be used site-wide.
+ *
+ * @param {boolean} isAuthenticated - true if user is authenticated
+ * @param {function} onLogin - function to run on user login
+ * @param {function} onLogout - functio to run on user logout
+ * @param {string} user - The user that's signed in.
+ * @returns {JSX.Element} A rendered header element.
+ * 
+ * @example
+ * // Render header for the user John Doe
+ * <Header 
+ *    isAuthenticated={isAuthenticated}
+ *      onLogin={handleLogin}
+ *      onLogout={handleLogout}
+ *      user="John Doe"
+ * />
+ */
+
 function Header({ isAuthenticated, onLogin, onLogout, user }) {
   const styles = {
     header: {

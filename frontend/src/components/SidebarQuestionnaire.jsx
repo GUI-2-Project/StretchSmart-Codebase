@@ -1,6 +1,14 @@
 import React from 'react'
 import SidebarQuestionnaireQuestion from './SidebarQuestionnaireQuestion'
 
+/**
+ * Unfinished element for embedded questionnaire for use in Sidebar
+ * Built to contain several SidebarQuestionnaireQuestion elements.
+ * 
+ * @returns {JSX.Element} div element containing multiple
+ *                        SidebarQuestionnaireQuestion elements
+ */
+
 const SidebarQuestionnaire = () => {
     // TODO: refactor to accept a list/array of questions
     const styles = {
