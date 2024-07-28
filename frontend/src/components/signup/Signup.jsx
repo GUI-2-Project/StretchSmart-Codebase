@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase/FireBase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import Modal from './Modal'
 
-const Signup = () => {
+const Signup = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -16,7 +17,10 @@ const Signup = () => {
             await createUserWithEmailAndPassword(auth, email, password);
             setSuccess('Sign Up Was Successful!');
             setError(null);
+            // close modal after success
+            setTimeout(onClose, 2000);
             // Redirect to login or home page
+
         } catch (error) {
             setError(error.message);
             setSuccess(null);
@@ -80,6 +84,15 @@ const Signup = () => {
             textTransform: 'uppercase',
             fontWeight: 'bold'
         },
+        closeButton: {
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'none',
+            border: 'none',
+            frontSize: '20px',
+            cursor: 'pointer'
+        },
         error: {
             color: 'red',
             marginBottom: '10px'
@@ -96,12 +109,11 @@ const Signup = () => {
         }
     };
 
-    return (
-        <div style={styles.container}>
+    return isOpen ? (
+        <Modal>
             <div style={styles.formContainer}>
+                <button style={styles.closeButton} onClick={onClose}>&times;</button>
                 <h2 style={styles.title}>Sign Up</h2>
-                {error ? (<p style={styles.error}>{error}</p>) :
-                (success && <p style={styles.success}>{success}</p>)}
                 <form style={styles.form} onSubmit={handleSignup}>
                     <input
                         type="text"
@@ -131,11 +143,13 @@ const Signup = () => {
                         placeholder="Enter Password"
                         style={styles.input}
                     />
+                    {error ? (<p style={styles.error}>{error}</p>) :
+                    (success && <p style={styles.success}>{success}</p>)}
                     <button type="submit" style={styles.button}>Sign Up</button>
                 </form>
             </div>
-        </div>
-    );
+        </Modal>
+    ) :  null;
 };
 
 export default Signup;
