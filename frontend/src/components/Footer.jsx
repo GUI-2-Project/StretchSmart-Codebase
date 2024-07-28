@@ -13,8 +13,8 @@ import React from 'react'
 const Footer = () => {
     const styles = {
         footer: {
-            background: "#d9d9d9",
-            minHeight: "50px"   //TODO: revisit
+            minHeight: "50px",   //TODO: revisit
+            background: "#d9d9d9"
         }
     }
 
