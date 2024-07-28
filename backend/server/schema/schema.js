@@ -1,8 +1,14 @@
-// Mongoose models
-const Project = require("../models/Project");
-const Client = require("../models/Client");
+/**
+ * This file contains the schema for the graphql server.
+ * Not to be confused with the schema for the database.
+ */
 
-// Import data types from graphql
+
+// Importe Database Schemas as Mongoose models
+const Question = require("../models/Question");
+const Stretch = require("../models/Stretch");
+
+// Import required data types from graphql
 const { 
     GraphQLObjectType, 
     GraphQLID, 
@@ -10,30 +16,30 @@ const {
     GraphQLSchema,
     GraphQLList,
     GraphQLNonNull,
-    GraphQLEnumType } = require("graphql");
+    //GraphQLEnumType
+    } = require("graphql");
 
-// Define Client graphql data type
-const ClientType = new GraphQLObjectType({
-    name: "Client",
+// Define Question graphql data type. TODO: revisit naming
+const QuestionType = new GraphQLObjectType({
+    name: "Question",
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: GraphQLString },
-        email: { type: GraphQLString },
-        phone: { type: GraphQLString }
+        question: { type: GraphQLString },
+        options: { type: GraphQLList(GraphQLString) }  // List of strings
     })
 });
 
-// Define Project graphql data type
-const ProjectType = new GraphQLObjectType({
-    name: "Project",
+// Define Stretch graphql data type
+const StretchType = new GraphQLObjectType({
+    name: "Stretch",
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: GraphQLString },
+        title: { type: GraphQLString },
         description: { type: GraphQLString },
-        status: { type: GraphQLString },
-        client: { type: ClientType, resolve(parent, args) {
-            return Client.findById(parent.clientId);
-        } }
+        goodFor: { type: GraphQLList(GraphQLString) },
+        badFor: { type: GraphQLList(GraphQLString) },
+        image: { type: GraphQLString },     // TODO: handle images
+        instructions: { type: GraphQLString }
     })
 });
 
@@ -41,132 +47,123 @@ const ProjectType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
     fields: {
-        projects: {
-            type: new GraphQLList(ProjectType),
+        questions: {
+            type: new GraphQLList(QuestionType),
             resolve(parent, args) {
-                return Project.find();
+                return Question.find();
             }
         },
-        project: {
-            type: ProjectType,
+        question: {
+            type: QuestionType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
-                return Project.findById(args.id);
+                return Question.findById(args.id);
             }
         },
-        clients: {
-            type: new GraphQLList(ClientType),
+        stretches: {
+            type: new GraphQLList(StretchType),
             resolve(parent, args) {
-                return Client.find();
+                return Stretch.find();
             }
         },
-        client: {
-            type: ClientType,
+        stretch: {
+            type: StretchType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
-                return Client.findById(args.id);
+                return Stretch.findById(args.id);
             }
         }
     }
 });
 
-// Mutations
+// Define mutations
 const mutation = new GraphQLObjectType({
     name: "Mutation",
     fields: {
-        // Add a client
-        addClient: {
-            type: ClientType,
+        // Add a question
+        addQuestion: {
+            type: QuestionType,
             args: {
-                name: { type: GraphQLNonNull(GraphQLString) },
-                email: { type: GraphQLNonNull(GraphQLString) },
-                phone: { type: GraphQLNonNull(GraphQLString) }
+                id: { type: GraphQLNonNull(GraphQLString) },
+                question: { type: GraphQLNonNull(GraphQLString) },
+                options: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
             },
             resolve(parent, args) {
-                let client = new Client({
-                    name: args.name,
-                    email: args.email,
-                    phone: args.phone
+                let question = new Question({
+                    id: args.id,
+                    question: args.question,
+                    options: args.options
                 });
 
-                return client.save();
+                return question.save();
             }
         },
-        // Delete a client
-        deleteClient: {
-            type: ClientType,
+        // Delete a question
+        deleteQuestion: {
+            type: QuestionType,
             args: { id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Client.findByIdAndRemove(args.id);
+                return Question.findByIdAndRemove(args.id);
             }
         },
-        // Add a project
-        addProject: {
-            type: ProjectType,
-            args: {
-                name: { type: GraphQLNonNull(GraphQLString) },
-                description: { type: GraphQLNonNull(GraphQLString) },
-                status: { 
-                    type: new GraphQLEnumType({
-                        name: "ProjectStatus",
-                        values: {
-                            'new': { value: "Not Started" },
-                            'progress': { value: "In Progress" },
-                            'completed': { value: "Completed" }
-                        }
-                    }),
-                    defaultValue: "Not Started"
-                 },
-                clientId: { type: GraphQLNonNull(GraphQLID) }
-            },
-            resolve(parent, args) {
-                let project = new Project({
-                    name: args.name,
-                    description: args.description,
-                    status: args.status,
-                    clientId: args.clientId
-                });
-
-                return project.save();
-            }
-        },
-        // Delete a project
-        deleteProject: {
-            type: ProjectType,
-            args: { id: { type: GraphQLNonNull(GraphQLID) } },
-            resolve(parent, args) {
-                return Project.findByIdAndRemove(args.id);
-            }
-        },
-        // Update a project
-        updateProject: {
-            type: ProjectType,
+        // Add a Stretch
+        addStretch: {
+            type: StretchType,
             args: {
                 id: { type: GraphQLNonNull(GraphQLID) },
-                name: { type: GraphQLString },
-                description: { type: GraphQLString },
-                status: { 
-                    type: new GraphQLEnumType({
-                        name: "ProjectStatusUpdate",
-                        values: {
-                            'new': { value: "Not Started" },
-                            'progress': { value: "In Progress" },
-                            'completed': { value: "Completed" }
-                        }
-                    })
-                 },
-                clientId: { type: GraphQLID }
+                title: { type: GraphQLNonNull(GraphQLString) },
+                description: { type: GraphQLNonNull(GraphQLString) },
+                goodFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
+                badFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
+                image: { type: GraphQLNonNull(GraphQLString) },     // TODO: handle images
+                instructions: { type: GraphQLNonNull(GraphQLString) }
             },
             resolve(parent, args) {
-                return Project.findByIdAndUpdate(
+                let stretch = new Stretch({
+                    id: args.id,
+                    title: args.title,
+                    description: args.description,
+                    goodFor: args.goodFor,
+                    badFor: args.badFor,
+                    image: args.image,
+                    instructions: args.instructions
+                });
+
+                return stretch.save();
+            }
+        },
+        // Delete a stretch
+        deleteStretch: {
+            type: StretchType,
+            args: { id: { type: GraphQLNonNull(GraphQLID) } },
+            resolve(parent, args) {
+                return Stretch.findByIdAndRemove(args.id);
+            }
+        },
+        // Update a stretch
+        updateStretch: {
+            type: StretchType,
+            args: {
+                id: { type: GraphQLNonNull(GraphQLID) },
+                title: { type: GraphQLString },
+                description: { type: GraphQLString },
+                goodFor: { type: GraphQLList(GraphQLString) },
+                badFor: { type: GraphQLList(GraphQLString) },
+                image: { type: GraphQLString },     // TODO: handle images
+                instructions: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                return Stretch.findByIdAndUpdate(
                     args.id,
                     { $set: { 
-                        name: args.name,
+                        title: args.title,
                         description: args.description,
-                        status: args.status,
-                        clientId: args.clientId
+                        goodFor: args.goodFor,
+                        badFor: args.badFor,
+                        image: args.image,
+                        instructions: args.instructions
                     } },
-                    // Create a project if it doesn't exist
+                    // Create a stretch if it doesn't exist
                     { new: true }
                 );
             }
