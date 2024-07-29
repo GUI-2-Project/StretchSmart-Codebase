@@ -9,7 +9,13 @@ import Sidebar from './components/Sidebar'
 import StretchCard from './components/StretchCard'
 import QuestionsPage from './components/QuestionsPage'
 import { setPersistence } from 'firebase/auth';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
+
+const client = new ApolloClient({
+  uri: 'http://127.0.0.1:5000/graphql',   // TODO: replace hardcoded value with env variable
+  cache: new InMemoryCache()
+});
 
 const App = () => {
   // this authentication code is just a place holder
@@ -34,20 +40,22 @@ const App = () => {
 
   return (
       <Router>
-        <Header 
-          isAuthenticated={isAuthenticated}
-          onLogin={handleLogin}
-          onLogout={handleLogout}
-          user="USER"
-        />
-        <Routes>
-            {/* login page goes to questionnare when signing in */}
-            <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/questionnaire" />} />
-            <Route element={<Signup />} />
-            <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
-        </Routes>
-        {showMainContent}
-        <Footer />
+        <ApolloProvider client={client}>
+          <Header 
+            isAuthenticated={isAuthenticated}
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+            user="USER"
+          />
+          <Routes>
+              {/* login page goes to questionnare when signing in */}
+              <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/questionnaire" />} />
+              <Route element={<Signup />} />
+              <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
+          </Routes>
+          {showMainContent}
+          <Footer />
+        </ApolloProvider>
       </Router>
   )
 }

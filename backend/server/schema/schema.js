@@ -6,6 +6,7 @@
 
 // Importe Database Schemas as Mongoose models
 const Question = require("../models/Question");
+const MuscleGroup = require("../models/MuscleGroup");
 const Stretch = require("../models/Stretch");
 
 // Import required data types from graphql
@@ -25,7 +26,17 @@ const QuestionType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         question: { type: GraphQLString },
-        options: { type: GraphQLList(GraphQLString) }  // List of strings
+        options: { type: GraphQLList(GraphQLString) }   // List of strings
+    })
+});
+
+// Define MuscleGroup graphql data type
+const MuscleGroupType = new GraphQLObjectType({
+    name: "MuscleGroup",
+    fields: () => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        imageURL: { type: GraphQLString }
     })
 });
 
@@ -36,9 +47,9 @@ const StretchType = new GraphQLObjectType({
         id: { type: GraphQLID },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
-        goodFor: { type: GraphQLList(GraphQLString) },
-        badFor: { type: GraphQLList(GraphQLString) },
-        image: { type: GraphQLString },     // TODO: handle images
+        goodFor: { type: GraphQLList(GraphQLString) },  // List of strings
+        badFor: { type: GraphQLList(GraphQLString) },   // List of strings
+        imageURL: { type: GraphQLString },
         instructions: { type: GraphQLString }
     })
 });
@@ -58,6 +69,19 @@ const RootQuery = new GraphQLObjectType({
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 return Question.findById(args.id);
+            }
+        },
+        muscleGroups: {
+            type: new GraphQLList(MuscleGroupType),
+            resolve(parent, args) {
+                return MuscleGroup.find();
+            }
+        },
+        muscleGroup: {
+            type: MuscleGroupType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+                return MuscleGroup.findById(args.id);
             }
         },
         stretches: {
@@ -84,7 +108,7 @@ const mutation = new GraphQLObjectType({
         addQuestion: {
             type: QuestionType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLString) },
+                id: { type: GraphQLNonNull(GraphQLID) },
                 question: { type: GraphQLNonNull(GraphQLString) },
                 options: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
             },
@@ -106,6 +130,72 @@ const mutation = new GraphQLObjectType({
                 return Question.findByIdAndRemove(args.id);
             }
         },
+        // Update a question
+        updateQuestion: {
+            type: QuestionType,
+            args: {
+                id: { type: GraphQLNonNull(GraphQLID) },
+                question: { type: GraphQLString },
+                options: { type: GraphQLList(GraphQLString) }
+            },
+            resolve(parent, args) {
+                return Question.findByIdAndUpdate(
+                    args.id,
+                    { $set: { 
+                        question: args.question,
+                        options: args.options 
+                    } },
+                    // Create a question if it doesn't exist
+                    { new: true }
+                );
+            }
+        },
+        // Add a MuscleGroup
+        addMuscleGroup: {
+            type: MuscleGroupType,
+            args: {
+                id: { type: GraphQLNonNull(GraphQLID) },
+                name: { type: GraphQLNonNull(GraphQLString) },
+                imageURL: { type: GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parent, args) {
+                let muscleGroup = new MuscleGroup({
+                    id: args.id,
+                    name: args.name,
+                    imageURL: args.imageURL
+                });
+
+                return muscleGroup.save();
+            }
+        },
+        // Delete a MuscleGroup
+        deleteMuscleGroup: {
+            type: MuscleGroupType,
+            args: { id: { type: GraphQLNonNull(GraphQLID) } },
+            resolve(parent, args) {
+                return MuscleGroup.findByIdAndRemove(args.id);
+            }
+        },
+        // Update a MuscleGroup
+        updateMuscleGroup: {
+            type: MuscleGroupType,
+            args: {
+                id: { type: GraphQLNonNull(GraphQLID) },
+                name: { type: GraphQLString },
+                imageURL: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                return MuscleGroup.findByIdAndUpdate(
+                    args.id,
+                    { $set: { 
+                        name: args.name,
+                        imageURL: args.imageURL
+                    } },
+                    // Create a muscle group if it doesn't exist
+                    { new: true }
+                );
+            }
+        },
         // Add a Stretch
         addStretch: {
             type: StretchType,
@@ -115,7 +205,7 @@ const mutation = new GraphQLObjectType({
                 description: { type: GraphQLNonNull(GraphQLString) },
                 goodFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
                 badFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
-                image: { type: GraphQLNonNull(GraphQLString) },     // TODO: handle images
+                imageURL: { type: GraphQLNonNull(GraphQLString) },
                 instructions: { type: GraphQLNonNull(GraphQLString) }
             },
             resolve(parent, args) {
@@ -125,7 +215,7 @@ const mutation = new GraphQLObjectType({
                     description: args.description,
                     goodFor: args.goodFor,
                     badFor: args.badFor,
-                    image: args.image,
+                    imageURL: args.imageURL,
                     instructions: args.instructions
                 });
 
@@ -149,7 +239,7 @@ const mutation = new GraphQLObjectType({
                 description: { type: GraphQLString },
                 goodFor: { type: GraphQLList(GraphQLString) },
                 badFor: { type: GraphQLList(GraphQLString) },
-                image: { type: GraphQLString },     // TODO: handle images
+                imageURL: { type: GraphQLString },     // TODO: handle images
                 instructions: { type: GraphQLString }
             },
             resolve(parent, args) {
@@ -160,7 +250,7 @@ const mutation = new GraphQLObjectType({
                         description: args.description,
                         goodFor: args.goodFor,
                         badFor: args.badFor,
-                        image: args.image,
+                        imageURL: args.imageURL,
                         instructions: args.instructions
                     } },
                     // Create a stretch if it doesn't exist
