@@ -6,17 +6,3 @@ html, body, #root {
 Header {
     grid-column: 1 / -1;
 }
-
-.nav-Link:hover {
-    color: black
-}
-
-/* Active link styles */
-.active {
-    color: black;
-  }
-
-/* Footer {
-    min-height: 50px;
-    grid-column: 1 / -1;
-} */
