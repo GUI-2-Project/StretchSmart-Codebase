@@ -14,10 +14,12 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a name']
     },
-    options: {
-        type: [OptionSchema],
+    options: [      // NOTE: This is an array of strings
+        {
+        type: String,
         required: [true, 'Please add at least one option']
-    }
+        }
+    ]
 });
 
 module.exports = mongoose.model('Question', QuestionSchema);

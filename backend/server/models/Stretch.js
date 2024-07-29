@@ -1,21 +1,5 @@
 const mongoose = require('mongoose');
 
-// GoodFor Schema for mongoose connection to MongoDB database
-const GoodForSchema = new mongoose.Schema({
-    goodFor: {
-        type: String,
-        required: [true, 'Please add an option']
-    }
-});
-
-// BadFor Schema for mongoose connection to MongoDB database
-const BadForSchema = new mongoose.Schema({
-    badFor: {
-        type: String,
-        required: [true, 'Please add an option']
-    }
-});
-
 // Stretch Schema for mongoose connection to MongoDB database
 const StretchSchema = new mongoose.Schema({
     title: {
@@ -26,15 +10,19 @@ const StretchSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a description']
     },
-    goodFor: {
-        type: [GoodForSchema],
+    goodFor: [  // NOTE: This is an array of strings
+        { 
+        type: String,
         required: [true, 'Please add at least one thing this stretch is good for']
-    },
-    badFor: {
-        type: [BadForSchema],
+        }
+    ],
+    badFor: [   // NOTE: This is an array of strings
+        {
+        type: String,
         required: [true, 'Please add at least one thing this stretch is bad for']
-    },
-    imagePath: { //TODO: investigate storing images directly in MongoDB w/ GridFS
+        }
+    ],
+    imageURL: {
         type: String,
         required: [true, 'Please add an image']
     },
