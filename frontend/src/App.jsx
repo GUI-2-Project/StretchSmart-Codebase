@@ -5,11 +5,12 @@ import Login from './components/login/Login';
 import Signup from "./components/signup/Signup";
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Sidebar from './components/Sidebar'
-import StretchCard from './components/StretchCard'
+import Sidebar from './components/stretch_overview/Sidebar'
+import StretchCard from './components/stretch_overview/StretchCard'
 import QuestionsPage from './components/QuestionsPage'
 import { setPersistence } from 'firebase/auth';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import Stretches from './components/admin/Stretches';
 
 
 const client = new ApolloClient({
@@ -47,6 +48,9 @@ const App = () => {
             onLogout={handleLogout}
             user="USER"
           />
+
+          <Stretches />
+
           <Routes>
               {/* login page goes to questionnare when signing in */}
               <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/questionnaire" />} />
