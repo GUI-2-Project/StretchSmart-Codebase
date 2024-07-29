@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import arrowleft from '../assets/arrow-left.svg';
+//import arrowleft from '../assets/arrow-left.svg';
 import fullBody from '../assets/BodyScaled.png';
 import '../index.css';
 import '../output.css';
