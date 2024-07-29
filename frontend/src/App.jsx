@@ -46,7 +46,7 @@ const App = () => {
             <Route element={<Signup />} />
             <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
         </Routes>
-        {showMainContent}
+        {showMainContent} 
         <Footer />
       </Router>
   )

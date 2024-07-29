@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
  *
  * @param {boolean} isAuthenticated - true if user is authenticated
  * @param {function} onLogin - function to run on user login
- * @param {function} onLogout - functio to run on user logout
+ * @param {function} onLogout - function to run on user logout
  * @param {string} user - The user that's signed in.
  * @returns {JSX.Element} A rendered header element.
  * 
@@ -25,7 +25,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
  * />
  */
 
-function Header({ isAuthenticated, onLogin, onLogout, user }) {
+function Header({ isAuthenticated, onLogout, user }) {
   const styles = {
     header: {
       display: "flex",
@@ -49,7 +49,8 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
       padding: "10px 60px 10px 0",
       fontSize: "16px",
       whiteSpace: "nowrap",
-      textDecoration: "none"
+      textDecoration: "none",
+      color: 'black'
     },
     icon: {
       padding: "10px",
@@ -80,11 +81,11 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
           <img src={logo} style={styles.logo}/>
           </div>
           <nav style={styles.nav}>
-            <a style={styles.a}>HOME</a>
-            <a style={styles.a}>ABOUT US</a>
+            <a style={styles.a} href='/'>HOME</a>
+            <a style={styles.a} href='/aboutus'>ABOUT US</a>
             {isAuthenticated && (
               <>
-              <a style={styles.a} href="/questionnaire">QUESTIONNAIRE</a>
+              <a style={styles.a}>QUESTIONNAIRE</a>
               <a style={styles.a} href="/history">HISTORY</a>
               </>
             )}
@@ -95,9 +96,9 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
             <>
             <span style={styles.a}>WELCOME,  {user}</span>
             <button className="btn btn-primary" style={styles.btn} onClick={onLogout}>Logout</button>
+            <img src={profileIcon} style={styles.icon}/>
             </>
           )}
-              <img src={profileIcon} style={styles.icon}/>
               <img src={hamburgerIcon} style={styles.icon}/>
         </div>
       </header>
