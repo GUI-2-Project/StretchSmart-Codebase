@@ -17,7 +17,7 @@ const ADD_QUESTION = gql`
 `;
 
 const DELETE_QUESTION = gql`
-  query deleteQuestion($_id: ID!) {
+  mutation deleteQuestion($_id: ID!) {
     deleteQuestion(_id: $_id) {
         _id
     }
