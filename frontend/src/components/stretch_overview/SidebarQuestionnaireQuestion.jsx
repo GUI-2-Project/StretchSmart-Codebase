@@ -8,7 +8,7 @@ import React from 'react'
  * @returns {JSX.Element} div element containing a question and two check boxes
  */
 
-const SidebarQuestionnaireQuestion = (props) => {
+const SidebarQuestionnaireQuestion = ({ question }) => {
     // TODO: refactor to accept a list/array of options
     const styles = {
         question: {
@@ -23,7 +23,6 @@ const SidebarQuestionnaireQuestion = (props) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center"
-            
         },
         checkbox: {
             margin: "0px 10px 0px 0px " 
@@ -33,18 +32,16 @@ const SidebarQuestionnaireQuestion = (props) => {
   return (
     <div style={styles.question}>
         {/* Question title */}
-        <h3 style={styles.h3}>{props.question}</h3>
+        <h3 style={styles.h3}>{question.question}</h3>
 
         {/* Options */}
         <div style={styles.options}>
-            <label style={styles.label}>
-                <input type="checkbox" style={styles.checkbox}/>
-                Checkbox 1
-            </label>
-            <label style={styles.label}>
-                <input type="checkbox" style={styles.checkbox}/>
-                Checkbox 2
-            </label>
+            {question.options.map((option) => (
+                <label style={styles.label} key={option}>
+                    <input type="checkbox" style={styles.checkbox}/>
+                    {option}
+                </label>
+            ))}
         </div>
     </div>
   )

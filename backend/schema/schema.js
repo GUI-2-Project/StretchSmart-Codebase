@@ -128,7 +128,7 @@ const mutation = new GraphQLObjectType({
             type: QuestionType,
             args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Question.findByIdAndRemove(args._id);
+                return Question.findByIdAndDelete(args._id);
             }
         },
         // Update a question
@@ -178,7 +178,7 @@ const mutation = new GraphQLObjectType({
             type: MuscleGroupType,
             args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return MuscleGroup.findByIdAndRemove(args._id);
+                return MuscleGroup.findByIdAndDelete(args._id);
             }
         },
         // Update a MuscleGroup
@@ -236,7 +236,7 @@ const mutation = new GraphQLObjectType({
             type: StretchType,
             args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Stretch.findByIdAndRemove(args._id);
+                return Stretch.findByIdAndDelete(args._id);
             }
         },
         // Update a stretch
