@@ -10,7 +10,6 @@ import StretchCard from './components/stretch_overview/StretchCard'
 import QuestionsPage from './components/QuestionsPage'
 import { setPersistence } from 'firebase/auth';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
-import Stretches from './components/admin/Stretches';
 import LandingPage from './components/LandingPage';
 
 
