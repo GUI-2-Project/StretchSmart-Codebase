@@ -91,13 +91,11 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
           </nav>
         </div>
         <div style={styles.segment}>
-          {isAuthenticated ? (
+          {isAuthenticated && (
             <>
             <span style={styles.a}>WELCOME,  {user}</span>
             <button className="btn btn-primary" style={styles.btn} onClick={onLogout}>Logout</button>
             </>
-          ) : (
-            <button className="btn btn-primary" style={styles.btn} onClick={onLogin}>Login</button>
           )}
               <img src={profileIcon} style={styles.icon}/>
               <img src={hamburgerIcon} style={styles.icon}/>
