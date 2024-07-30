@@ -1,3 +1,4 @@
 # Ignore all Dockerfiles
 *Dockerfile
 *.idea/
+./secrets/*
