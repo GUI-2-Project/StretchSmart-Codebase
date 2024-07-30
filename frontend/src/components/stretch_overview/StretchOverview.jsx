@@ -8,7 +8,7 @@ import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
 
 
 function StretchOverview({ muscleGroup }) {
-    const { loading, error, data } = useQuery(GET_MUSCLE_GROUPS);
+    const { loading, error, data } = useQuery(GET_MUSCLE_GROUPS);   // TODO: change to load stretch by id
     
     const [sidebarOpen, setSideBarOpen] = useState(false);
     const handleViewSidebar = () => {
@@ -22,8 +22,8 @@ function StretchOverview({ muscleGroup }) {
     
     const styles = {
         stretchOverview: {
-            display: 'grid',
-            gridTemplateColumns: 'auto auto',
+            display: 'flex',
+            width: '100%',
             height: '100%',
             overflow: 'hidden',
             alignItems: 'center',
@@ -33,39 +33,27 @@ function StretchOverview({ muscleGroup }) {
         },
         mainContent: {
             display: 'flex',
-            height: '100%',
+            backgroundColor: '#f0f0f0',
             overflow: 'hidden',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            alignItems: 'space-evenly',
+            height: '100%',
             width: '100%',
-            maxWidth: '1200px',
             padding: '20px',
         },
     };
 
     return (
         <div style={styles.stretchOverview}>
-
-            {/* Sidebar, TODO: add props */}
             <Sidebar muscleGroup={muscleGroup}/>
-
-            {/* Main Content */}
             <main style={styles.mainContent}>
-
-                {/* Stretch Cards, TODO: add props 
-                <StretchCard />
-                <StretchCard />
-                <StretchCard />
-                <StretchCard />
-                */}
-
+                {muscleGroup.stretches.map((stretchID) => (     // TODO: limit to 4
+                    <StretchCard key={stretchID} stretchID={stretchID} />
+                ))}
                 {/* Start routine button*/}
             </main>
-
         </div>
     )
 }
 
 export default StretchOverview
- 

@@ -29,7 +29,7 @@ const ADD_STRETCH = gql`
 `;
 
 const DELETE_STRETCH = gql`
-  query deleteStretch($_id: ID!) {
+  mutation deleteStretch($_id: ID!) {
     deleteStretch(_id: $_id) {
         _id
     }
