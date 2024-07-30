@@ -4,6 +4,7 @@ import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from "react-router-dom";
 
 
 /**
@@ -80,14 +81,14 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
           <img src={logo} style={styles.logo}/>
           </div>
           <nav style={styles.nav}>
-            <a style={styles.a}>HOME</a>
-            <a style={styles.a}>ABOUT US</a>
             {isAuthenticated && (
               <>
-              <a style={styles.a} href="/questionnaire">QUESTIONNAIRE</a>
-              <a style={styles.a} href="/history">HISTORY</a>
+              <Link style={styles.a} to="landing">HOME</Link>
+              <Link style={styles.a} to="/questionnaire">QUESTIONNAIRE</Link>
+              <Link style={styles.a} to="/history">HISTORY</Link>
               </>
             )}
+            <a style={styles.a}>ABOUT US</a>
           </nav>
         </div>
         <div style={styles.segment}>

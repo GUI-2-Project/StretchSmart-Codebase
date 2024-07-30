@@ -6,20 +6,49 @@ const GET_MUSCLE_GROUPS = gql`
       _id
       name
       imageURL
-      stretches
+      stretches {
+        _id
+        title
+        description
+        imageURL
+        instructions
+      }
     }
   }
 `;
 
-const GET_MUSCLE_GROUP = gql`
-  query getMuscleGroup($_id: ID!) {
-    muscleGroup(_id: $_id) {
+const GET_MUSCLE_GROUP_BYID = gql`
+    query getMuscleGroupById($_id: ID!) {
+    muscleGroupById(_id: $_id) {
         _id
         name
         imageURL
-        stretches
+        stretches {
+          _id
+          title
+          description
+          imageURL
+          instructions
+        }
     }
   }
 `;
 
-export { GET_MUSCLE_GROUPS, GET_MUSCLE_GROUP };
+const GET_MUSCLE_GROUP_BYNAME = gql`
+    query getMuscleGroupByName($name: String!) {
+    muscleGroupByName(name: $name) {
+        _id
+        name
+        imageURL
+        stretches {
+          _id
+          title
+          description
+          imageURL
+          instructions
+        }
+    }
+  }
+`;
+
+export { GET_MUSCLE_GROUPS, GET_MUSCLE_GROUP_BYID, GET_MUSCLE_GROUP_BYNAME };
