@@ -6,8 +6,13 @@ import backBody from '../assets/fullBodyBack.png';
 import Body from '../components/bodyMap'
 import '../index.css';
 
-const LandingPage = ({ onMuscleSelect }) => {
-  const [isFrontView, setIsFrontView] = useState(true);
+const LandingPage = () => {
+    const [selectedMuscle, setSelectedMuscle] = useState(null);
+    const [isFrontView, setIsFrontView] = useState(true);
+
+    const handleMuscleSelect = (muscle) => {
+        setSelectedMuscle(muscle);
+    };
   
   const toggleView = () => {
     setIsFrontView(!isFrontView);
@@ -69,7 +74,7 @@ const LandingPage = ({ onMuscleSelect }) => {
         <main style={styles.mainContent}>
            <h1 style={styles.leftSide}>Please select a muscle group</h1>
             <div>
-                <Body onMuscleSelect={onMuscleSelect}/>
+                <Body onMuscleSelect={handleMuscleSelect}/>
             </div>
         </main>
     </div>

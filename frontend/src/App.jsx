@@ -28,9 +28,10 @@ const App = () => {
         setShowMainContent(true);
     };
 
-    const handleMuscleSelect = (muscle) =>{
-      setSelectedMuscle(muscle);
-    };  
+    // const handleMuscleSelect = (muscle) =>{
+    //   setSelectedMuscle(muscle);
+    //   return isAuthenticated ? element : <Navigate to="/questionnaire" />;
+    // };  
 
     const PrivateRoute = ({ element }) => {
         return isAuthenticated ? element : <Navigate to="/" />;
@@ -48,7 +49,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/landing" element={<PrivateRoute element={<LandingPage onMuscleSelect={handleMuscleSelect} />} />} />
+                    <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
                     <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
                 </Routes>
                 {showMainContent && <Footer />}
