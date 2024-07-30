@@ -51,9 +51,6 @@ const App = () => {
             onLogout={handleLogout}
             user="USER"
           />
-
-          <Stretches />
-
           <Routes>
               {/* login page goes to questionnare when signing in */}
               <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/questionnaire" />} />
