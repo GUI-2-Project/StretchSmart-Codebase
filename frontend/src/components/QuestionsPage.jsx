@@ -3,8 +3,14 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate for redire
 import bodyImage from '../assets/fullBodyFrontBack.png';
 import leftArrow from '../assets/leftArrow.png';
 import rightArrow from '../assets/rightArrow.png';
+import {useLocation} from 'react-router-dom';
 
 function QuestionsPage() {
+
+    // accept 'muscleName' arg from previous page
+    const location = useLocation();
+    const muscleName = location.state.muscleName;   
+
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selections, setSelections] = useState({});
     const navigate = useNavigate(); // Initialize useNavigate
@@ -21,7 +27,7 @@ function QuestionsPage() {
         },
         {
             id: 'q2',
-            title: `WHAT ARE YOU FEELING IN YOUR -----`,
+            title: `WHAT ARE YOU FEELING IN YOUR ` + muscleName.toUpperCase() + `?`,
             options: [
                 'Soreness',
                 'Pain',
@@ -100,7 +106,8 @@ function QuestionsPage() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (allQuestionsAnswered() && isAnyCheckboxSelected()) {
-            navigate('/next-page');
+            // Nav to muscle overview page and pass selected muscle name
+            navigate('/muscle-overview', {state: {muscleName: muscleName}});
         } else {
             alert('Please answer all questions and select at least one checkbox before submitting.');
         }

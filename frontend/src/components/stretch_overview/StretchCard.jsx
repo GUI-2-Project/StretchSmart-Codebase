@@ -8,21 +8,21 @@ import { GET_STRETCH } from '../../queries/stretchQueries';
  * stretches on the muscle group overview page and elsewhere.
  * Contains a LikeDislikeButton in the corner.
  * 
- * @param {GraphQLID} stretchID - unique id for stretch from backend
+ * @param {StretchType} - stretch object
  *                                (this is just a string)
  * @returns {JSX.Element} div element containing info about a stretch,
  *                        an image, and a like/dislike button.
  */
 
-const StretchCard = ({ stretchID }) => {
-    const { loading, error, data } = useQuery(GET_STRETCH, {
-        variables: {_id: stretchID}
-    });
-
-    if (loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
-    if (error) return <p>Something went wrong</p>;
-
-    const stretch = data.stretch;
+const StretchCard = ({ stretch }) => {  // stretch object
+    //const { loading, error, data } = useQuery(GET_STRETCH, {
+    //    variables: {_id: stretchID}
+    //});
+//
+    //if (loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
+    //if (error) return <p>Something went wrong</p>;
+//
+    //const stretch = data.stretch;
 
     const styles = {
         card: {

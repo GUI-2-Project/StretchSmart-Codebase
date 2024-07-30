@@ -7,9 +7,9 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 const Body = ({ onMuscleSelect }) => {  // TODO: rename to BodyMap for clarity
   const navigate = useNavigate();
 
-  const handleAreaClick = (muscle) => {
-    onMuscleSelect(muscle);
-    navigate('/questionnaire');
+  const handleAreaClick = (muscleName) => {
+    onMuscleSelect(muscleName);
+    navigate('/questionnaire', {state: {muscleName: muscleName}});
   };
   
   return (

@@ -37,7 +37,13 @@ const MuscleGroupType = new GraphQLObjectType({
         _id: { type: GraphQLID },
         name: { type: GraphQLString },
         imageURL: { type: GraphQLString },
-        stretches: { type: GraphQLList(GraphQLString) }   // List of _ids for stretches for this muscle group
+        stretches: { type: GraphQLList(StretchType), // List of _ids for stretches for this muscle group
+            resolve(parent, args) {
+                return Stretch.find({
+                    '_id': { $in: parent.stretchIds }
+                });
+            }
+        }
     })
 });
 
@@ -78,11 +84,18 @@ const RootQuery = new GraphQLObjectType({
                 return MuscleGroup.find();
             }
         },
-        muscleGroup: {
+        muscleGroupById: {
             type: MuscleGroupType,
             args: { _id: { type: GraphQLID } },
             resolve(parent, args) {
                 return MuscleGroup.findById(args._id);
+            }
+        },
+        muscleGroupByName: {
+            type: MuscleGroupType,
+            args: { name: { type: GraphQLString } },
+            resolve(parent, args) {
+                return MuscleGroup.findOne({ name: args.name }).exec();
             }
         },
         stretches: {
@@ -160,14 +173,14 @@ const mutation = new GraphQLObjectType({
                 //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
                 name: { type: GraphQLNonNull(GraphQLString) },
                 imageURL: { type: GraphQLNonNull(GraphQLString) },
-                stretches: { type: GraphQLList(GraphQLString) }
+                stretchIds: { type: GraphQLList(GraphQLID) }
             },
             resolve(parent, args) {
                 let muscleGroup = new MuscleGroup({
                     _id: args._id,
                     name: args.name,
                     imageURL: args.imageURL,
-                    stretches: args.stretches
+                    stretchIds: args.stretchIds
                 });
 
                 return muscleGroup.save();
@@ -188,7 +201,7 @@ const mutation = new GraphQLObjectType({
                 _id: { type: GraphQLNonNull(GraphQLID) },
                 name: { type: GraphQLString },
                 imageURL: { type: GraphQLString },
-                stretches: { type: GraphQLList(GraphQLString) }
+                stretchIds: { type: GraphQLList(GraphQLID) }
             },
             resolve(parent, args) {
                 return MuscleGroup.findByIdAndUpdate(
@@ -196,7 +209,7 @@ const mutation = new GraphQLObjectType({
                     { $set: { 
                         name: args.name,
                         imageURL: args.imageURL,
-                        stretches: args.stretches
+                        stretchIds: args.stretchIds
                     } },
                     // Create a muscle group if it doesn't exist
                     // TODO: investigate if this is necessary
