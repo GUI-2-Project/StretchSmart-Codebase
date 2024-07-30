@@ -50,14 +50,31 @@ function QuestionsPage() {
         }
     ];
 
+    const allQuestionsAnswered = () => {
+        return questions.every((question) => {
+            const id = question.id;
+            if (question.title.includes('ACCESS')) {
+                return selections[id] !== undefined;
+            } else {
+                return Object.values(selections[id] || {}).some(value => value);
+            }
+        });
+    };
+
+    const isAnyCheckboxSelected = () => {
+        return Object.values(selections).some(option => 
+            typeof option === 'object' ? Object.values(option).some(value => value) : option
+        );
+    };
+
     const nextQuestion = () => {
-        if(currentQuestionIndex < questions.length -1) {
+        if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
     };
 
     const prevQuestion = () => {
-        if(currentQuestionIndex > 0) {
+        if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
         }
     };
@@ -82,8 +99,11 @@ function QuestionsPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Redirect to the next page without storing the data
-        navigate('/next-page');
+        if (allQuestionsAnswered() && isAnyCheckboxSelected()) {
+            navigate('/next-page');
+        } else {
+            alert('Please answer all questions and select at least one checkbox before submitting.');
+        }
     };
 
     const styles = {
@@ -106,6 +126,7 @@ function QuestionsPage() {
             borderRadius: '20px',
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
             paddingTop: "70px",
+            position: 'relative', // Ensure the position is relative for child absolute positioning
         },
         imageContainer: {
             flexBasis: '600px',
@@ -143,25 +164,21 @@ function QuestionsPage() {
             transform: 'scale(2)',
             WebkitTransform: 'scale(2)',
         },
-        navigationButtonRight: {
-            display: 'flex',
-            margin: '20px 0',
-            cursor: 'pointer',
+        navigationContainer: {
+            alignItems: 'center',
+            position: 'absolute',
+            top: '70%',
+            left: '60%',
+            gap: '100px'
         },
-        navigationButtonLeft: {
-            display: 'flex',
-            margin: '20px 0',
+        navButtonLeft: {
             cursor: 'pointer',
+            margin: '0 10px', // Adjust the spacing between buttons
+           
         },
-        navButton: {
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: '#2364E2',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
+        navButtonRight: {
             cursor: 'pointer',
-            borderRadius: '20px'
+            margin: '0 10px', // Adjust the spacing between buttons
         },
         submitButton: {
             padding: '10px 20px',
@@ -196,14 +213,12 @@ function QuestionsPage() {
                             ))}
                         </div>
                     </div>
-                    <div style={styles.navigationButtonLeft}>
+                    <div style={styles.navigationContainer}>
                         {currentQuestionIndex > 0 &&
-                            <img src={leftArrow} onClick={prevQuestion} alt="Previous" />
+                            <img src={leftArrow} onClick={prevQuestion} alt="Previous" style={styles.navButtonLeft}/>
                         }
-                    </div>
-                    <div style={styles.navigationButtonRight}>
                         {currentQuestionIndex < questions.length - 1 &&
-                            <img src={rightArrow} onClick={nextQuestion} alt="Next" />
+                            <img src={rightArrow} onClick={nextQuestion} alt="Next" style={styles.navButtonRight}/>
                         }
                     </div>
                     {currentQuestionIndex === questions.length - 1 &&
@@ -221,4 +236,3 @@ function QuestionsPage() {
 }
 
 export default QuestionsPage;
-
