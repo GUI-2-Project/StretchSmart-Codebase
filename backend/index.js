@@ -24,7 +24,7 @@ app.use(cors());
 // e.g. http://localhost:5000/images/hamstrings2.png
 app.use(express.static(__dirname + '/static_content'));
 
-// Configure graphiql endpoint for development
+// Configure graphiql endpoint
 app.use('/graphql', graphqlHTTP({
     schema,
     graphiql: process.env.NODE_ENV === 'development'

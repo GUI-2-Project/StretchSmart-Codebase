@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 const GET_MUSCLE_GROUPS = gql`
   query getMuscleGroups {
-    projects {
+    muscleGroups {
       _id
       name
       imageURL
