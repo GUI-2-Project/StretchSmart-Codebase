@@ -49,7 +49,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
+                    <Route path="/landing" element={<PrivateRoute element={<LandingPage onMuscleSelect={handleMuscleSelect} />} />} />
                     <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
                 </Routes>
                 {showMainContent && <Footer />}
