@@ -28,6 +28,10 @@ const App = () => {
         setShowMainContent(true);
     };
 
+    const handleMuscleSelect = (muscle) =>{
+      setSelectedMuscle(muscle);
+    };  
+
     const PrivateRoute = ({ element }) => {
         return isAuthenticated ? element : <Navigate to="/" />;
     };
