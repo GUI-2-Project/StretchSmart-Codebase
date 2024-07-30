@@ -4,12 +4,14 @@ import fullBody from '../assets/BodyScaled.png';
 import '../index.css';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 
-const Body = ({onMuscleSelect}) => {  // TODO: rename to BodyMap for clarity
+const Body = ({ onMuscleSelect }) => {  // TODO: rename to BodyMap for clarity
   const navigate = useNavigate();
 
   const handleAreaClick = (muscle) => {
     onMuscleSelect(muscle);
+    navigate('/questionnaire');
   };
+  
   return (
     <div >
         <img src={fullBody} useMap="#image-map"/>
