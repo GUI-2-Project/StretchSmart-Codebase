@@ -24,7 +24,7 @@ const {
 const QuestionType = new GraphQLObjectType({
     name: "Question",
     fields: () => ({
-        id: { type: GraphQLID },
+        _id: { type: GraphQLID },
         question: { type: GraphQLString },
         options: { type: GraphQLList(GraphQLString) }   // List of strings
     })
@@ -34,9 +34,10 @@ const QuestionType = new GraphQLObjectType({
 const MuscleGroupType = new GraphQLObjectType({
     name: "MuscleGroup",
     fields: () => ({
-        id: { type: GraphQLID },
+        _id: { type: GraphQLID },
         name: { type: GraphQLString },
-        imageURL: { type: GraphQLString }
+        imageURL: { type: GraphQLString },
+        stretches: { type: GraphQLList(GraphQLString) }   // List of _ids for stretches for this muscle group
     })
 });
 
@@ -44,7 +45,7 @@ const MuscleGroupType = new GraphQLObjectType({
 const StretchType = new GraphQLObjectType({
     name: "Stretch",
     fields: () => ({
-        id: { type: GraphQLID },
+        _id: { type: GraphQLID },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
         goodFor: { type: GraphQLList(GraphQLString) },  // List of strings
@@ -66,9 +67,9 @@ const RootQuery = new GraphQLObjectType({
         },
         question: {
             type: QuestionType,
-            args: { id: { type: GraphQLID } },
+            args: { _id: { type: GraphQLID } },
             resolve(parent, args) {
-                return Question.findById(args.id);
+                return Question.findById(args._id);
             }
         },
         muscleGroups: {
@@ -79,9 +80,9 @@ const RootQuery = new GraphQLObjectType({
         },
         muscleGroup: {
             type: MuscleGroupType,
-            args: { id: { type: GraphQLID } },
+            args: { _id: { type: GraphQLID } },
             resolve(parent, args) {
-                return MuscleGroup.findById(args.id);
+                return MuscleGroup.findById(args._id);
             }
         },
         stretches: {
@@ -92,9 +93,9 @@ const RootQuery = new GraphQLObjectType({
         },
         stretch: {
             type: StretchType,
-            args: { id: { type: GraphQLID } },
+            args: { _id: { type: GraphQLID } },
             resolve(parent, args) {
-                return Stretch.findById(args.id);
+                return Stretch.findById(args._id);
             }
         }
     }
@@ -108,13 +109,13 @@ const mutation = new GraphQLObjectType({
         addQuestion: {
             type: QuestionType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLID) },
+                //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
                 question: { type: GraphQLNonNull(GraphQLString) },
                 options: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
             },
             resolve(parent, args) {
                 let question = new Question({
-                    id: args.id,
+                    _id: args._id,
                     question: args.question,
                     options: args.options
                 });
@@ -125,27 +126,29 @@ const mutation = new GraphQLObjectType({
         // Delete a question
         deleteQuestion: {
             type: QuestionType,
-            args: { id: { type: GraphQLNonNull(GraphQLID) } },
+            args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Question.findByIdAndRemove(args.id);
+                return Question.findByIdAndRemove(args._id);
             }
         },
         // Update a question
         updateQuestion: {
             type: QuestionType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLID) },
+                _id: { type: GraphQLNonNull(GraphQLID) },
                 question: { type: GraphQLString },
                 options: { type: GraphQLList(GraphQLString) }
             },
             resolve(parent, args) {
                 return Question.findByIdAndUpdate(
-                    args.id,
+                    args._id,
                     { $set: { 
                         question: args.question,
                         options: args.options 
                     } },
                     // Create a question if it doesn't exist
+                    // TODO: investigate if this is necessary
+                    // With MongoDB handling ID creqation, this may cause collisions
                     { new: true }
                 );
             }
@@ -154,13 +157,13 @@ const mutation = new GraphQLObjectType({
         addMuscleGroup: {
             type: MuscleGroupType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLID) },
+                //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
                 name: { type: GraphQLNonNull(GraphQLString) },
                 imageURL: { type: GraphQLNonNull(GraphQLString) }
             },
             resolve(parent, args) {
                 let muscleGroup = new MuscleGroup({
-                    id: args.id,
+                    _id: args._id,
                     name: args.name,
                     imageURL: args.imageURL
                 });
@@ -171,27 +174,29 @@ const mutation = new GraphQLObjectType({
         // Delete a MuscleGroup
         deleteMuscleGroup: {
             type: MuscleGroupType,
-            args: { id: { type: GraphQLNonNull(GraphQLID) } },
+            args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return MuscleGroup.findByIdAndRemove(args.id);
+                return MuscleGroup.findByIdAndRemove(args._id);
             }
         },
         // Update a MuscleGroup
         updateMuscleGroup: {
             type: MuscleGroupType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLID) },
+                _id: { type: GraphQLNonNull(GraphQLID) },
                 name: { type: GraphQLString },
                 imageURL: { type: GraphQLString }
             },
             resolve(parent, args) {
                 return MuscleGroup.findByIdAndUpdate(
-                    args.id,
+                    args._id,
                     { $set: { 
                         name: args.name,
                         imageURL: args.imageURL
                     } },
                     // Create a muscle group if it doesn't exist
+                    // TODO: investigate if this is necessary
+                    // With MongoDB handling ID creqation, this may cause collisions
                     { new: true }
                 );
             }
@@ -200,7 +205,7 @@ const mutation = new GraphQLObjectType({
         addStretch: {
             type: StretchType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLID) },
+                //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
                 title: { type: GraphQLNonNull(GraphQLString) },
                 description: { type: GraphQLNonNull(GraphQLString) },
                 goodFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
@@ -210,7 +215,7 @@ const mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
                 let stretch = new Stretch({
-                    id: args.id,
+                    _id: args._id,
                     title: args.title,
                     description: args.description,
                     goodFor: args.goodFor,
@@ -225,16 +230,16 @@ const mutation = new GraphQLObjectType({
         // Delete a stretch
         deleteStretch: {
             type: StretchType,
-            args: { id: { type: GraphQLNonNull(GraphQLID) } },
+            args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Stretch.findByIdAndRemove(args.id);
+                return Stretch.findByIdAndRemove(args._id);
             }
         },
         // Update a stretch
         updateStretch: {
             type: StretchType,
             args: {
-                id: { type: GraphQLNonNull(GraphQLID) },
+                _id: { type: GraphQLNonNull(GraphQLID) },
                 title: { type: GraphQLString },
                 description: { type: GraphQLString },
                 goodFor: { type: GraphQLList(GraphQLString) },
@@ -244,7 +249,7 @@ const mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
                 return Stretch.findByIdAndUpdate(
-                    args.id,
+                    args._id,
                     { $set: { 
                         title: args.title,
                         description: args.description,
@@ -254,6 +259,8 @@ const mutation = new GraphQLObjectType({
                         instructions: args.instructions
                     } },
                     // Create a stretch if it doesn't exist
+                    // TODO: investigate if this is necessary
+                    // With MongoDB handling ID creqation, this may cause collisions
                     { new: true }
                 );
             }

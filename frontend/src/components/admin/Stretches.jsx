@@ -1,37 +1,42 @@
-import React from 'react'
-import { gql, useQuery } from '@apollo/client'
+import React from 'react';
 
+import { useQuery } from '@apollo/client';
+import StretchRow from './StretchRow';
+//import Spinner from './Spinner';
+import { GET_STRETCHES } from '../../queries/stretchQueries';
 
-const GET_STRETCHES = gql`
-    query GetStretches {
-        stretches {
-            id
-            title
-            description
-            goodFor
-            badFor
-            imageURL
-            instructions
-        }
-    }
-`;  
+export default function Stretches() {
+  const { loading, error, data } = useQuery(GET_STRETCHES);
 
+  if (loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
+  if (error) return <p>Something Went Wrong</p>;
 
-const Stretches = () => {
-
-    const stretches = useQuery(GET_STRETCHES);
-    let loading = stretches.loading;
-    let error = stretches.error;
-    let data = stretches.data;
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Something Went Wrong</p>;
-
-    return (
-        <>
-            { !loading && !error && data.stretches.map((stretch, index) => (stretch.id))}
-        </>
-    )
+  return (
+    <>
+      {!loading && !error && (
+        <table className='table table-hover mt-3'>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Good For</th>
+              <th>Bad For</th>
+              <th>ImageURL</th>
+              <th>Instructions</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.stretches.map((stretch) => (
+                <StretchRow key={stretch._id} stretch={stretch} />
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
 }
 
-export default Stretches
+//<StretchRow key={stretch._id} stretch={stretch} />
+
+//<tr key={stretch._id}><td>{stretch.title}</td></tr>

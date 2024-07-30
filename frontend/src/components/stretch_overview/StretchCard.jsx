@@ -1,5 +1,5 @@
 import React from 'react'
-import LikeDislikeButton from './LikeDislikeButton'
+import LikeDislikeButton from '../LikeDislikeButton'
 
 /**
  * Unfinished stretch card element to represent 

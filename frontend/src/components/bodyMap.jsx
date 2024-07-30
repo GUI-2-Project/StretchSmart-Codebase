@@ -4,7 +4,7 @@ import fullBody from '../assets/BodyScaled.png';
 import '../index.css';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 
-const Body = ({onMuscleSelect}) => {
+const Body = ({onMuscleSelect}) => {  // TODO: rename to BodyMap for clarity
   const navigate = useNavigate();
 
   const handleAreaClick = (muscle) => {
@@ -12,7 +12,7 @@ const Body = ({onMuscleSelect}) => {
   };
   return (
     <div >
-        <img src={fullBody} usemap="#image-map"/>
+        <img src={fullBody} useMap="#image-map"/>
         <map name="image-map">
             <area target="" alt="chest" title="chest" href="" coords="55,230,187,290" shape="rect"
               onClick={(e) => {
@@ -29,4 +29,4 @@ const Body = ({onMuscleSelect}) => {
  )
 };
 
-export default Body;
+export default Body;  // TODO: rename to BodyMap for clarity

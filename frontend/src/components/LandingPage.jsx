@@ -6,7 +6,7 @@ import backBody from '../assets/fullBodyBack.png';
 import Body from '../components/bodyMap'
 import '../index.css';
 
-const LandingPage = () => {
+const LandingPage = ({ onMuscleSelect }) => {
   const [isFrontView, setIsFrontView] = useState(true);
   
   const toggleView = () => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import SidebarQuestionnaire from './SidebarQuestionnaire'
-import hamstringsImage from '../assets/hamstrings.png'  // TODO: refactor to accept object from backend
+import hamstringsImage from '../../assets/hamstrings.png'  // TODO: refactor to accept object from backend
 
 /**
  * Sidebar to display info about the muscle group,
