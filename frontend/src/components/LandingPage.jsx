@@ -6,9 +6,9 @@ import backBody from '../assets/fullBodyBack.png';
 import Body from '../components/bodyMap'
 import '../index.css';
 
-const LandingPage = () => {
+const LandingPage = ({ onMuscleSelect }) => {
   const [isFrontView, setIsFrontView] = useState(true);
-
+  
   const toggleView = () => {
     setIsFrontView(!isFrontView);
   };
@@ -69,7 +69,7 @@ const LandingPage = () => {
         <main style={styles.mainContent}>
            <h1 style={styles.leftSide}>Please select a muscle group</h1>
             <div>
-                <Body/>
+                <Body onMuscleSelect={onMuscleSelect}/>
             </div>
         </main>
     </div>

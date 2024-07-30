@@ -10,7 +10,11 @@ import StretchCard from './components/stretch_overview/StretchCard'
 import QuestionsPage from './components/QuestionsPage'
 import { setPersistence } from 'firebase/auth';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+<<<<<<< HEAD
 import Stretches from './components/admin/Stretches';
+=======
+import LandingPage from './components/LandingPage';
+>>>>>>> main
 
 
 const client = new ApolloClient({
@@ -20,9 +24,9 @@ const client = new ApolloClient({
 
 const App = () => {
   // this authentication code is just a place holder
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [showMainContent, setShowMainContent] = useState(true);
-
+  const [selectedMuscle, setSelectedMuscle] = useState(null);
   // mock login authentication
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -38,7 +42,9 @@ const App = () => {
   const PrivateRoute = ({ element }) => {
     return isAuthenticated ? element : <Navigate to="/" />;
   };
-
+  const handleMuscleSelect = (muscle) =>{
+    setSelectedMuscle(muscle);
+  };  
   return (
       <Router>
         <ApolloProvider client={client}>
@@ -56,12 +62,13 @@ const App = () => {
               <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/questionnaire" />} />
               <Route element={<Signup />} />
               <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
+              <Route path="/landingPage" element={<PrivateRoute element={<LandingPage onMuscleSelect={handleMuscleSelect} />} />} />
           </Routes>
+          {selectedMuscle && <StretchCard muscleName={selectedMuscle} />}
           {showMainContent}
           <Footer />
         </ApolloProvider>
       </Router>
   )
 }
-
 export default App
