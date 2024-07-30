@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import health2 from '../../assets/health2.png';
+import health3 from '../../assets/health3.png';
+import Health1 from '../../assets/Health1.png';
 import { auth } from '../../firebase/FireBase';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import Signup from '../../components/signup/Signup'
+import Signup from '../../components/signup/Signup';
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -16,7 +18,7 @@ const Login = ({ onLogin }) => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            setSuccess('Login Successful!')
+            setSuccess('Login Successful!');
             onLogin();
         } catch (error) {
             setError(error.message);
@@ -31,26 +33,37 @@ const Login = ({ onLogin }) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            minHeight: 'calc(100vh - 150px)', // Adjust based on header/footer height
+            minHeight: 'calc(100vh - 150px)',
             padding: '20px',
-            backgroundColor: '#fff', // Changed to white background
-            marginTop: '10px' // Adjust this value based on the height of your navbar
+            backgroundColor: '#fff',
+            marginTop: '10px',
+            position: 'relative'
         },
         imagesContainer: {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start',
             flex: 1,
+            marginRight: '20px'
         },
         imageItem: {
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '20px',
         },
         stretchImage: {
-            width: '300px', // Adjust size as needed
-            height: 'auto', // Maintain aspect ratio
+            width: '300px',
+            height: 'auto',
             borderRadius: '10px',
             marginBottom: '10px'
+        },
+        quote: {
+            fontSize: '24px',
+            fontStyle: 'italic',
+            color: '#555',
+            textAlign: 'left',
+            marginLeft: '20px',
+            maxWidth: '400px'
         },
         formContainer: {
             display: 'flex',
@@ -60,11 +73,11 @@ const Login = ({ onLogin }) => {
             padding: '20px',
             borderRadius: '10px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            width: '100%', // Make form wider
-            maxWidth: '500px', // Increase max width
-            position: 'absolute', // Use absolute positioning
-            right: '20px', // Position to the right
-            top: '100px' // Adjust this value based on the height of your navbar
+            width: '100%',
+            maxWidth: '500px',
+            position: 'absolute',
+            right: '20px',
+            top: '100px'
         },
         title: {
             marginBottom: '20px',
@@ -76,16 +89,16 @@ const Login = ({ onLogin }) => {
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
-            gap: '10px' // Adds space between form elements
+            gap: '10px'
         },
         input: {
-            margin: '0', // Remove margin to avoid overflow
-            padding: '10px', // Adjust padding as needed
+            margin: '0',
+            padding: '10px',
             width: '100%',
             fontSize: '16px',
             borderRadius: '5px',
             border: '1px solid #ccc',
-            boxSizing: 'border-box' // Ensure padding is included in the width
+            boxSizing: 'border-box'
         },
         button: {
             padding: '15px',
@@ -118,6 +131,27 @@ const Login = ({ onLogin }) => {
             marginTop: '10px',
             textTransform: 'uppercase',
             fontWeight: 'bold'
+        },
+        bottomRightTextBox: {
+            position: 'absolute',
+            bottom: '20px',
+            right: '20px',
+            backgroundColor: '#fff',
+            padding: '30px',
+            borderRadius: '10px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            maxWidth: '500px',
+            textAlign: 'center',
+            fontSize: '24px'
+        },
+        bottomRightButton: {
+            backgroundColor: '#333',
+            color: '#fff',
+            padding: '15px 30px',
+            borderRadius: '5px',
+            marginTop: '20px',
+            cursor: 'pointer',
+            fontSize: '18px'
         }
     };
 
@@ -126,6 +160,15 @@ const Login = ({ onLogin }) => {
             <div style={styles.imagesContainer}>
                 <div style={styles.imageItem}>
                     <img src={health2} alt="Stretch Smart" style={styles.stretchImage} />
+                    <p style={styles.quote}>Feeling pain or discomfort?</p>
+                </div>
+                <div style={styles.imageItem}>
+                    <img src={health3} alt="Feeling Young" style={styles.stretchImage} />
+                    <p style={styles.quote}>Not sure where to start when it comes to stretching your muscles?</p>
+                </div>
+                <div style={styles.imageItem}>
+                    <img src={Health1} alt="Muscle Pain" style={styles.stretchImage} />
+                    <p style={styles.quote}>Let us help you stretch smarter to feel better!</p>
                 </div>
             </div>
             <div style={styles.formContainer}>
@@ -156,6 +199,12 @@ const Login = ({ onLogin }) => {
             </div>
             {/* Signup modal */}
             <Signup isOpen={isSignupModalOpen} onClose={closeSignupModal} />
+            <div style={styles.bottomRightTextBox}>
+                <p>Try out our new web app today and learn how you can relieve your muscle pain! Click the button below to be redirected to our sign-up page.</p>
+                <div style={styles.bottomRightButton} onClick={openSignupModal}>
+                    Click here to try out the app today!
+                </div>
+            </div>
         </div>
     );
 };
