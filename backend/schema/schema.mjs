@@ -5,12 +5,13 @@
 
 
 // Importe Database Schemas as Mongoose models
-const Question = require("../models/Question");
-const MuscleGroup = require("../models/MuscleGroup");
-const Stretch = require("../models/Stretch");
+import Question from '../models/Question.mjs';
+import MuscleGroup from '../models/MuscleGroup.mjs';
+import Stretch from '../models/Stretch.mjs';
+import storeUpload from '../storeUpload.mjs';
 
 // Import required data types from graphql
-const { 
+import { 
     GraphQLObjectType, 
     GraphQLID, 
     GraphQLString, 
@@ -18,26 +19,29 @@ const {
     GraphQLList,
     GraphQLNonNull,
     //GraphQLEnumType
-    } = require("graphql");
+    } from 'graphql';
 
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
+
+/* TYPES */
 // Define Question graphql data type. TODO: revisit naming
 const QuestionType = new GraphQLObjectType({
-    name: "Question",
+    name: 'Question',
     fields: () => ({
         _id: { type: GraphQLID },
         question: { type: GraphQLString },
-        options: { type: GraphQLList(GraphQLString) }   // List of strings
+        options: { type: new GraphQLList(GraphQLString) }   // List of strings
     })
 });
 
 // Define MuscleGroup graphql data type
 const MuscleGroupType = new GraphQLObjectType({
-    name: "MuscleGroup",
+    name: 'MuscleGroup',
     fields: () => ({
         _id: { type: GraphQLID },
         name: { type: GraphQLString },
         imageURL: { type: GraphQLString },
-        stretches: { type: GraphQLList(StretchType), // List of _ids for stretches for this muscle group
+        stretches: { type: new GraphQLList(StretchType), // List of _ids for stretches for this muscle group
             resolve(parent, args) {
                 return Stretch.find({
                     '_id': { $in: parent.stretchIds }
@@ -49,21 +53,33 @@ const MuscleGroupType = new GraphQLObjectType({
 
 // Define Stretch graphql data type
 const StretchType = new GraphQLObjectType({
-    name: "Stretch",
+    name: 'Stretch',
     fields: () => ({
         _id: { type: GraphQLID },
         title: { type: GraphQLString },
         description: { type: GraphQLString },
-        goodFor: { type: GraphQLList(GraphQLString) },  // List of strings
-        badFor: { type: GraphQLList(GraphQLString) },   // List of strings
+        goodFor: { type: new GraphQLList(GraphQLString) },  // List of strings
+        badFor: { type: new GraphQLList(GraphQLString) },   // List of strings
         imageURL: { type: GraphQLString },
         instructions: { type: GraphQLString }
     })
 });
 
+// Define Image graphql data type
+const ImageFileType = new GraphQLObjectType({
+    name: 'Image',
+    fields: () => ({
+        _id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        URL: { type: GraphQLString }
+    })
+});
+
+
+/* QUERIES */
 // Define queries
 const RootQuery = new GraphQLObjectType({
-    name: "RootQueryType",
+    name: 'RootQueryType',
     fields: {
         questions: {
             type: new GraphQLList(QuestionType),
@@ -114,17 +130,19 @@ const RootQuery = new GraphQLObjectType({
     }
 });
 
+
+/* MUTATIONS */
 // Define mutations
 const mutation = new GraphQLObjectType({
-    name: "Mutation",
+    name: 'Mutation',
     fields: {
         // Add a question
         addQuestion: {
             type: QuestionType,
             args: {
-                //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
-                question: { type: GraphQLNonNull(GraphQLString) },
-                options: { type: GraphQLNonNull(GraphQLList(GraphQLString)) }
+                //_id: { type: new GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
+                question: { type: new GraphQLNonNull(GraphQLString) },
+                options: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) }
             },
             resolve(parent, args) {
                 let question = new Question({
@@ -139,7 +157,7 @@ const mutation = new GraphQLObjectType({
         // Delete a question
         deleteQuestion: {
             type: QuestionType,
-            args: { _id: { type: GraphQLNonNull(GraphQLID) } },
+            args: { _id: { type: new GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
                 return Question.findByIdAndDelete(args._id);
             }
@@ -148,9 +166,9 @@ const mutation = new GraphQLObjectType({
         updateQuestion: {
             type: QuestionType,
             args: {
-                _id: { type: GraphQLNonNull(GraphQLID) },
+                _id: { type: new GraphQLNonNull(GraphQLID) },
                 question: { type: GraphQLString },
-                options: { type: GraphQLList(GraphQLString) }
+                options: { type: new GraphQLList(GraphQLString) }
             },
             resolve(parent, args) {
                 return Question.findByIdAndUpdate(
@@ -170,10 +188,10 @@ const mutation = new GraphQLObjectType({
         addMuscleGroup: {
             type: MuscleGroupType,
             args: {
-                //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
-                name: { type: GraphQLNonNull(GraphQLString) },
-                imageURL: { type: GraphQLNonNull(GraphQLString) },
-                stretchIds: { type: GraphQLList(GraphQLID) }
+                //_id: { type: new GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                imageURL: { type: new GraphQLNonNull(GraphQLString) },
+                stretchIds: { type: new GraphQLList(GraphQLID) }
             },
             resolve(parent, args) {
                 let muscleGroup = new MuscleGroup({
@@ -189,7 +207,7 @@ const mutation = new GraphQLObjectType({
         // Delete a MuscleGroup
         deleteMuscleGroup: {
             type: MuscleGroupType,
-            args: { _id: { type: GraphQLNonNull(GraphQLID) } },
+            args: { _id: { type: new GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
                 return MuscleGroup.findByIdAndDelete(args._id);
             }
@@ -198,10 +216,10 @@ const mutation = new GraphQLObjectType({
         updateMuscleGroup: {
             type: MuscleGroupType,
             args: {
-                _id: { type: GraphQLNonNull(GraphQLID) },
+                _id: { type: new GraphQLNonNull(GraphQLID) },
                 name: { type: GraphQLString },
                 imageURL: { type: GraphQLString },
-                stretchIds: { type: GraphQLList(GraphQLID) }
+                stretchIds: { type: new GraphQLList(GraphQLID) }
             },
             resolve(parent, args) {
                 return MuscleGroup.findByIdAndUpdate(
@@ -222,13 +240,13 @@ const mutation = new GraphQLObjectType({
         addStretch: {
             type: StretchType,
             args: {
-                //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
-                title: { type: GraphQLNonNull(GraphQLString) },
-                description: { type: GraphQLNonNull(GraphQLString) },
-                goodFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
-                badFor: { type: GraphQLNonNull(GraphQLList(GraphQLString)) },
-                imageURL: { type: GraphQLNonNull(GraphQLString) },
-                instructions: { type: GraphQLNonNull(GraphQLString) }
+                //_id: { type: new GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
+                title: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(GraphQLString) },
+                goodFor: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                badFor: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                imageURL: { type: new GraphQLNonNull(GraphQLString) },
+                instructions: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve(parent, args) {
                 let stretch = new Stretch({
@@ -247,7 +265,7 @@ const mutation = new GraphQLObjectType({
         // Delete a stretch
         deleteStretch: {
             type: StretchType,
-            args: { _id: { type: GraphQLNonNull(GraphQLID) } },
+            args: { _id: { type: new GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
                 return Stretch.findByIdAndDelete(args._id);
             }
@@ -256,11 +274,11 @@ const mutation = new GraphQLObjectType({
         updateStretch: {
             type: StretchType,
             args: {
-                _id: { type: GraphQLNonNull(GraphQLID) },
+                _id: { type: new GraphQLNonNull(GraphQLID) },
                 title: { type: GraphQLString },
                 description: { type: GraphQLString },
-                goodFor: { type: GraphQLList(GraphQLString) },
-                badFor: { type: GraphQLList(GraphQLString) },
+                goodFor: { type: new GraphQLList(GraphQLString) },
+                badFor: { type: new GraphQLList(GraphQLString) },
                 imageURL: { type: GraphQLString },     // TODO: handle images
                 instructions: { type: GraphQLString }
             },
@@ -281,11 +299,28 @@ const mutation = new GraphQLObjectType({
                     { new: true }
                 );
             }
+        },
+        uploadImageFile: {
+            type: new GraphQLNonNull(ImageFileType),
+            args: {
+                file: { type: new GraphQLNonNull(GraphQLUpload) },
+                filename: { type: GraphQLString }   // optionally specify a filename
+            },
+            resolve(parent, args) {
+                // set upload's filename if specified
+                if (args.filename) {
+                    args.file.filename = args.filename;
+                }
+                // store file
+                storeUpload(args.file);
+            }
         }
     }
 });
 
-module.exports = new GraphQLSchema({
+
+// Export the schema
+export default new GraphQLSchema({
     query: RootQuery,
     mutation
 });

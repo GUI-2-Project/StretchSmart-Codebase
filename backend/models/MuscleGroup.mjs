@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Stretch = require("../models/Stretch");
+import mongoose from 'mongoose';
+import Stretch from './Stretch.mjs';
 
 // MuscleGroup Schema for mongoose connection to MongoDB database
 const MuscleGroupSchema = new mongoose.Schema({
@@ -20,7 +20,7 @@ const MuscleGroupSchema = new mongoose.Schema({
     ]
 });
 
-module.exports = mongoose.model('MuscleGroup', MuscleGroupSchema);
+export default mongoose.model('MuscleGroup', MuscleGroupSchema);
 
 
 /**
