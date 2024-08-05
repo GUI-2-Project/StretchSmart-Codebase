@@ -18,7 +18,10 @@ const app = express();
 connectDB();
 
 // Configure Cross-Origin Resource Sharing (CORS)
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // Adjust based on your frontend's address
+    credentials: true,
+}));
 
 // Configure static content serving 
 // e.g. http://localhost:5000/images/hamstrings2.png
@@ -27,7 +30,7 @@ app.use(express.static(__dirname + '/static_content'));
 // Configure graphiql endpoint
 app.use('/graphql', graphqlHTTP({
     schema,
-    graphiql: process.env.NODE_ENV === 'development'
+    graphiql: process.env.NODE_ENV !== 'production' 
 }));
 
 app.listen(port, console.log(`Server running on port ${port}`));

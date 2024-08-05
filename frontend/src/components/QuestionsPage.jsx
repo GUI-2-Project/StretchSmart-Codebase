@@ -1,58 +1,45 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useMutation, useQuery, gql } from '@apollo/client';
+import { useNavigate, useLocation } from 'react-router-dom'; 
 import bodyImage from '../assets/fullBodyFrontBack.png';
 import leftArrow from '../assets/leftArrow.png';
 import rightArrow from '../assets/rightArrow.png';
-import {useLocation} from 'react-router-dom';
+import { ADD_QUESTION } from '../mutations/questionMutations';
+import { GET_QUESTIONS } from '../queries/questionQueries';
 
 function QuestionsPage() {
-
-    // accept 'muscleName' arg from previous page
     const location = useLocation();
-    const muscleName = location.state.muscleName;   
+    const muscleName = location.state.muscleName;
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selections, setSelections] = useState({});
-    const navigate = useNavigate(); // Initialize useNavigate
+    const [addQuestion] = useMutation(ADD_QUESTION);
+    const navigate = useNavigate();
 
-    const questions = [
+    // Fetch existing questions using GET_QUESTIONS query
+    const { data, loading, error } = useQuery(GET_QUESTIONS);
+
+    // Define questions either from data or hardcoded as fallback
+    const questions = data?.questions || [
         {
             id: 'q1',
             title: `HOW ARE YOU FEELING TODAY?`,
-            options: [
-                'Tired',
-                'Energetic',
-                'Moderate Energy'
-            ]
+            options: ['Tired', 'Energetic', 'Moderate Energy']
         },
         {
             id: 'q2',
-            title: `WHAT ARE YOU FEELING IN YOUR ` + muscleName.toUpperCase() + `?`,
-            options: [
-                'Soreness',
-                'Pain',
-                'Stiffness / Lack of Mobility',
-                'No Discomfort'
-            ]
+            title: `WHAT ARE YOU FEELING IN YOUR ${muscleName.toUpperCase()}?`,
+            options: ['Soreness', 'Pain', 'Stiffness / Lack of Mobility', 'No Discomfort']
         },
         {
             id: 'q3',
             title: `WHAT IS YOUR GOAL FOR TODAY'S SESSION?`,
-            options: [
-                'Pain Relief',
-                'Muscle Recovery',
-                'Improved Mobility',
-                'I Just Wanna Stretch!',
-                'Strength'
-            ]
+            options: ['Pain Relief', 'Muscle Recovery', 'Improved Mobility', 'I Just Wanna Stretch!', 'Strength']
         },
         {
             id: 'q4',
             title: `DO YOU HAVE ACCESS TO RESISTANCE BANDS?`,
-            options: [
-                'Yes',
-                'No'
-            ]
+            options: ['Yes', 'No']
         }
     ];
 
@@ -103,15 +90,30 @@ function QuestionsPage() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (allQuestionsAnswered() && isAnyCheckboxSelected()) {
-            // Nav to muscle overview page and pass selected muscle name
-            navigate('/muscle-overview', {state: {muscleName: muscleName}});
+            const answers = Object.entries(selections).map(([questionId, option]) => ({
+                questionId,
+                answer: typeof option === 'object' ? Object.keys(option).filter(key => option[key]) : option
+            }));
+    
+            try {
+                const { data } = await addQuestion({ variables: { answers } }); // Use the correct mutation
+                if (data.addQuestion.success) {
+                    navigate('/muscle-overview', { state: { muscleName: muscleName } });
+                } else {
+                    alert(data.addQuestion.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred while submitting your answers.');
+            }
         } else {
             alert('Please answer all questions and select at least one checkbox before submitting.');
         }
     };
+    
 
     const styles = {
         frontPage: {
@@ -126,14 +128,14 @@ function QuestionsPage() {
         leftSide: {
             display: 'flex',
             flexDirection: 'column',
-            height: '100vh',
+            height: '100%',
             width: 'calc(100% - 600px)',
             backgroundColor: '#ECECEC',
             margin: '40px 80px',
             borderRadius: '20px',
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
             paddingTop: "70px",
-            position: 'relative', // Ensure the position is relative for child absolute positioning
+            position: 'relative',
         },
         imageContainer: {
             flexBasis: '600px',
@@ -180,12 +182,11 @@ function QuestionsPage() {
         },
         navButtonLeft: {
             cursor: 'pointer',
-            margin: '0 10px', // Adjust the spacing between buttons
-           
+            margin: '0 10px',
         },
         navButtonRight: {
             cursor: 'pointer',
-            margin: '0 10px', // Adjust the spacing between buttons
+            margin: '0 10px',
         },
         submitButton: {
             padding: '10px 20px',
@@ -229,7 +230,7 @@ function QuestionsPage() {
                         }
                     </div>
                     {currentQuestionIndex === questions.length - 1 &&
-                        <button onClick={handleSubmit} style={styles.submitButton}>
+                        <button onClick={handleSubmit} style={styles.submitButton} disabled={!allQuestionsAnswered() || !isAnyCheckboxSelected()}>
                             Submit
                         </button>
                     }

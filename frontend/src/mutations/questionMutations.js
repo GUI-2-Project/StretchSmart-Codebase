@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 
+// Mutation to add a question
 const ADD_QUESTION = gql`
   mutation addQuestion(
     $question: String!
@@ -16,6 +17,7 @@ const ADD_QUESTION = gql`
   }
 `;
 
+// Mutation to delete a question
 const DELETE_QUESTION = gql`
   mutation deleteQuestion($_id: ID!) {
     deleteQuestion(_id: $_id) {
@@ -24,6 +26,7 @@ const DELETE_QUESTION = gql`
   }
 `;
 
+// Mutation to update a question
 const UPDATE_QUESTION = gql`
   mutation updateQuestion(
     $_id: ID!
@@ -41,5 +44,6 @@ const UPDATE_QUESTION = gql`
     }
   }
 `;
+
 
 export { ADD_QUESTION, DELETE_QUESTION, UPDATE_QUESTION };
