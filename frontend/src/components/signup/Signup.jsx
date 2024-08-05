@@ -14,16 +14,35 @@ const Signup = ({ isOpen, onClose }) => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const uid = userCredential.user.uid;
+
+            // Call backend to store user info
+            await storeUserInfo(uid, firstName, lastName, email);
+
             setSuccess('Sign Up Was Successful!');
             setError(null);
-            // close modal after success
             setTimeout(onClose, 2000);
-            // Redirect to login or home page
-
         } catch (error) {
             setError(error.message);
             setSuccess(null);
+        }
+    };
+
+    const storeUserInfo = async (uid, firstName, lastName, email) => {
+        try {
+            const response = await fetch('/api/storeUserInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ uid, firstName, lastName, email })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to store user information');
+            }
+        } catch (error) {
+            setError(error.message);
         }
     };
 
