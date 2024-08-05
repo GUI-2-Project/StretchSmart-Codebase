@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Stretch Schema for mongoose connection to MongoDB database
 const StretchSchema = new mongoose.Schema({
@@ -32,7 +32,7 @@ const StretchSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Stretch', StretchSchema);
+export default mongoose.model('Stretch', StretchSchema);
 
 
 /**

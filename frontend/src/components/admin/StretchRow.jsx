@@ -3,14 +3,22 @@ import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { useMutation } from '@apollo/client';
 import { DELETE_STRETCH } from '../../mutations/stretchMutations';
-import { GET_STRETCHES } from '../../queries/stretchQueries';
-import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
 
-export default function StretchRow({ stretch }) {
+const StretchRow = ({ stretch }) => {
   
-
+  // guard for empty or invalid "stretch" prop
+  // (if statement guards less expensive than try/catch)
+  if (typeof stretch != 'object') {
+    return (
+      <tr>
+        <td>No Stretches Found</td>
+      </tr>
+    );
+  };
+  
   return (
     <tr>
+      <td>{ stretch._id }</td>
       <td>{ stretch.title }</td>
       <td>{ stretch.description }</td>
       <td>{ stretch.goodFor }</td>
@@ -18,8 +26,10 @@ export default function StretchRow({ stretch }) {
       <td>{ stretch.imageURL }</td>
       <td>{ stretch.instructions }</td>
       <td>
-        
+        <button>DELETE</button>
       </td>
     </tr>
   );
 }
+
+export default StretchRow;

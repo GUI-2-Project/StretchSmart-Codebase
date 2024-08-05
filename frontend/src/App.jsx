@@ -12,6 +12,11 @@ import StretchOverview from './components/stretch_overview/StretchOverview';
 import StretchRoutine from './components/stretch_overview/StretchRoutine';
 
 
+import Stretches from './components/admin/Stretches';
+import Questions from './components/admin/Questions';
+import MuscleGroups from './components/admin/MuscleGroups';
+
+
 const apolloDefaultOptions = {
   watchQuery: {
     fetchPolicy: 'no-cache',
@@ -43,11 +48,6 @@ const App = () => {
       setShowMainContent(true);
   };
 
-  // const handleMuscleSelect = (muscle) =>{
-  //   setSelectedMuscle(muscle);
-  //   return isAuthenticated ? element : <Navigate to="/questionnaire" />;
-  // };  
-
   const PrivateRoute = ({ element }) => {
       return isAuthenticated ? element : <Navigate to="/" />;
   };
@@ -61,7 +61,14 @@ const App = () => {
                   onLogout={handleLogout}
                   user="USER"
               />
-              <Routes>
+
+
+              <Stretches />
+              <Questions />
+              <MuscleGroups />
+
+
+{/*              <Routes>
                   <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
@@ -69,6 +76,7 @@ const App = () => {
                   <Route path="/muscle-overview" element={<PrivateRoute element={<StretchOverview />} />} />
               </Routes>
               {showMainContent && <Footer />}
+*/}
           </ApolloProvider>
       </Router>
   );

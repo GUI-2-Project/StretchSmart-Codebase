@@ -1,4 +1,4 @@
 # Ignore all Dockerfiles
 *Dockerfile
 *.idea/
-./secrets/*
+backend/.env
