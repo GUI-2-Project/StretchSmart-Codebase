@@ -300,7 +300,7 @@ const mutation = new GraphQLObjectType({
                 );
             }
         },
-        uploadImageFile: {
+        uploadFile: {
             type: new GraphQLNonNull(ImageFileType),
             args: {
                 file: { type: new GraphQLNonNull(GraphQLUpload) },

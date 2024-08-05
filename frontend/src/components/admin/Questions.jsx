@@ -1,12 +1,11 @@
 // TODO: reformat to for consistncy
 
-import React from 'react';
-
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import QuestionRow from './QuestionRow';
 import { GET_QUESTIONS } from '../../queries/questionQueries';
+import QuestionRow from './QuestionRow';
 
-export default function Questions() {
+export default function Questions({ handleAddQuestion }) {
   const { loading, error, data } = useQuery(GET_QUESTIONS);
 
   // guard for failed query
@@ -27,13 +26,13 @@ export default function Questions() {
           </thead>
           <tbody>
             {data.questions.map((question) => (
-                <QuestionRow key={question._id} question={question} />
+                <QuestionRow key={question._id} question={question}/>
             ))}
           </tbody>
         </table>
       )}
       {/* Add new content button */}
-      <button className='btn btn-primary'>Add New Question</button>
+      <button className='btn btn-primary' onClick={handleAddQuestion}>Add New Question</button>
     </div>
   );
 }
