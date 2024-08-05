@@ -15,23 +15,24 @@ import StretchRoutine from './components/stretch_overview/StretchRoutine';
 import Stretches from './components/admin/Stretches';
 import Questions from './components/admin/Questions';
 import MuscleGroups from './components/admin/MuscleGroups';
+import DBContent from './components/admin/DBContent';
 
 
-const apolloDefaultOptions = {
-  watchQuery: {
-    fetchPolicy: 'no-cache',
-    errorPolicy: 'ignore',
-  },
-  query: {
-    fetchPolicy: 'no-cache',
-    errorPolicy: 'all',
-  },
-}
+//const apolloDefaultOptions = {
+//  watchQuery: {
+//    fetchPolicy: 'no-cache',
+//    errorPolicy: 'ignore',
+//  },
+//  query: {
+//    fetchPolicy: 'no-cache',
+//    errorPolicy: 'all',
+//  },
+//}
 
 const client = new ApolloClient({
   uri: 'http://localhost:5000/graphql',   // TODO: replace hardcoded value with env variable
   cache: new InMemoryCache(),
-  defaultOptions: apolloDefaultOptions
+  //defaultOptions: apolloDefaultOptions
 });
 
 const App = () => {
@@ -63,9 +64,7 @@ const App = () => {
               />
 
 
-              <Stretches />
-              <Questions />
-              <MuscleGroups />
+              <DBContent/>
 
 
 {/*              <Routes>

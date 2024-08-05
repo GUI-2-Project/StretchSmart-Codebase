@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-const ADD_QUESTION = gql`
-  mutation uploadImageFile(
+const UPLOAD_FILE = gql`
+  mutation uploadFile(
     $file: Upload!
     $filename: String!
   ) {
@@ -14,4 +14,4 @@ const ADD_QUESTION = gql`
   }
 `;
 
-export { ADD_QUESTION, DELETE_QUESTION, UPDATE_QUESTION };
+export { UPLOAD_FILE };
