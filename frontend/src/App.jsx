@@ -17,22 +17,18 @@ import Questions from './components/admin/Questions';
 import MuscleGroups from './components/admin/MuscleGroups';
 import DBContent from './components/admin/DBContent';
 
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 
-//const apolloDefaultOptions = {
-//  watchQuery: {
-//    fetchPolicy: 'no-cache',
-//    errorPolicy: 'ignore',
-//  },
-//  query: {
-//    fetchPolicy: 'no-cache',
-//    errorPolicy: 'all',
-//  },
-//}
 
 const client = new ApolloClient({
-  uri: 'http://localhost:5000/graphql',   // TODO: replace hardcoded value with env variable
+  //uri: 'http://localhost:5000/graphql',   // TODO: replace hardcoded value with env variable
+  link: createUploadLink({
+    uri: 'http://localhost:5000/graphql',
+    headers: {
+      "apollo-require-preflight": "true"
+    }
+  }),
   cache: new InMemoryCache(),
-  //defaultOptions: apolloDefaultOptions
 });
 
 const App = () => {
@@ -62,7 +58,6 @@ const App = () => {
                   onLogout={handleLogout}
                   user="USER"
               />
-
 
               <DBContent/>
 

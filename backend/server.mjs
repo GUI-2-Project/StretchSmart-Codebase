@@ -1,52 +1,56 @@
-import express, { application } from 'express';
-import path, {dirname} from 'path';
-
-import colors from 'colors';       // for coloring console.log output
-import cors from 'cors';
-
-// This package allows command substitution in .env files,
-// dotenv does not
+// npm install @apollo/server express graphql cors body-parser graphql-upload
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import express from "express";
+import http from "http";
+import cors from "cors";
+import bodyParser from "body-parser";
+//import { typeDefs, resolvers } from "./schema.mjs";
 import dotenvx from '@dotenvx/dotenvx';
+import colors from 'colors';
+import expressPlayground from 'graphql-playground-middleware-express';
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import connectDB from './config/db.mjs';
+import typeDefs from "./schema/typeDefs.mjs";
+import resolvers from "./schema/resolvers.mjs";
+import { dirname } from 'path';
+
 dotenvx.config();
 
-// for handling file uploads
-import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
-import finished from 'stream/promises'; 
-//import graphqlHTTP from 'express-graphql';
-import { createHandler } from 'graphql-http/lib/use/express'
-
-import schema from './schema/schema.mjs';
-import connectDB from './config/db.js';
+await connectDB();
 
 const port = process.env.PORT || 5000;
 
 const app = express();
+const httpServer = http.createServer(app);
 
-// Connect to database
-connectDB();
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+//  uploads: false,
+});
+await server.start();
 
-// Configure Cross-Origin Resource Sharing (CORS)
-app.use(cors());
-
-// Configure static content serving 
-// e.g. http://localhost:5000/images/hamstrings2.png
 app.use(express.static(dirname('./') + '/static_content'));
 
+app.use(
+  "/",
+  cors(),
+  bodyParser.json(),
+  graphqlUploadExpress(),
+  expressMiddleware(server, {
+    context: async ({ req }) => ({ token: req.headers.token }),
+  })
+);
 
-console.log(dirname('./') + '/static_content');
-console.log(new URL("../static_content/", import.meta.url).toString());
 
+//const graphQLPlayground = expressPlayground.default;
+//if (process.env.NODE_ENV === 'development') {
+//    app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }));
+//}
 
-// Configure listening for file uploads
-// TODO: investigate security implications of this
-app.use(graphqlUploadExpress());
-
-// Configure graphiql endpoint
-//app.use('/graphql', graphqlHTTP.graphqlHTTP({
-//    schema,
-//    graphiql: process.env.NODE_ENV === 'development'
-//}));
-
-app.all('/graphql', createHandler({ schema, graphiql: process.env.NODE_ENV === 'development' }));
-
-app.listen(port, console.log(`Server running on port ${port}`));
+// Modified server startup
+await new Promise((resolve) => httpServer.listen({ port }, resolve));
+console.log(`Server running on port ${port}`)

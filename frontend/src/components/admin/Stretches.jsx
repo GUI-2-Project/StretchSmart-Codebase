@@ -16,13 +16,40 @@ export default function Stretches({ stretches }) {
     if (stretches.loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
     if (stretches.error) return <p>Something Went Wrong</p>;
   };
+
+  const styles = {
+    questions: {
+      display: 'flex',
+    },
+    table: {
+      width: '90%',
+      margin: 'auto',
+      marginTop: '20px',
+      padding: '10px',
+      border: '1px solid #ccc',
+      textAlign: 'center',
+      verticalAlign: 'middle',
+    },
+    tableTitle: {
+      textAlign: 'center',
+      margin: '20px',
+      fontSize: 'x-large',
+      fontWeight: 'bold',
+    },
+    buttonRow: {
+      height: '65px',
+    }
+  }
   
   return (
     <div>
       {/* Table */}
       {!stretches.loading && !stretches.error && (
-        <table className='table table-hover mt-3'>
+        <table className='table table-hover mt-3' style={styles.table}>
           <thead>
+            <tr>
+              <th colSpan='8' style={styles.tableTitle}>Stretches</th>
+            </tr>
             <tr>
               <th>Unique ID</th>
               <th>Title</th>
@@ -38,11 +65,15 @@ export default function Stretches({ stretches }) {
             {stretches.data.stretches.map((stretch) => (
                 <StretchRow key={stretch._id} stretch={stretch} />
             ))}
+            <tr>
+              <td style={styles.buttonRow}>
+                {/* Add new content button */}
+                <button className='btn btn-primary'>Add New Stretch</button>
+              </td>
+            </tr>
           </tbody>
         </table>
       )}
-    {/* Add new content button */}
-    <button className='btn btn-primary'>Add New Stretch</button>
     </div>
   );
 }

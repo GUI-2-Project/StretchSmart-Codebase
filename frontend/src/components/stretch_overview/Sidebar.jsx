@@ -40,7 +40,7 @@ const Sidebar = ({ muscleGroup }) => {
         <div>
             <h1 style={styles.title}>Muscle Group:</h1>          {/* Title */}
             <img src={muscleGroup.imageURL} style={styles.img} />   {/* Muscle image // TODO: refactor to accept object from backend */}
-            <h1 style={styles.title}>{muscleGroup.name}</h1>    {/* Muscle name */}
+            <h1 style={styles.title}>{muscleGroup.name.toUpperCase()}</h1>    {/* Muscle name */}
         </div>
         <SidebarQuestionnaire />{/* Embedded questionnaire */}
     </aside>
