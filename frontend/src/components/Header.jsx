@@ -63,6 +63,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
     icon: {
       padding: "10px",
       width: "60px",
+      cursor: "pointer"
     },
     logoContainer: {
       height: '91px',
@@ -107,7 +108,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
             </>
           )}
               <img src={profileIcon} style={styles.icon}/>
-              <a><img src={hamburgerIcon} style={styles.icon} onClick={handleHamburgerClick}/></a>
+              <img src={hamburgerIcon} style={styles.icon} onClick={handleHamburgerClick}/>
         </div>
       </header>
   )

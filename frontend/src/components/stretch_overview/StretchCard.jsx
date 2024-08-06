@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LikeDislikeButton from './LikeDislikeButton';
 import { useQuery } from '@apollo/client';
 import { GET_STRETCH } from '../../queries/stretchQueries';
+import StretchDetails from './StretchDetails';
 
 /**
  * Unfinished stretch card element to represent 
@@ -15,6 +16,11 @@ import { GET_STRETCH } from '../../queries/stretchQueries';
  */
 
 const StretchCard = ({ stretch }) => {  // stretch object
+
+    const [isStretchDetailsOpen, setIsStretchDetailsOpen] = useState(false);
+    const openStretchDetailsModal = () => setIsStretchDetailsOpen(true);
+    const closeStretchDetailsModal = () => setIsStretchDetailsOpen(false);
+
     const styles = {
         card: {
             flexShrink: "0",
@@ -24,7 +30,6 @@ const StretchCard = ({ stretch }) => {  // stretch object
             gridTemplateColumns: "auto 1fr",
             width: "469px",
             height: "293px",
-            //margin: "25px",
             margin: "auto",
         },
         button: {
@@ -35,6 +40,7 @@ const StretchCard = ({ stretch }) => {  // stretch object
             top: "0",
             right: "0",
             zIndex: "1",
+            cursor: "pointer"
         },
         displayArea: {
             gridRow: "2",
@@ -46,7 +52,8 @@ const StretchCard = ({ stretch }) => {  // stretch object
             gridTemplateRows: "auto 1fr",
             gridTemplateColumns: "auto auto",
             borderRadius: "25px",
-            backgroundColor: "#75816B"
+            backgroundColor: "#75816B",
+            cursor: "pointer",
         },
         title: {
             gridRow: "1",
@@ -64,22 +71,24 @@ const StretchCard = ({ stretch }) => {  // stretch object
             gridColumn: "2",
             width: "234px",
             height: "293px",
-            //fitContent: "cover",
             borderRadius: "25px"
         }
     }
 
   return (
-    <div className="stretch-card" style={styles.card}>
-        <div style={styles.button}>
-            <LikeDislikeButton />
+    <>
+        <div className="stretch-card" style={styles.card}>
+            <div style={styles.button}>
+                <LikeDislikeButton />
+            </div>
+            <div style={styles.displayArea} onClick={openStretchDetailsModal}>
+                <h4 style={styles.title}>{stretch.title}</h4>      
+                <p style={styles.text}>{stretch.description}</p>   
+                <img style={styles.image} src={stretch.imageURL} />
+            </div>
         </div>
-        <div style={styles.displayArea}>
-            <h4 style={styles.title}>{stretch.title}</h4>       {/* Title */}
-            <p style={styles.text}>{stretch.description}</p>    {/* Text */}
-            <img style={styles.image} src={stretch.imageURL} /> {/* Image */}
-        </div>
-    </div>
+        <StretchDetails isOpen={isStretchDetailsOpen} onClose={closeStretchDetailsModal} stretch={stretch}/>
+    </>
   )
 }
 

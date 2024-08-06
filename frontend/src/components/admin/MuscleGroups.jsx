@@ -77,6 +77,7 @@ export default function MuscleGroups({ muscleGroups }) {
           </tbody>
         </table>
       )}
+      <AddMuscleGroup isOpen={isAddMuscleGroupOpen} onClose={closeAddMuscleGroupModal} />
     </div>
   );
 }

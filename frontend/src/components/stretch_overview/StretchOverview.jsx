@@ -21,6 +21,11 @@ function StretchOverview() {
                                               variables: {name: muscleName},
                                      });
     
+    const [routine, setRoutine] = useState(false);
+    const startRoutine = () => setRoutine(true);
+    const endRoutine = () => setRoutine(false);
+
+
     const [sidebarOpen, setSideBarOpen] = useState(false);
     const handleViewSidebar = () => {
         setSideBarOpen(!sidebarOpen);
@@ -53,18 +58,36 @@ function StretchOverview() {
             width: '100%',
             padding: '50px',
         },
+        button: {
+            position: 'fixed',
+            width: '175px',
+            height: '75px',
+            padding: '20px',
+            margin: '10px',
+            bottom: '100px',
+            right: '150px',
+        }
     };
 
     return (
-        <div style={styles.stretchOverview}>
-            <Sidebar muscleGroup={muscleGroup}/>
-            <main style={styles.mainContent}>
-                {muscleGroup.stretches.map((stretch) => (     // TODO: limit to 4
-                    <StretchCard key={stretch._id} stretch={stretch} />
-                ))}
-                {/* Start routine button*/}
-            </main>
-        </div>
+        <>
+        { routine ? (
+            <>
+                <button className='btn btn-primary' style={styles.button} onClick={endRoutine}>End Routine</button>
+                <StretchRoutine muscleGroup={muscleGroup}/>
+            </>
+        ) : (
+            <div style={styles.stretchOverview}>
+                <Sidebar muscleGroup={muscleGroup}/>
+                <main style={styles.mainContent}>
+                    {muscleGroup.stretches.map((stretch) => (     // TODO: limit to 4
+                        <StretchCard key={stretch._id} stretch={stretch} />
+                    ))}
+                <button className='btn btn-primary' style={styles.button} onClick={startRoutine}>Start Routine</button>
+                </main>
+            </div>
+        )}
+        </>
     )
 }
 
