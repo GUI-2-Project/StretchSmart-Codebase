@@ -7,10 +7,6 @@ const MuscleGroupSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a name']
     },
-    //imageURL: {
-    //    type: String,
-    //    required: [true, 'Please add an image']
-    //},
     stretchIds: [    // Note: this is an array of stretch _ids
         {
             type:  mongoose.Types.ObjectId,

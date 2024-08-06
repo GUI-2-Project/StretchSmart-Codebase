@@ -4,7 +4,7 @@ import Stretch from '../models/Stretch.mjs';
 import storeUpload from '../storeUpload.mjs';
 import { Query } from 'mongoose';
 import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs";
-import { createWriteStream, unlink } from 'fs';
+import fs, { createWriteStream, unlink } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -36,7 +36,11 @@ const resolvers = {
             return await MuscleGroup.findOne({ name });
         },
         stretches: async () => {
-            return await Stretch.find();
+            const strs = await Stretch.find();
+            strs.forEach(str => {
+                str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
+            });
+            return strs;
         },
         stretchById: async (_, { _id }) => {
             return await Stretch.findById(_id);
@@ -59,9 +63,7 @@ const resolvers = {
         },
         async addMuscleGroup(_, { name, imageFile, stretchIds }) {
             const mg = await MuscleGroup.create({ name, stretchIds });
-            console.log(mg);
             mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
-            console.log(mg.imageURL);
             const { createReadStream } = await imageFile;
             await new Promise((resolve, reject) => {
                 const stream = createReadStream()
@@ -72,7 +74,7 @@ const resolvers = {
                     .on('close', resolve)
                     .on('finish', resolve)
                     .on('error', (error) => {
-                        unlink(`../static_content/${name}`, () => {
+                        unlink(`../static_content/${mg._id}`, () => {
                             reject(error);
                         });
                     })
@@ -81,6 +83,15 @@ const resolvers = {
             return mg;
         },
         async deleteMuscleGroup(_, { _id }) {
+            const imagePath = path.join(__dirname, '../static_content/', _id.toString());
+            fs.unlink(imagePath, (err => { 
+                if (err) {
+                    console.log(err); 
+                    return;
+                } else {
+                    console.log('Image deleted successfully');
+                }
+            })); 
             return await MuscleGroup.findByIdAndDelete(_id).exec();
         },
         async updateMuscleGroup(_, { _id, name, imageURL, stretchIds }) {
@@ -90,9 +101,31 @@ const resolvers = {
                 { new: true }
             ).exec();
         },
-        async addStretch(_, { title, description, imageURL, instructions }) {
-            return await Stretch.create({ title, description, imageURL, instructions });
+
+
+        async addStretch(_, { title, description, goodFor, badFor, imageFile, instructions }) {
+            const str = await Stretch.create({ title, description, goodFor, badFor, instructions });   
+            str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
+            const { createReadStream } = await imageFile;
+            await new Promise((resolve, reject) => {
+                const stream = createReadStream()
+                    .pipe(createWriteStream(
+                        path.join(__dirname, '../static_content/', str._id.toString()),
+                        { autoClose: true }
+                    )
+                    .on('close', resolve)
+                    .on('finish', resolve)
+                    .on('error', (error) => {
+                        unlink(`../static_content/${str._id}`, () => {
+                            reject(error);
+                        });
+                    })
+                );
+            });
+            return str;
         },
+
+
         async deleteStretch(_, { _id }) {
             return await Stretch.findByIdAndDelete(_id).exec();
         },

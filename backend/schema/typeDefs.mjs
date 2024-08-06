@@ -49,11 +49,12 @@ const typeDefs = `#graphql
 
         addMuscleGroup(name: String!, imageFile: Upload!, stretchIds: [ID]!): MuscleGroup
         deleteMuscleGroup(_id: ID!): MuscleGroup
-        
         updateMuscleGroup(_id: ID!, name: String, imageURL: String, stretchIds: [ID]): MuscleGroup
-        addStretch(title: String!, description: String!, imageURL: String!, instructions: String!): Stretch
+
+        addStretch(title: String!, description: String!, goodFor: [String], badFor: [String] imageFile: Upload!, instructions: String!): Stretch
         deleteStretch(_id: ID!): Stretch
         updateStretch(_id: ID!, title: String, description: String, imageURL: String, instructions: String): Stretch
+
         singleUpload(file: Upload!, name: String): String
     }
 `

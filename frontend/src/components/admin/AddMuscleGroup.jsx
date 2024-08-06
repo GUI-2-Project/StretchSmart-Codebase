@@ -187,10 +187,7 @@ const AddMuscleGroup = ({ isOpen, onClose }) => {
                         <label htmlFor="image">Upload an Image:</label>
                         <input
                             type="file"
-                            //value={name}
                             onChange={(e) => setImageFile(e.target.files[0])}
-                            //placeholder="Enter A Name for the Muscle Group"
-                            //style={styles.input}
                         />
                     </div>
 

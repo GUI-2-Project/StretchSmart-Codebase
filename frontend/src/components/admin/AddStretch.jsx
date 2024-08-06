@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { ADD_MUSCLE_GROUP } from '../../mutations/muscleGroupMutations'
-import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries'
+import { ADD_STRETCH } from '../../mutations/stretchMutations';
+import { GET_STRETCHES } from '../../queries/stretchQueries';
 import Modal from '../Modal'
 
 
@@ -33,32 +33,41 @@ const AddStretch = ({ isOpen, onClose }) => {
         setGoodFor(tmpGoodFor);
     }
 
+    const setBadForElement = (value, index) => {
+        const tmpBadFor = [...badFor];
+        tmpBadFor[index] =  value;
+        setBadFor(tmpBadFor);
+    }
+
     const [addStretch] = useMutation(ADD_STRETCH, {
-        variables: { name: title, imageFile: imageFile, stretchIds: stretchIDs },
+        variables: { title: title,
+            description: description,
+            goodFor: goodFor,
+            badFor: badFor,
+            imageFile: imageFile,
+            instructions: instructions },
         refetchQueries: [{ query: GET_STRETCHES }]
     });
-
-    const [uploadFileMutation] = useMutation(SINGLE_UPLOAD_MUTATION,
-        {variables: { file: imageFile, name: imageFilename } }
-    );
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (title === '' || stretchIDs.includes('') || imageFile === null) {
+        if (title === ''
+            || description === ''
+            || imageFile === null
+            || instructions === '') {
             return alert('Please fill out all fields');
         }
 
         try {
-            // add muscle group to db
-            //const muscleGroup = addMuscleGroup(name, imageURL, stretchIDs);
-            const muscleGroup = addStretch(title, imageFile, stretchIDs);
-
-            // upload image file
-            //setImageFilename(muscleGroup._id);
-            //uploadFileMutation({ variables: { imageFile, imageFilename  }});
-
-            // set success message
+            addStretch(
+                title,
+                description,
+                goodFor,
+                badFor,
+                imageFile,
+                instructions
+            );
             setSuccess('Muscle Group Added Successfully!');
             setError(null);
             setTimeout(onClose, 2000);
@@ -155,45 +164,75 @@ const AddStretch = ({ isOpen, onClose }) => {
         <Modal>
             <div style={styles.formContainer}>
                 <button style={styles.closeButton} onClick={onClose}>&times;</button>
-                <h2 style={styles.title}>Add a Muscle Group</h2>
+                <h2 style={styles.title}>Add a Stretch</h2>
                 <form style={styles.form} onSubmit={handleSubmit}>
                     
                     <input
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Enter A Name for the Muscle Group"
+                        placeholder="Enter A Title for the Stretch"
                         style={styles.input}
                     />
+
+                    <input
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Enter A Description for the Stretch"
+                        style={styles.input}
+                    />
+
+                    {/* map over goodFor and create input filds */}
+                    {
+                        goodFor.map((val, index) => (
+                            <input
+                                key={index}
+                                type="text"
+                                value={val}
+                                onChange={(e) => setGoodForElement(e.target.value, index)}
+                                placeholder="Good For"
+                                style={styles.input}
+                            />
+                        ))
+                    }
+
+                    {/* map over badFor and create input filds */}
+                    {
+                        badFor.map((val, index) => (
+                            <input
+                                key={index}
+                                type="text"
+                                value={val}
+                                onChange={(e) => setBadForElement(e.target.value, index)}
+                                placeholder="Bad For"
+                                style={styles.input}
+                            />
+                        ))
+                    }
 
                     {/* HANDLE IMAGE UPLOAD */}
                     <div style={styles.input}>
                         <label htmlFor="image">Upload an Image:</label>
                         <input
                             type="file"
-                            //value={name}
                             onChange={(e) => setImageFile(e.target.files[0])}
-                            //placeholder="Enter A Name for the Muscle Group"
-                            //style={styles.input}
                         />
                     </div>
 
-                    {/* map over stretchIDs and create input fields */}
-                    {
-                        stretchIDs.map((stretch, index) => (
-                            <input
-                            key={index}
-                            type="text"
-                            value={stretch}
-                            onChange={(e) => setGoodFor(e.target.value, index)}
-                            placeholder="Enter A Stretch ID"
-                            style={styles.input}
-                            />
-                        ))
-                    }
+                    <input
+                        type="text"
+                        value={instructions}
+                        onChange={(e) => setInstructions(e.target.value)}
+                        placeholder="Enter Instructions for the Stretch"
+                        style={styles.input}
+                    />
 
-                    {/* add another option field */}
-                    <button type="button" style={styles.button} onClick={addNewGoodForField}>Add Another Stretch ID</button>
+                    {/* add another good for field */}
+                    <button type="button" style={styles.button} onClick={addNewGoodForField}>Add Another Good-For Field</button>
+
+                    {/* add another bad for field */}
+                    <button type="button" style={styles.button} onClick={addNewBadForField}>Add Another Bad-For Field</button>
 
                     {error ? (<p style={styles.error}>{error}</p>) :
                     (success && <p style={styles.success}>{success}</p>)}
