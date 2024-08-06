@@ -1,16 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useMutation } from '@apollo/client';
 import { DELETE_MUSCLE_GROUP } from '../../mutations/muscleGroupMutations';
 import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { assertValidExecutionArguments } from 'graphql/execution/execute';
+import { stringifyForDisplay } from '@apollo/client/utilities';
+import AddMuscleGroup from './AddMuscleGroup';
 
 const MuscleGroupRow = ({ muscleGroup }) => {
-  
+ 
   const [deleteMuscleGroup] = useMutation(DELETE_MUSCLE_GROUP, {
     variables: { _id: muscleGroup._id },
     refetchQueries: [{ query: GET_MUSCLE_GROUPS }]
   });
+
+  const handleModify = (e) => {
+    //TODO: implement
+  }
 
   const handleDelete = (e) => {
     confirmAlert({
@@ -43,6 +50,13 @@ const MuscleGroupRow = ({ muscleGroup }) => {
     image: {
       height: '100px',
       width: '100px',
+    },
+    button: {
+      display: 'block',
+      padding: '10px',
+      margin:  'auto',
+      marginTop: '5px',
+      marginBottom: '5px',
     }
   }
 
@@ -59,7 +73,8 @@ const MuscleGroupRow = ({ muscleGroup }) => {
             <td>No Stretches Found, or stretch IDs invalid</td>
         }
         <td>
-        <button className="btn btn-danger" onClick={handleDelete}>DELETE</button>
+          <button className="btn btn-warning" style={styles.button} onClick={handleModify}>Modify</button>
+          <button className="btn btn-danger" style={styles.button} onClick={handleDelete}>DELETE</button>
         </td>
     </tr>
   )

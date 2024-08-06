@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useMutation } from '@apollo/client';
 import { DELETE_QUESTION } from '../../mutations/questionMutations';
 import { GET_QUESTIONS } from '../../queries/questionQueries';
@@ -6,6 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const QustionRow = ({ question }) => {
+
   const [deleteQuestion] = useMutation(DELETE_QUESTION, {
     variables: { _id: question._id },
     refetchQueries: [{ query: GET_QUESTIONS }]
@@ -28,6 +29,9 @@ const QustionRow = ({ question }) => {
     });
   }
 
+  const handleModify = (e) => {
+  }
+
   // guard for empty or invalid "question" prop
   // (if statement guards less expensive than try/catch)
   if (typeof question != 'object') {
@@ -38,14 +42,29 @@ const QustionRow = ({ question }) => {
     );
   };
 
+  const styles = {
+    image: {
+      height: '100px',
+      width: '100px',
+    },
+    button: {
+      display: 'block',
+      padding: '10px',
+      margin:  'auto',
+      marginTop: '5px',
+      marginBottom: '5px',
+    }
+  }
+
   return (
     <tr>
       <td>{question._id}</td>
       <td>{question.question}</td>
       <td>{question.options.join(', ')}</td>
       <td>
-        <button className="btn btn-danger" onClick={handleDelete}>DELETE</button>
-      </td>
+          <button className="btn btn-warning" style={styles.button} onClick={handleModify}>Modify</button>
+          <button className="btn btn-danger" style={styles.button} onClick={handleDelete}>DELETE</button>
+        </td>
     </tr>
   )
 }

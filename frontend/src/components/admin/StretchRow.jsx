@@ -1,13 +1,19 @@
 import React from 'react';
 import { useMutation } from '@apollo/client';
-import { DELETE_STRETCH } from '../../mutations/stretchMutations';
+import { DELETE_STRETCH, UPDATE_STRETCH } from '../../mutations/stretchMutations';
 import { GET_STRETCHES } from '../../queries/stretchQueries';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import AddStretch from './AddStretch';
 
 const StretchRow = ({ stretch }) => {
 
   const [deleteStretch] = useMutation(DELETE_STRETCH, {
+    variables: { _id: stretch._id },
+    refetchQueries: [{ query: GET_STRETCHES }]
+  });
+
+  const [modifyStretch] = useMutation(UPDATE_STRETCH, {
     variables: { _id: stretch._id },
     refetchQueries: [{ query: GET_STRETCHES }]
   });
@@ -29,6 +35,9 @@ const StretchRow = ({ stretch }) => {
     });
   }
 
+  const handleModify = (e) => {
+  }
+
   // guard for empty or invalid "stretch" prop
   // (if statement guards less expensive than try/catch)
   if (typeof stretch != 'object') {
@@ -43,7 +52,15 @@ const StretchRow = ({ stretch }) => {
     image: {
       height: '100px',
       width: '100px',
+    },
+    button: {
+      display: 'block',
+      padding: '10px',
+      margin:  'auto',
+      marginTop: '5px',
+      marginBottom: '5px',
     }
+
   }
   
   return (
@@ -59,7 +76,8 @@ const StretchRow = ({ stretch }) => {
       <td>{stretch.imageURL}</td>
       <td>{stretch.instructions}</td>
       <td>
-        <button className="btn btn-danger" onClick={handleDelete}>DELETE</button>
+        <button className="btn btn-warning" style={styles.button} onClick={handleModify}>Modify</button>  
+        <button className="btn btn-danger" style={styles.button} onClick={handleDelete}>DELETE</button> 
       </td>
     </tr>
   );

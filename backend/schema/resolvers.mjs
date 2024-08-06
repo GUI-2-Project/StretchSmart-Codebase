@@ -33,7 +33,15 @@ const resolvers = {
             return await MuscleGroup.findById(_id);
         },
         muscleGroupByName: async (_, { name }) => {
-            return await MuscleGroup.findOne({ name });
+            const mg = await MuscleGroup.findOne({name: {'$regex': name, '$options': 'i'}});
+            mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
+            mg.stretches = mg.stretchIds.map( async (_id) => {
+                const str = await Stretch.findById(_id);
+                str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
+                console.log(str);
+                return str;
+            });
+            return mg;
         },
         stretches: async () => {
             const strs = await Stretch.find();
@@ -43,7 +51,9 @@ const resolvers = {
             return strs;
         },
         stretchById: async (_, { _id }) => {
-            return await Stretch.findById(_id);
+            const str = await Stretch.findById(_id);
+            str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
+            return str;
         }
     },
 
@@ -62,8 +72,14 @@ const resolvers = {
             ).exec();
         },
         async addMuscleGroup(_, { name, imageFile, stretchIds }) {
+            // Create a new MuscleGroup object
             const mg = await MuscleGroup.create({ name, stretchIds });
+
+            // Set the imageURL property to the path of the image file
             mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
+
+            // Store the image file in the static_content directory
+            MuscleGroup.findByIdAndUpdate(mg._id, { imageURL: mg.imageURL });
             const { createReadStream } = await imageFile;
             await new Promise((resolve, reject) => {
                 const stream = createReadStream()
@@ -106,6 +122,7 @@ const resolvers = {
         async addStretch(_, { title, description, goodFor, badFor, imageFile, instructions }) {
             const str = await Stretch.create({ title, description, goodFor, badFor, instructions });   
             str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
+            Stretch.findByIdAndUpdate(str._id, { imageURL: str.imageURL });
             const { createReadStream } = await imageFile;
             await new Promise((resolve, reject) => {
                 const stream = createReadStream()

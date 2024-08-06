@@ -20,6 +20,10 @@ const StretchSchema = new mongoose.Schema({
         type: String,
         }
     ],
+    imageURL: {
+        type: String,
+        required: [true, 'Please add an image']
+    },
     instructions: {
         type: String,
         required: [true, 'Please add a instructions']

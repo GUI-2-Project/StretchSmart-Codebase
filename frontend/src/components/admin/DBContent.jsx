@@ -18,17 +18,17 @@ import { GET_STRETCHES } from '../../queries/stretchQueries';
 
 const DBContent = () => {
 
-    const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
-    const openAddQuestionModal = () => setIsAddQuestionOpen(true);
-    const closeAddQuestionModal = () => setIsAddQuestionOpen(false);
+    //const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
+    //const openAddQuestionModal = () => setIsAddQuestionOpen(true);
+    //const closeAddQuestionModal = () => setIsAddQuestionOpen(false);
 
-    const [isAddMuscleGroupOpen, setIsAddMuscleGroupOpen] = useState(false);
-    const openAddMuscleGroupModal = () => setIsAddMuscleGroupOpen(true);
-    const closeAddMuscleGroupModal = () => setIsAddMuscleGroupOpen(false);
+    //const [isAddMuscleGroupOpen, setIsAddMuscleGroupOpen] = useState(false);
+    //const openAddMuscleGroupModal = () => setIsAddMuscleGroupOpen(true);
+    //const closeAddMuscleGroupModal = () => setIsAddMuscleGroupOpen(false);
 
-    const [isAddStretchOpen, setIsAddStretchOpen] = useState(false);
-    const openAddStretchModal = () => setIsAddStretchOpen(true);
-    const closeAddStretchModal = () => setIsAddStretchOpen(false);
+    //const [isAddStretchOpen, setIsAddStretchOpen] = useState(false);
+    //const openAddStretchModal = () => setIsAddStretchOpen(true);
+    //const closeAddStretchModal = () => setIsAddStretchOpen(false);
 
     // Query backend for list of questions for questionnaire
     const questions = useQuery(GET_QUESTIONS);
@@ -45,15 +45,15 @@ const DBContent = () => {
         <>
             { !loadingAny && !errorAny && 
                 <>
-                    <Questions handleAddQuestion={openAddQuestionModal}/>
-                    <MuscleGroups handleAddMuscleGroup={openAddMuscleGroupModal}/>
-                    <Stretches handleAddStretch={openAddStretchModal}/>
+                    <Questions />
+                    <MuscleGroups />
+                    <Stretches />
                 </>
             }
 
-            <AddQuestion isOpen={isAddQuestionOpen} onClose={closeAddQuestionModal} />
-            <AddMuscleGroup isOpen={isAddMuscleGroupOpen} onClose={closeAddMuscleGroupModal}/>
-            <AddStretch isOpen={isAddStretchOpen} onClose={closeAddStretchModal}/>
+{/*            <AddQuestion isOpen={isAddQuestionOpen} onClose={closeAddQuestionModal} />   
+            <AddMuscleGroup isOpen={isAddMuscleGroupOpen} onClose={closeAddMuscleGroupModal}/> 
+            <AddStretch isOpen={isAddStretchOpen} onClose={closeAddStretchModal}/>*/}
 
         </>
     )

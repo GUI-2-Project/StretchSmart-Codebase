@@ -7,28 +7,7 @@ import Modal from '../Modal'
 import { GraphQLID } from 'graphql';
 
 
-
-
-
-
-
-
-import { gql } from '@apollo/client';
-const SINGLE_UPLOAD_MUTATION = gql`
-  mutation singleUpload(
-  $file: Upload!
-  $name: String
-  ) {
-  singleUpload(
-  file: $file
-  name: $name
-  )
-  }
-`;
-
-
-
-const AddMuscleGroup = ({ isOpen, onClose }) => {
+const AddMuscleGroup = ({ isOpen, onClose, muscleGroupID }) => {
     const [name, setName] = useState('');
     const [imageURL, setImageURL] = useState('');
     const [imageFile, setImageFile] = useState(null);
@@ -54,10 +33,6 @@ const AddMuscleGroup = ({ isOpen, onClose }) => {
         refetchQueries: [{ query: GET_MUSCLE_GROUPS }]
     });
 
-    const [uploadFileMutation] = useMutation(SINGLE_UPLOAD_MUTATION,
-        {variables: { file: imageFile, name: imageFilename } }
-    );
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -66,15 +41,7 @@ const AddMuscleGroup = ({ isOpen, onClose }) => {
         }
 
         try {
-            // add muscle group to db
-            //const muscleGroup = addMuscleGroup(name, imageURL, stretchIDs);
-            const muscleGroup = addMuscleGroup(name, imageFile, stretchIDs);
-
-            // upload image file
-            //setImageFilename(muscleGroup._id);
-            //uploadFileMutation({ variables: { imageFile, imageFilename  }});
-
-            // set success message
+            addMuscleGroup(name, imageFile, stretchIDs);
             setSuccess('Muscle Group Added Successfully!');
             setError(null);
             setTimeout(onClose, 2000);

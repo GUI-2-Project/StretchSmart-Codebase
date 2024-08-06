@@ -15,24 +15,17 @@ import { GET_STRETCH } from '../../queries/stretchQueries';
  */
 
 const StretchCard = ({ stretch }) => {  // stretch object
-    //const { loading, error, data } = useQuery(GET_STRETCH, {
-    //    variables: {_id: stretchID}
-    //});
-//
-    //if (loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
-    //if (error) return <p>Something went wrong</p>;
-//
-    //const stretch = data.stretch;
-
     const styles = {
         card: {
+            flexShrink: "0",
             position: "relative",
             display: "grid",
             gridTemplateRows: "1fr auto",
             gridTemplateColumns: "auto 1fr",
             width: "469px",
             height: "293px",
-            margin: "25px",
+            //margin: "25px",
+            margin: "auto",
         },
         button: {
             display: "flex",
@@ -71,7 +64,7 @@ const StretchCard = ({ stretch }) => {  // stretch object
             gridColumn: "2",
             width: "234px",
             height: "293px",
-            fitContent: "cover",
+            //fitContent: "cover",
             borderRadius: "25px"
         }
     }

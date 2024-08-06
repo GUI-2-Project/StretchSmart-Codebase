@@ -1,12 +1,17 @@
 // TODO: reformat to for consistncy
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_STRETCHES } from '../../queries/stretchQueries';
 import StretchRow from './StretchRow';
+import AddStretchMod from './AddStretch';
 
 // Acceptes stretches object as prop, 
 // or queries backend for stretches if no prop is provided
 export default function Stretches({ stretches, handleAddStretch }) {
+
+  const [isAddStretchOpen, setIsAddStretchOpen] = useState(false);
+  const openAddStretchModal = () => setIsAddStretchOpen(true);
+  const closeAddStretchModal = () => setIsAddStretchOpen(false);
   
   // if no valid "stretches" prop, query backend from here
   if (typeof stretches != 'object') {
@@ -59,7 +64,7 @@ export default function Stretches({ stretches, handleAddStretch }) {
               <th>Images</th>
               <th>ImageURL</th>
               <th>Instructions</th>
-              <th>Delete</th>
+              <th>Modify</th>
             </tr>
           </thead>
           <tbody>
@@ -69,12 +74,13 @@ export default function Stretches({ stretches, handleAddStretch }) {
             <tr>
               <td style={styles.buttonRow}>
                 {/* Add new content button */}
-                <button className='btn btn-primary' onClick={handleAddStretch}>Add New Stretch</button>
+                <button className='btn btn-primary' onClick={openAddStretchModal}>Add New Stretch</button>
               </td>
             </tr>
           </tbody>
         </table>
       )}
+      <AddStretchMod isOpen={isAddStretchOpen} onClose={closeAddStretchModal} handleAddStretch={handleAddStretch} />
     </div>
   );
 }

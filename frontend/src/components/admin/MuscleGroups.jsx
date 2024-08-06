@@ -1,12 +1,21 @@
 // TODO: reformat to for consistncy
 
-import React from 'react';
-
-import { useQuery } from '@apollo/client';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import MuscleGroupRow from './MuscleGroupRow';
 import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
+import AddMuscleGroup from './AddMuscleGroup';
 
-export default function MuscleGroups({ muscleGroups, handleAddMuscleGroup }) {
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { DELETE_MUSCLE_GROUP } from '../../mutations/muscleGroupMutations';
+
+export default function MuscleGroups({ muscleGroups }) {
+
+  const [isAddMuscleGroupOpen, setIsAddMuscleGroupOpen] = useState(false);
+  const openAddMuscleGroupModal = () => setIsAddMuscleGroupOpen(true);
+  const closeAddMuscleGroupModal = () => setIsAddMuscleGroupOpen(false);
+
   const { loading, error, data } = useQuery(GET_MUSCLE_GROUPS);
 
   // guard for failed query
@@ -52,17 +61,17 @@ export default function MuscleGroups({ muscleGroups, handleAddMuscleGroup }) {
               <th>Image</th>
               <th>Image URL</th>
               <th>Stretches</th>
-              <th>Delete</th>
+              <th>Modify</th>
             </tr>
           </thead>
           <tbody>
             {data.muscleGroups.map((muscleGroup) => (
-                <MuscleGroupRow key={muscleGroup._id} muscleGroup={muscleGroup} />
+                <MuscleGroupRow key={muscleGroup._id} muscleGroup={muscleGroup}/>
             ))}
             <tr>
               <td style={styles.buttonRow}>
                 {/* Add new content button */}
-                <button className='btn btn-primary' onClick={handleAddMuscleGroup}>Add New Muscle Group</button>
+                <button className='btn btn-primary' onClick={openAddMuscleGroupModal}>Add New Muscle Group</button>
               </td>
             </tr>
           </tbody>

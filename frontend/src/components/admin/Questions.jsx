@@ -4,8 +4,14 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_QUESTIONS } from '../../queries/questionQueries';
 import QuestionRow from './QuestionRow';
+import AddQuestion from './AddQuestion';
 
-export default function Questions({ questions, handleAddQuestion }) {
+export default function Questions({ questions }) {
+
+  const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
+  const openAddQuestionModal = () => setIsAddQuestionOpen(true);
+  const closeAddQuestionModal = () => setIsAddQuestionOpen(false);
+
   const loading = false;
   const error = false;
   if (!questions) {
@@ -55,7 +61,7 @@ export default function Questions({ questions, handleAddQuestion }) {
               <th>Unique ID</th>
               <th>Question</th>
               <th>Options</th>
-              <th>Delete</th>
+              <th>Modify</th>
             </tr>
           </thead>
           <tbody>
@@ -65,12 +71,13 @@ export default function Questions({ questions, handleAddQuestion }) {
             <tr>
               <td style={styles.buttonRow}>
                 {/* Add new content button */}
-                <button className='btn btn-primary' onClick={handleAddQuestion}>Add New Question</button>
+                <button className='btn btn-primary' onClick={openAddQuestionModal}>Add New Question</button>
               </td>
             </tr>
           </tbody>
         </table>
       )}
+      <AddQuestion isOpen={isAddQuestionOpen} onClose={closeAddQuestionModal} />
     </div>
   );
 }

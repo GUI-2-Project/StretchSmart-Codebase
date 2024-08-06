@@ -44,14 +44,14 @@ function StretchOverview() {
             margin: '0'
         },
         mainContent: {
-            display: 'flex',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
+            columnGap: '50px',
+            rowGap: '50px',
             backgroundColor: '#f0f0f0',
-            overflow: 'hidden',
-            justifyContent: 'space-evenly',
-            alignItems: 'space-evenly',
             height: '100%',
             width: '100%',
-            padding: '20px',
+            padding: '50px',
         },
     };
 
