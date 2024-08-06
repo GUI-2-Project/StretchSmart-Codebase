@@ -13,19 +13,13 @@ const StretchSchema = new mongoose.Schema({
     goodFor: [  // NOTE: This is an array of strings
         { 
         type: String,
-        required: [true, 'Please add at least one thing this stretch is good for']
         }
     ],
     badFor: [   // NOTE: This is an array of strings
         {
         type: String,
-        required: [true, 'Please add at least one thing this stretch is bad for']
         }
     ],
-    imageURL: {
-        type: String,
-        required: [true, 'Please add an image']
-    },
     instructions: {
         type: String,
         required: [true, 'Please add a instructions']

@@ -41,8 +41,8 @@ const MuscleGroupRow = ({ muscleGroup }) => {
 
   const styles = {
     image: {
-      height: '50px',
-      width: '50px',
+      height: '100px',
+      width: '100px',
     }
   }
 

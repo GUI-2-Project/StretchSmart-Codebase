@@ -58,19 +58,15 @@ const App = () => {
                   onLogout={handleLogout}
                   user="USER"
               />
-
-              <DBContent/>
-
-
-{/*              <Routes>
+              <Routes>
                   <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
                   <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
                   <Route path="/muscle-overview" element={<PrivateRoute element={<StretchOverview />} />} />
+                  <Route path="/ADMIN" element={<PrivateRoute element={<DBContent />} />} />
               </Routes>
               {showMainContent && <Footer />}
-*/}
           </ApolloProvider>
       </Router>
   );

@@ -9,12 +9,12 @@ import Stretches from './Stretches';
 // Import form components for adding new content to DB
 import AddQuestion from './AddQuestion';
 import AddMuscleGroup from './AddMuscleGroup';
+import AddStretch from './AddStretch';
 
 // Import queries
 import { GET_QUESTIONS } from '../../queries/questionQueries';
 import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
 import { GET_STRETCHES } from '../../queries/stretchQueries';
-import { ADD_STRETCH } from '../../mutations/stretchMutations';
 
 const DBContent = () => {
 
@@ -53,6 +53,7 @@ const DBContent = () => {
 
             <AddQuestion isOpen={isAddQuestionOpen} onClose={closeAddQuestionModal} />
             <AddMuscleGroup isOpen={isAddMuscleGroupOpen} onClose={closeAddMuscleGroupModal}/>
+            <AddStretch isOpen={isAddStretchOpen} onClose={closeAddStretchModal}/>
 
         </>
     )

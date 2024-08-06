@@ -6,8 +6,8 @@ import StretchRow from './StretchRow';
 
 // Acceptes stretches object as prop, 
 // or queries backend for stretches if no prop is provided
-export default function Stretches({ stretches }) {
-
+export default function Stretches({ stretches, handleAddStretch }) {
+  
   // if no valid "stretches" prop, query backend from here
   if (typeof stretches != 'object') {
     stretches = useQuery(GET_STRETCHES);
@@ -48,7 +48,7 @@ export default function Stretches({ stretches }) {
         <table className='table table-hover mt-3' style={styles.table}>
           <thead>
             <tr>
-              <th colSpan='8' style={styles.tableTitle}>Stretches</th>
+              <th colSpan='9' style={styles.tableTitle}>Stretches</th>
             </tr>
             <tr>
               <th>Unique ID</th>
@@ -56,6 +56,7 @@ export default function Stretches({ stretches }) {
               <th>Description</th>
               <th>Good For</th>
               <th>Bad For</th>
+              <th>Images</th>
               <th>ImageURL</th>
               <th>Instructions</th>
               <th>Delete</th>
@@ -68,7 +69,7 @@ export default function Stretches({ stretches }) {
             <tr>
               <td style={styles.buttonRow}>
                 {/* Add new content button */}
-                <button className='btn btn-primary'>Add New Stretch</button>
+                <button className='btn btn-primary' onClick={handleAddStretch}>Add New Stretch</button>
               </td>
             </tr>
           </tbody>

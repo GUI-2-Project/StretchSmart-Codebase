@@ -5,6 +5,7 @@ import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 
 /**
@@ -27,6 +28,13 @@ import { Link } from "react-router-dom";
  */
 
 function Header({ isAuthenticated, onLogin, onLogout, user }) {
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleHamburgerClick = (e) => {
+    if (isAuthenticated) navigate('/ADMIN');
+  }
+
   const styles = {
     header: {
       display: "flex",
@@ -99,7 +107,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
             </>
           )}
               <img src={profileIcon} style={styles.icon}/>
-              <img src={hamburgerIcon} style={styles.icon}/>
+              <a><img src={hamburgerIcon} style={styles.icon} onClick={handleHamburgerClick}/></a>
         </div>
       </header>
   )

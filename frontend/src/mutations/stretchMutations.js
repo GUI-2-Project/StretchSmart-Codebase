@@ -4,9 +4,9 @@ const ADD_STRETCH = gql`
   mutation addStretch(
     $title: String!
     $description: String!
-    $goodFor: [String]!
-    $badFor: [String]!
-    $imageURL: String!
+    $goodFor: [String]
+    $badFor: [String]
+    $imageFile: Upload!
     $instructions: String!
   ) {
     addStretch(
@@ -14,7 +14,7 @@ const ADD_STRETCH = gql`
       description: $description
       goodFor: $goodFor
       badFor: $badFor
-      imageURL: $imageURL
+      imageFile: $imageFile
       instructions: $instructions
     ) {
       _id
