@@ -3,13 +3,13 @@ import { gql } from '@apollo/client';
 const UPLOAD_FILE = gql`
   mutation uploadFile(
     $file: Upload!
-    $filename: String!
+    $filename: String
   ) {
-    addQuestion(
+    uploadFile(
       file: $file
       filename: $filename
     ) {
-      _id
+      true
     }
   }
 `;

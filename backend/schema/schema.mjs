@@ -75,6 +75,29 @@ const ImageFileType = new GraphQLObjectType({
     })
 });
 
+//TODO:
+const FileType = new GraphQLObjectType({
+    name: "File",
+    fields: () => ({
+        id: {
+          description: "Unique ID.",
+          type: new GraphQLNonNull(GraphQLString),
+          resolve: (storedFileName) => storedFileName,
+        },
+        name: {
+          description: "File name.",
+          type: new GraphQLNonNull(GraphQLString),
+          resolve: (storedFileName) => storedFileName,
+        },
+        url: {
+          description: "File URL.",
+          type: new GraphQLNonNull(GraphQLString),
+          resolve: (storedFileName) =>
+            new URL(storedFileName, UPLOAD_DIRECTORY_URL),
+        },
+    }),
+});
+
 
 /* QUERIES */
 // Define queries
@@ -111,7 +134,7 @@ const RootQuery = new GraphQLObjectType({
             type: MuscleGroupType,
             args: { name: { type: GraphQLString } },
             resolve(parent, args) {
-                return MuscleGroup.findOne({ name: args.name }).exec();
+                return MuscleGroup.findOne({ name: args.name });
             }
         },
         stretches: {
@@ -312,7 +335,21 @@ const mutation = new GraphQLObjectType({
                     args.file.filename = args.filename;
                 }
                 // store file
-                storeUpload(args.file);
+                //storeUpload(args.file);
+            }
+        },
+        singleUpload: {
+            description: "Stores a single file.",
+            type: new GraphQLNonNull(FileType),
+            args: {
+              file: {
+                description: "File to store.",
+                type: new GraphQLNonNull(GraphQLUpload),
+              },
+            },
+            resolve: async (parent, { file }) => {
+                await file;
+                //storeUpload(file);
             }
         }
     }

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Configure MongoDB connection
 const connectDB = async () => {
@@ -7,4 +7,4 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline.bold);
 };
 
-module.exports = connectDB;
+export default connectDB;

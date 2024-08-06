@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
-import Stretch from './Stretch.mjs';
 
 // MuscleGroup Schema for mongoose connection to MongoDB database
 const MuscleGroupSchema = new mongoose.Schema({
+    // _id, the unique identifer, is implicitly created by MongoDB
     name: {
         type: String,
         required: [true, 'Please add a name']
     },
-    imageURL: {
-        type: String,
-        required: [true, 'Please add an image']
-    },
+    //imageURL: {
+    //    type: String,
+    //    required: [true, 'Please add an image']
+    //},
     stretchIds: [    // Note: this is an array of stretch _ids
         {
             type:  mongoose.Types.ObjectId,
@@ -21,10 +21,3 @@ const MuscleGroupSchema = new mongoose.Schema({
 });
 
 export default mongoose.model('MuscleGroup', MuscleGroupSchema);
-
-
-/**
- * Neck
- *  <image>
- * 
- */

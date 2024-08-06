@@ -1,40 +1,81 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { ADD_QUESTION } from '../../mutations/questionMutations'
-import { GET_QUESTIONS } from '../../queries/questionQueries';
+import { ADD_MUSCLE_GROUP } from '../../mutations/muscleGroupMutations'
+import { UPLOAD_FILE } from '../../mutations/uploadFile'
+import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries'
 import Modal from '../Modal'
+import { GraphQLID } from 'graphql';
 
-const AddQuestion = ({ isOpen, onClose }) => {
-    const [question, setQuestion] = useState('');
-    const [options, setOptions] = useState(['', '']);
+
+
+
+
+
+
+
+import { gql } from '@apollo/client';
+const SINGLE_UPLOAD_MUTATION = gql`
+  mutation singleUpload(
+  $file: Upload!
+  $name: String
+  ) {
+  singleUpload(
+  file: $file
+  name: $name
+  )
+  }
+`;
+
+
+
+const AddMuscleGroup = ({ isOpen, onClose }) => {
+    const [name, setName] = useState('');
+    const [imageURL, setImageURL] = useState('');
+    const [imageFile, setImageFile] = useState(null);
+    const [imageFilename, setImageFilename] = useState('asdf');
+    const [stretchIDs, setStretchIDs] = useState(['']); // pre-populate with empty string
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const addNewOptionField = () => {
-        const tmpOptions = [...options];
-        tmpOptions.push('');
-        setOptions(tmpOptions);
+    const addNewStretchField = () => {
+        const tmpStretchIDs = [...stretchIDs];
+        tmpStretchIDs.push('');
+        setStretchIDs(tmpStretchIDs);
     }
 
-    const setOption = (value, index) => {
-        const tmpOptions = [...options];
-        tmpOptions[index] = value;
-        setOptions(tmpOptions);
+    const setStretchID = (value, index) => {
+        const tmpStretchIDs = [...stretchIDs];
+        tmpStretchIDs[index] =  value;
+        setStretchIDs(tmpStretchIDs);
     }
 
-    const [addQustion] = useMutation(ADD_QUESTION, {
-        variables: { question, options },
-        refetchQueries: [{ query: GET_QUESTIONS }]
+    const [addMuscleGroup] = useMutation(ADD_MUSCLE_GROUP, {
+        variables: { name: name, imageFile: imageFile, stretchIds: stretchIDs },
+        refetchQueries: [{ query: GET_MUSCLE_GROUPS }]
     });
+
+    const [uploadFileMutation] = useMutation(SINGLE_UPLOAD_MUTATION,
+        {variables: { file: imageFile, name: imageFilename } }
+    );
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (question === '' || options.includes('')) {
+
+        if (name === '' || stretchIDs.includes('') || imageFile === null) {
             return alert('Please fill out all fields');
         }
+
         try {
-            addQustion(question, options);
-            setSuccess('Question Added Successfully!');
+            // add muscle group to db
+            //const muscleGroup = addMuscleGroup(name, imageURL, stretchIDs);
+            const muscleGroup = addMuscleGroup(name, imageFile, stretchIDs);
+
+            // upload image file
+            //setImageFilename(muscleGroup._id);
+            //uploadFileMutation({ variables: { imageFile, imageFilename  }});
+
+            // set success message
+            setSuccess('Muscle Group Added Successfully!');
             setError(null);
             setTimeout(onClose, 2000);
             onClose();
@@ -130,41 +171,53 @@ const AddQuestion = ({ isOpen, onClose }) => {
         <Modal>
             <div style={styles.formContainer}>
                 <button style={styles.closeButton} onClick={onClose}>&times;</button>
-                <h2 style={styles.title}>Add a Question</h2>
+                <h2 style={styles.title}>Add a Muscle Group</h2>
                 <form style={styles.form} onSubmit={handleSubmit}>
                     
                     <input
                         type="text"
-                        value={question}
-                        onChange={(e) => setQuestion(e.target.value)}
-                        placeholder="Enter Question"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Enter A Name for the Muscle Group"
                         style={styles.input}
                     />
 
-                    {/* map over options and create input fields */}
+                    {/* HANDLE IMAGE UPLOAD */}
+                    <div style={styles.input}>
+                        <label htmlFor="image">Upload an Image:</label>
+                        <input
+                            type="file"
+                            //value={name}
+                            onChange={(e) => setImageFile(e.target.files[0])}
+                            //placeholder="Enter A Name for the Muscle Group"
+                            //style={styles.input}
+                        />
+                    </div>
+
+                    {/* map over stretchIDs and create input fields */}
                     {
-                        options.map((option, index) => (
+                        stretchIDs.map((stretch, index) => (
                             <input
-                                key={index}
-                                type="text"
-                                value={option}
-                                onChange={(e) => setOption(e.target.value, index)}
-                                placeholder="Enter Option"
-                                style={styles.input}
+                            key={index}
+                            type="text"
+                            value={stretch}
+                            onChange={(e) => setStretchID(e.target.value, index)}
+                            placeholder="Enter A Stretch ID"
+                            style={styles.input}
                             />
                         ))
                     }
 
                     {/* add another option field */}
-                    <button type="button" style={styles.button} onClick={addNewOptionField}>Add Another Option</button>
+                    <button type="button" style={styles.button} onClick={addNewStretchField}>Add Another Stretch ID</button>
 
                     {error ? (<p style={styles.error}>{error}</p>) :
                     (success && <p style={styles.success}>{success}</p>)}
-                    <button type="submit" style={styles.button}>Add Question to Database</button>
+                    <button type="submit" style={styles.button}>Add Muscle Group to Database</button>
                 </form>
             </div>
         </Modal>
     ) : null;
 }
 
-export default AddQuestion
+export default AddMuscleGroup
