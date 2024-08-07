@@ -1,20 +1,26 @@
 import { gql } from '@apollo/client';
 
 const ADD_MUSCLE_GROUP = gql`
-  mutation addMuscleGroup(
+    mutation addMuscleGroup(
     $name: String!
     $imageURL: String!
-    $stretches: [String]!
+    $stretchIds: [ID]!
   ) {
     addMuscleGroup(
       name: $name
       imageURL: $imageURL
-      stretches: $stretches
+      stretchIds: $stretchIds
     ) {
       _id
       name
       imageURL
-      stretches
+      stretches {
+        _id
+        title
+        description
+        imageURL
+        instructions
+      }
     }
   }
 `;
@@ -28,22 +34,28 @@ const DELETE_MUSCLE_GROUP = gql`
 `;
 
 const UPDATE_MUSCLE_GROUP = gql`
-  mutation updateMuscleGroup(
+    mutation updateMuscleGroup(
     $_id: ID!
     $name: String
     $imageURL: String
-    $stretches: [String]
+    $stretchIds: [ID]
   ) {
     updateMuscleGroup(
       _id: $_id
       name: $name
       imageURL: $imageURL
-      stretches: $stretches
+      stretchIds: $stretchIds
     ) {
       _id
       name
       imageURL
-      stretches
+      stretches {
+        _id
+        title
+        description
+        imageURL
+        instructions
+      }
     }
   }
 `;

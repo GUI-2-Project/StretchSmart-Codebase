@@ -37,7 +37,13 @@ const MuscleGroupType = new GraphQLObjectType({
         _id: { type: GraphQLID },
         name: { type: GraphQLString },
         imageURL: { type: GraphQLString },
-        stretches: { type: GraphQLList(GraphQLString) }   // List of _ids for stretches for this muscle group
+        stretches: { type: GraphQLList(StretchType), // List of _ids for stretches for this muscle group
+            resolve(parent, args) {
+                return Stretch.find({
+                    '_id': { $in: parent.stretchIds }
+                });
+            }
+        }
     })
 });
 
@@ -78,11 +84,18 @@ const RootQuery = new GraphQLObjectType({
                 return MuscleGroup.find();
             }
         },
-        muscleGroup: {
+        muscleGroupById: {
             type: MuscleGroupType,
             args: { _id: { type: GraphQLID } },
             resolve(parent, args) {
                 return MuscleGroup.findById(args._id);
+            }
+        },
+        muscleGroupByName: {
+            type: MuscleGroupType,
+            args: { name: { type: GraphQLString } },
+            resolve(parent, args) {
+                return MuscleGroup.findOne({ name: args.name }).exec();
             }
         },
         stretches: {
@@ -128,7 +141,7 @@ const mutation = new GraphQLObjectType({
             type: QuestionType,
             args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Question.findByIdAndRemove(args._id);
+                return Question.findByIdAndDelete(args._id);
             }
         },
         // Update a question
@@ -159,13 +172,15 @@ const mutation = new GraphQLObjectType({
             args: {
                 //_id: { type: GraphQLNonNull(GraphQLID) },     Let MongoDB handle uniquie ID generation
                 name: { type: GraphQLNonNull(GraphQLString) },
-                imageURL: { type: GraphQLNonNull(GraphQLString) }
+                imageURL: { type: GraphQLNonNull(GraphQLString) },
+                stretchIds: { type: GraphQLList(GraphQLID) }
             },
             resolve(parent, args) {
                 let muscleGroup = new MuscleGroup({
                     _id: args._id,
                     name: args.name,
-                    imageURL: args.imageURL
+                    imageURL: args.imageURL,
+                    stretchIds: args.stretchIds
                 });
 
                 return muscleGroup.save();
@@ -176,7 +191,7 @@ const mutation = new GraphQLObjectType({
             type: MuscleGroupType,
             args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return MuscleGroup.findByIdAndRemove(args._id);
+                return MuscleGroup.findByIdAndDelete(args._id);
             }
         },
         // Update a MuscleGroup
@@ -185,14 +200,16 @@ const mutation = new GraphQLObjectType({
             args: {
                 _id: { type: GraphQLNonNull(GraphQLID) },
                 name: { type: GraphQLString },
-                imageURL: { type: GraphQLString }
+                imageURL: { type: GraphQLString },
+                stretchIds: { type: GraphQLList(GraphQLID) }
             },
             resolve(parent, args) {
                 return MuscleGroup.findByIdAndUpdate(
                     args._id,
                     { $set: { 
                         name: args.name,
-                        imageURL: args.imageURL
+                        imageURL: args.imageURL,
+                        stretchIds: args.stretchIds
                     } },
                     // Create a muscle group if it doesn't exist
                     // TODO: investigate if this is necessary
@@ -232,7 +249,7 @@ const mutation = new GraphQLObjectType({
             type: StretchType,
             args: { _id: { type: GraphQLNonNull(GraphQLID) } },
             resolve(parent, args) {
-                return Stretch.findByIdAndRemove(args._id);
+                return Stretch.findByIdAndDelete(args._id);
             }
         },
         // Update a stretch
