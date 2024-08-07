@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './app.css';
 import Login from './components/login/Login';
 import Signup from "./components/signup/Signup";
+import AboutUs from './components/AboutUs';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
@@ -32,6 +33,13 @@ const App = () => {
         return isAuthenticated ? element : <Navigate to="/" />;
     };
 
+<<<<<<< Updated upstream
+=======
+  const PrivateRoute = ({ element }) => {
+      return isAuthenticated ? element : <Navigate to="/" />;
+  };
+
+>>>>>>> Stashed changes
     return (
         <Router>
             <ApolloProvider client={client}>
@@ -44,8 +52,15 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
                     <Route path="/signup" element={<Signup />} />
+<<<<<<< Updated upstream
                     <Route path="/landing" element={<PrivateRoute element={<LandingPage onMuscleSelect={handleMuscleSelect} />} />} />
                     <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
+=======
+                    <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
+                    <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
+                    <Route path="/muscle-overview" element={<PrivateRoute element={<StretchOverview />} />} />
+                    <Route path="/aboutus" element={<AboutUs />} />
+>>>>>>> Stashed changes
                 </Routes>
                 {showMainContent && <Footer />}
             </ApolloProvider>

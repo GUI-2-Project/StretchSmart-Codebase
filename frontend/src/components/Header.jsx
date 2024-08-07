@@ -4,6 +4,11 @@ import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
+<<<<<<< Updated upstream
+=======
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { Link } from "react-router-dom";
+>>>>>>> Stashed changes
 
 
 /**
@@ -37,7 +42,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
       minHeight: "75px",
       boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
     },
-    segment: { // TODO: rename
+    segment: {
       display: "flex",
       alignItems: "center"
     },
@@ -75,35 +80,80 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
   return (
       <header style={styles.header}>
         <div style={styles.segment}>
-          {/* <img src={backButton} style={styles.icon}/> */}
           <div style={styles.logoContainer}>
-          <img src={logo} style={styles.logo}/>
+            <img src={logo} style={styles.logo} alt="logo" />
           </div>
           <nav style={styles.nav}>
             <a style={styles.a}>HOME</a>
             <a style={styles.a}>ABOUT US</a>
             {isAuthenticated && (
+<<<<<<< Updated upstream
               <>
               <a style={styles.a} href="/questionnaire">QUESTIONNAIRE</a>
               <a style={styles.a} href="/history">HISTORY</a>
               </>
             )}
+=======
+                <>
+                  <Link style={styles.a} to="landing">HOME</Link>
+                  <Link style={styles.a} to="/questionnaire">QUESTIONNAIRE</Link>
+                  <Link style={styles.a} to="/history">HISTORY</Link>
+                </>
+            )}
+            <Link style={styles.a} to="/AboutUs">ABOUT US</Link>
+>>>>>>> Stashed changes
           </nav>
         </div>
         <div style={styles.segment}>
           {isAuthenticated && (
-            <>
-            <span style={styles.a}>WELCOME,  {user}</span>
-            <button className="btn btn-primary" style={styles.btn} onClick={onLogout}>Logout</button>
-            </>
+              <>
+                <span style={styles.a}>WELCOME, {user}</span>
+                <button className="btn btn-primary" style={styles.btn} onClick={onLogout}>Logout</button>
+              </>
           )}
-              <img src={profileIcon} style={styles.icon}/>
-              <img src={hamburgerIcon} style={styles.icon}/>
+          <div className="dropdown">
+            <img
+                src={profileIcon}
+                style={styles.icon}
+                alt="profile"
+                id="profileDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            />
+            <ul className="dropdown-menu" aria-labelledby="profileDropdown">
+              {isAuthenticated && (
+                  <>
+                    <li><Link className="dropdown-item" to="landing">HOME</Link></li>
+                    <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
+                    <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
+                  </>
+              )}
+              <li><Link className="dropdown-item" to="/about">ABOUT US</Link></li>
+            </ul>
+          </div>
+          <img
+              src={hamburgerIcon}
+              style={styles.icon}
+              alt="menu"
+              id="hamburgerDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+          />
+          <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="hamburgerDropdown">
+            {isAuthenticated && (
+                <>
+                  <li><Link className="dropdown-item" to="landing">HOME</Link></li>
+                  <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
+                  <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
+                </>
+            )}
+            <li><Link className="dropdown-item" to="/AboutUs">ABOUT US</Link></li>
+          </ul>
         </div>
       </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
 
 
