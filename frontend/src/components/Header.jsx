@@ -6,7 +6,6 @@ import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 /**
  * Header component to be used site-wide.
