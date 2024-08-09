@@ -24,7 +24,7 @@
     "graphql-upload": "^16.0.2",
     "jsdoc": "^4.0.3",
     "mongoose": "^8.5.1",
-    "nanoid": "^5.0.7"
+    "nanoid": "^5.0.7",
     "react-card-flip": "^1.2.3",
     "windups": "^1.2.2"
   },
