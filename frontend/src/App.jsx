@@ -48,10 +48,6 @@ const App = () => {
         return isAuthenticated ? element : <Navigate to="/" />;
     };
 
-  const PrivateRoute = ({ element }) => {
-      return isAuthenticated ? element : <Navigate to="/" />;
-  };
-
     return (
         <Router>
             <ApolloProvider client={client}>
