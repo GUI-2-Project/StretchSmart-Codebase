@@ -3,12 +3,12 @@ import { gql } from '@apollo/client';
 const ADD_MUSCLE_GROUP = gql`
     mutation addMuscleGroup(
     $name: String!
-    $imageURL: String!
+    $imageFile: Upload!
     $stretchIds: [ID]!
   ) {
     addMuscleGroup(
       name: $name
-      imageURL: $imageURL
+      imageFile: $imageFile
       stretchIds: $stretchIds
     ) {
       _id
@@ -26,7 +26,7 @@ const ADD_MUSCLE_GROUP = gql`
 `;
 
 const DELETE_MUSCLE_GROUP = gql`
-  query deleteMuscleGroup($_id: ID!) {
+  mutation deleteMuscleGroup($_id: ID!) {
     deleteMuscleGroup(_id: $_id) {
         _id
     }

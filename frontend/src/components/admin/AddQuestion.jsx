@@ -1,50 +1,48 @@
-import React, { useState } from 'react';
-import { auth } from '../../firebase/FireBase';
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import Modal from '../Modal.jsx'
+import React, { useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { ADD_QUESTION } from '../../mutations/questionMutations'
+import { GET_QUESTIONS } from '../../queries/questionQueries';
+import Modal from '../Modal'
 
-const Signup = ({ isOpen, onClose }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+const AddQuestion = ({ isOpen, onClose }) => {
+    const [question, setQuestion] = useState('');
+    const [options, setOptions] = useState(['', '']);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const handleSignup = async (e) => {
+    const addNewOptionField = () => {
+        const tmpOptions = [...options];
+        tmpOptions.push('');
+        setOptions(tmpOptions);
+    }
+
+    const setOption = (value, index) => {
+        const tmpOptions = [...options];
+        tmpOptions[index] = value;
+        setOptions(tmpOptions);
+    }
+
+    const [addQustion] = useMutation(ADD_QUESTION, {
+        variables: { question, options },
+        refetchQueries: [{ query: GET_QUESTIONS }]
+    });
+
+    const handleSubmit = (e) => {
         e.preventDefault();
+        if (question === '' || options.includes('')) {
+            return alert('Please fill out all fields');
+        }
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const uid = userCredential.user.uid;
-
-            // Call backend to store user info
-            await storeUserInfo(uid, firstName, lastName, email);
-
-            setSuccess('Sign Up Was Successful!');
+            addQustion(question, options);
+            setSuccess('Question Added Successfully!');
             setError(null);
             setTimeout(onClose, 2000);
+            onClose();
         } catch (error) {
             setError(error.message);
             setSuccess(null);
         }
-    };
-
-    const storeUserInfo = async (uid, firstName, lastName, email) => {
-        try {
-            const response = await fetch('/api/storeUserInfo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ uid, firstName, lastName, email })
-            });
-            if (!response.ok) {
-                throw new Error('Failed to store user information');
-            }
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+    }
 
     const styles = {
         container: {
@@ -132,43 +130,41 @@ const Signup = ({ isOpen, onClose }) => {
         <Modal>
             <div style={styles.formContainer}>
                 <button style={styles.closeButton} onClick={onClose}>&times;</button>
-                <h2 style={styles.title}>Sign Up</h2>
-                <form style={styles.form} onSubmit={handleSignup}>
+                <h2 style={styles.title}>Add a Question</h2>
+                <form style={styles.form} onSubmit={handleSubmit}>
+                    
                     <input
                         type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Enter First Name"
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        placeholder="Enter Question"
                         style={styles.input}
                     />
-                    <input
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Enter Last Name"
-                        style={styles.input}
-                    />
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter Email Address"
-                        style={styles.input}
-                    />
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter Password"
-                        style={styles.input}
-                    />
+
+                    {/* map over options and create input fields */}
+                    {
+                        options.map((option, index) => (
+                            <input
+                                key={index}
+                                type="text"
+                                value={option}
+                                onChange={(e) => setOption(e.target.value, index)}
+                                placeholder="Enter Option"
+                                style={styles.input}
+                            />
+                        ))
+                    }
+
+                    {/* add another option field */}
+                    <button type="button" style={styles.button} onClick={addNewOptionField}>Add Another Option</button>
+
                     {error ? (<p style={styles.error}>{error}</p>) :
                     (success && <p style={styles.success}>{success}</p>)}
-                    <button type="submit" style={styles.button}>Sign Up</button>
+                    <button type="submit" style={styles.button}>Add Question to Database</button>
                 </form>
             </div>
         </Modal>
-    ) :  null;
-};
+    ) : null;
+}
 
-export default Signup;
+export default AddQuestion
