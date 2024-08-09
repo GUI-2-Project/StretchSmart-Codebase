@@ -11,10 +11,11 @@ const MuscleGroupSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add an image']
     },
-    stretches: [    // Note: this is an array of stretch _ids
+    stretchIds: [    // Note: this is an array of stretch _ids
         {
-        type: String,
-        required: [true, 'Please add at least one stretch _id']
+            type:  mongoose.Types.ObjectId,
+            required: [true, 'Please add at least one stretch _id'],
+            ref: 'Stretch'
         }
     ]
 });

@@ -4,12 +4,9 @@ import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
 import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
-<<<<<<< Updated upstream
-=======
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
->>>>>>> Stashed changes
-
+import { Link } from "react-router-dom";
 
 /**
  * Header component to be used site-wide.
@@ -84,16 +81,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
             <img src={logo} style={styles.logo} alt="logo" />
           </div>
           <nav style={styles.nav}>
-            <a style={styles.a}>HOME</a>
-            <a style={styles.a}>ABOUT US</a>
             {isAuthenticated && (
-<<<<<<< Updated upstream
-              <>
-              <a style={styles.a} href="/questionnaire">QUESTIONNAIRE</a>
-              <a style={styles.a} href="/history">HISTORY</a>
-              </>
-            )}
-=======
                 <>
                   <Link style={styles.a} to="landing">HOME</Link>
                   <Link style={styles.a} to="/questionnaire">QUESTIONNAIRE</Link>
@@ -101,7 +89,6 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
                 </>
             )}
             <Link style={styles.a} to="/AboutUs">ABOUT US</Link>
->>>>>>> Stashed changes
           </nav>
         </div>
         <div style={styles.segment}>

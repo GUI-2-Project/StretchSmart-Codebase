@@ -15,12 +15,17 @@ const Footer = () => {
         footer: {
             minHeight: "50px",   //TODO: revisit
             background: "#d9d9d9"
+        },
+        content: {
+          textAlign:'center'
         }
     }
 
   return (
     <footer style={styles.footer}>
-        {/* TODO: Add copyright info */}
+        <div style={styles.content}>
+                &copy; {new Date().getFullYear()} <a href='https://github.com/orgs/GUI-2-Project/people' target='_blank'>Stretch Smart</a>. All rights reserved.
+        </div>
     </footer>
   )
 }

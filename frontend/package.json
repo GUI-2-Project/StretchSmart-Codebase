@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.11.1",
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
     "firebase": "^10.12.4",
     "graphql": "^16.9.0",
     "jsdoc": "^4.0.3",
