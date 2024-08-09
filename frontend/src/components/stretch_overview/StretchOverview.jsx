@@ -71,22 +71,24 @@ function StretchOverview() {
 
     return (
         <>
-        { routine ? (
-            <>
-                <button className='btn btn-primary' style={styles.button} onClick={endRoutine}>End Routine</button>
-                <StretchRoutine muscleGroup={muscleGroup}/>
-            </>
-        ) : (
             <div style={styles.stretchOverview}>
                 <Sidebar muscleGroup={muscleGroup}/>
                 <main style={styles.mainContent}>
-                    {muscleGroup.stretches.map((stretch) => (     // TODO: limit to 4
-                        <StretchCard key={stretch._id} stretch={stretch} />
-                    ))}
-                <button className='btn btn-primary' style={styles.button} onClick={startRoutine}>Start Routine</button>
+                { routine ? (
+                    <div>
+                        <StretchRoutine muscleGroup={muscleGroup}/>
+                        <button className='btn btn-primary' style={styles.button} onClick={endRoutine}>End Routine</button>
+                    </div>
+                ) : (
+                    <>
+                        {muscleGroup.stretches.map((stretch) => (
+                            <StretchCard key={stretch._id} stretch={stretch} />
+                        ))}
+                        <button className='btn btn-primary' style={styles.button} onClick={startRoutine}>Start Routine</button>
+                    </>
+                )}
                 </main>
             </div>
-        )}
         </>
     )
 }
