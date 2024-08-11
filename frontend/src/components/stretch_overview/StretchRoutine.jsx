@@ -24,6 +24,14 @@ const StretchRoutine = ({ muscleGroup }) => {
     setKey(prevKey => (prevKey + 1) % 2);
   }
 
+  const startTimer = () => {
+    setCountdownPlaying(true);
+  };
+
+  const stopTimer = () => {
+    setCountdownPlaying(false);
+  };
+
   const incrementStretch = () => {
     if (index < tail) {
       // These need to be ordered this way
@@ -33,6 +41,7 @@ const StretchRoutine = ({ muscleGroup }) => {
       // unpredictably
       setCurrentStretch(stretches[index+1]);
       setIndex(index+1);
+      stopTimer();
       resetTimer();
     }
   };
@@ -41,6 +50,7 @@ const StretchRoutine = ({ muscleGroup }) => {
     if (index > 0) {
       setCurrentStretch(stretches[index-1]);
       setIndex(index-1);
+      stopTimer();
       resetTimer();
     }
   };
@@ -146,18 +156,22 @@ const StretchRoutine = ({ muscleGroup }) => {
             <img src={currentStretch.imageURL} style={styles.image}/>
             <StretchStepParser stretchInstructions={currentStretch.instructions}/>
         </div>
-        <CountdownCircleTimer
-          isPlaying
-          key={key}
-          duration={currentStretch.durationSeconds}
-          colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-          colorsTime={[7, 5, 2, 0]}
-          size={100}
-          onComplete={ async () => {await new Promise(resolve => setTimeout(resolve, 1000)) ; incrementStretch();} }
-        >
-          {({ remainingTime }) => remainingTime}
-        </CountdownCircleTimer>
         <div>
+        { (countdownPlaying) ? (
+          <CountdownCircleTimer
+            isPlaying={countdownPlaying}
+            key={key}
+            duration={currentStretch.durationSeconds}
+            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colorsTime={[15, 7, 3, 0]}
+            size={100}
+            onComplete={ async () => {await new Promise(resolve => setTimeout(resolve, 1000)) ; incrementStretch();} }
+          >
+            {({ remainingTime }) => remainingTime}
+          </CountdownCircleTimer>
+        ) : (
+          <button className='btn btn-primary' onClick={startTimer} style={styles.button}>Ready to stretch?</button>
+        )}
           { (getPrevStretch() != null) && (
             <button className='btn btn-primary' onClick={decrementStretch} style={styles.button}>Previous Stretch</button>
           )}
