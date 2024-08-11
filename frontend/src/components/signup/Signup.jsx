@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { auth } from '../../firebase/FireBase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Modal from '../Modal.jsx'
+import { useMutation } from '@apollo/client'
+import { ADD_USER } from '../../mutations/userMutations';
+import { GET_USERS } from '../../queries/userQueries';
 
 const Signup = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState('');
@@ -29,16 +32,17 @@ const Signup = ({ isOpen, onClose }) => {
         }
     };
 
+    // backend mutation for adding user
+    const [addUser] = useMutation(ADD_USER, {
+        refetchQueries: [{ query: GET_USERS }]
+    });
+
+    
     const storeUserInfo = async (uid, firstName, lastName, email) => {
         try {
-            const response = await fetch('/api/storeUserInfo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ uid, firstName, lastName, email })
-            });
-            if (!response.ok) {
+            // add user with empty liked and disliked stretch IDs
+            const userAdded = await addUser({variables: {_id: uid, firstName: firstName, lastName: lastName, email: email, likedStretchIDs: [], dislikedStretchIDs: []}});
+            if (!userAdded) {
                 throw new Error('Failed to store user information');
             }
         } catch (error) {

@@ -53,7 +53,7 @@ export default function Stretches({ stretches, handleAddStretch }) {
         <table className='table table-hover mt-3' style={styles.table}>
           <thead>
             <tr>
-              <th colSpan='9' style={styles.tableTitle}>Stretches</th>
+              <th colSpan='11' style={styles.tableTitle}>Stretches</th>
             </tr>
             <tr>
               <th>Unique ID</th>
@@ -63,6 +63,8 @@ export default function Stretches({ stretches, handleAddStretch }) {
               <th>Bad For</th>
               <th>Images</th>
               <th>ImageURL</th>
+              <th>Duration</th>
+              <th>Reps</th>
               <th>Instructions</th>
               <th>Modify</th>
             </tr>

@@ -1,6 +1,15 @@
 const typeDefs = `#graphql
     scalar Upload
 
+    type User {
+        _id: ID!
+        email: String!
+        firstName: String!
+        lastName: String!
+        likedStretchIDs: [String]!
+        dislikedStretchIDs: [String]!
+    }
+
     type Question {
         _id: ID
         question: String
@@ -20,10 +29,11 @@ const typeDefs = `#graphql
         description: String
         goodFor: [String]
         badFor: [String]
+        durationSeconds: Int
+        reps: Int
         imageURL: String
         instructions: String
     }
-
 
     type File {
         filename: String!
@@ -31,18 +41,28 @@ const typeDefs = `#graphql
         encoding: String!
     }
 
-
     type Query {
+        users: [User]
+        userById(_id: ID!): User
+        getSessionUser: User
+
         questions: [Question]
         questionById(_id: ID!): Question
+
         muscleGroups: [MuscleGroup]
         muscleGroupById(_id: ID!): MuscleGroup
         muscleGroupByName(name: String!): MuscleGroup
+
         stretches: [Stretch]
         stretchById(_id: ID!): Stretch
     }
 
     type Mutation {
+        addUser(_id: ID!, email: String!, firstName: String!, lastName: String!, likedStretchIDs: [String]!, dislikedStretchIDs: [String]!): User
+        deleteUser(_id: ID!): User
+        updateUser(_id: ID!, email: String, firstName: String, lastName: String, likedStretchIDs: [String], dislikedStretchIDs: [String]): User
+        setSessionUser(_id: ID!): User
+
         addQuestion(question: String!, options: [String]!): Question
         deleteQuestion(_id: ID!): Question
         updateQuestion(_id: ID!, question: String, options: [String]): Question
@@ -51,9 +71,9 @@ const typeDefs = `#graphql
         deleteMuscleGroup(_id: ID!): MuscleGroup
         updateMuscleGroup(_id: ID!, name: String, imageURL: String, stretchIds: [ID]): MuscleGroup
 
-        addStretch(title: String!, description: String!, goodFor: [String], badFor: [String] imageFile: Upload!, instructions: String!): Stretch
+        addStretch(title: String!, description: String!, goodFor: [String], badFor: [String], durationSeconds: Int!, reps: Int, imageFile: Upload!, instructions: String!): Stretch
         deleteStretch(_id: ID!): Stretch
-        updateStretch(_id: ID!, title: String, description: String, imageURL: String, instructions: String): Stretch
+        updateStretch(_id: ID!, title: String, description: String, goodFor: [String], badFor: [String], durationSeconds: Int, reps: Int, imageFile: Upload, instructions: String): Stretch
 
         singleUpload(file: Upload!, name: String): String
     }

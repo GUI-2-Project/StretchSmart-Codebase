@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 
 // Import table components for each type of content in DB
 import Questions from './Questions';

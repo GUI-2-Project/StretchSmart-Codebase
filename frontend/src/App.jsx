@@ -23,10 +23,13 @@ import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 
 const client = new ApolloClient({
   link: createUploadLink({
-    uri: 'https://api.stretchsmart.xyz/graphql',
+    //uri: 'https://api.stretchsmart.xyz/graphql',
+    uri: 'http://localhost:5000/graphql',
     headers: {
       "apollo-require-preflight": "true"
-    }
+    },
+    //credentials: 'include',
+    credentials: 'same-origin',
   }),
   cache: new InMemoryCache(),
 });

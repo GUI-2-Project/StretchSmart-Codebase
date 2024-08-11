@@ -5,8 +5,34 @@ import Health1 from '../../assets/Health1.png';
 import { auth } from '../../firebase/FireBase';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Signup from '../../components/signup/Signup';
+import { useMutation } from '@apollo/client';
+import { SET_SESSION_USER } from '../../mutations/userMutations';
+
+import { useQuery } from '@apollo/client';
+import { GET_SESSION_USER } from '../../queries/userQueries';
 
 const Login = ({ onLogin }) => {
+const [setSessionUser] = useMutation(SET_SESSION_USER);
+
+// handle setting user for session
+const storeUser = async (uid) => {
+    try {
+        setSessionUser({ variables: { _id: uid } });
+    } catch (error) {
+        setError(error.message);
+    }
+};
+
+const getSessionUser = async () => {
+    try {
+        const user = await useQuery(GET_SESSION_USER);
+        return user;
+    } catch (error) {
+        setError(error.message);
+    }
+}
+
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -17,7 +43,14 @@ const Login = ({ onLogin }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const uid = userCredential.user.uid;
+            
+            // handle setting user for session
+            storeUser(uid);
+            console.log(getSessionUser());
+
+
             setSuccess('Login Successful!');
             onLogin();
         } catch (error) {

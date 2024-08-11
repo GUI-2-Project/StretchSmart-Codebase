@@ -121,6 +121,10 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
                     <li><Link className="dropdown-item" to="landing">HOME</Link></li>
                     <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
                     <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
+
+                    {/*TODO: delete*/}
+                    <li><Link className="dropdown-item" to="/ADMIN">ADMIN</Link></li>
+
                   </>
               )}
               <li><Link className="dropdown-item" to="/about">ABOUT US</Link></li>
