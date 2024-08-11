@@ -12,8 +12,8 @@ import session from 'express-session';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-//const STATIC_FILE_PATH = 'http://api.stretchsmart.xyz:5000/';
-const STATIC_FILE_PATH = 'http://localhost:5000/';
+const STATIC_FILE_PATH = 'http://api.stretchsmart.xyz:5000/';
+//const STATIC_FILE_PATH = 'http://localhost:5000/';
 
 const resolvers = {
     Upload: GraphQLUpload,  // required for the Upload scalar type
@@ -29,6 +29,7 @@ const resolvers = {
             return session.user;
         },
         questions: async () => {
+            //return await Question.find().sort({index: 'asc'});
             return await Question.find();
         },
         questionById: async (_, { _id }) => {
@@ -101,16 +102,17 @@ const resolvers = {
             return session.user = _id;
         },
 
-        async addQuestion(_, { question, options }) {
-            return await Question.create({ question, options });
+        async addQuestion(_, { question, options, selectionType }) {
+                const index = await Question.countDocuments();
+                return await Question.create({ index, question, options, selectionType });
         },
         async deleteQuestion(_, { _id }) {
             return await Question.findByIdAndDelete(_id).exec();
         },
-        async updateQuestion(_, { _id, question, options }) {
+        async updateQuestion(_, { _id, index, question, options, selectionType }) {
             return await Question.findByIdAndUpdate(
                 _id,
-                { question, options },
+                { index, question, options, selectionType },
                 { new: true }
             ).exec();
         },

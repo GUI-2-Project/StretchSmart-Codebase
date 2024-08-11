@@ -59,12 +59,14 @@ const QustionRow = ({ question }) => {
   return (
     <tr>
       <td>{question._id}</td>
+      <td>{question.index}</td>
       <td>{question.question}</td>
       <td>{question.options.join(', ')}</td>
+      <td>{question.selectionType}</td>
       <td>
           <button className="btn btn-warning" style={styles.button} onClick={handleModify}>Modify</button>
           <button className="btn btn-danger" style={styles.button} onClick={handleDelete}>DELETE</button>
-        </td>
+      </td>
     </tr>
   )
 }

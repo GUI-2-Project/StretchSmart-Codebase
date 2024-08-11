@@ -1,15 +1,11 @@
 import mongoose from 'mongoose';
 
-// Option Schema for mongoose connection to MongoDB database
-//const OptionSchema = new mongoose.Schema({
-//    option: {
-//        type: String,
-//        required: [true, 'Please add an option']
-//    }
-//});
-
 // Question Schema for mongoose connection to MongoDB database
 const QuestionSchema = new mongoose.Schema({
+    index: {
+        type: Number,
+        required: [true, 'Please add an index']
+    },
     question: {
         type: String,
         required: [true, 'Please add a name']
@@ -19,26 +15,12 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add at least one option']
         }
-    ]
+    ],
+    selectionType: {
+        type: String,
+        enum : ['single', 'multiple'],
+        required: [true, 'Please add a selection type']
+    }
 });
 
 export default mongoose.model('Question', QuestionSchema);
-
-
-/**
- * What is your energy level like currently?
- *      Tired
- *      Energetic
- *      Moderate energy
- *  What are you feeling in your insert selected muscle (can select multiple)
- *      Soreness
- *      Pain
- *      Stiffness/Lack of mobility
- *      No Discomfort
- *  What is your goal for today’s session? (can select multiple)
- *      Pain relief
- *      Muscle recovery
- *      Improved mobility
- *      I just wanna stretch!
- *      Strength 
- */

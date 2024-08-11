@@ -25,7 +25,7 @@
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-upload": "^16.0.2",
     "jsdoc": "^4.0.3",
-    "mongoose": "^8.5.1",
+    "mongoose": "^8.5.2",
     "nanoid": "^5.0.7",
     "react-card-flip": "^1.2.3",
     "windups": "^1.2.2"

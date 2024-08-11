@@ -10,10 +10,20 @@ const typeDefs = `#graphql
         dislikedStretchIDs: [String]!
     }
 
+    """ For Questions, decide whether
+    the user can select a single option
+    or multiple options"""
+    enum SelectionType {
+        single
+        multiple
+    }
+
     type Question {
         _id: ID
+        index: Int
         question: String
         options: [String]
+        selectionType: SelectionType
     }
 
     type MuscleGroup {
@@ -63,9 +73,9 @@ const typeDefs = `#graphql
         updateUser(_id: ID!, email: String, firstName: String, lastName: String, likedStretchIDs: [String], dislikedStretchIDs: [String]): User
         setSessionUser(_id: ID!): User
 
-        addQuestion(question: String!, options: [String]!): Question
+        addQuestion(question: String!, options: [String]!, selectionType: SelectionType!): Question
         deleteQuestion(_id: ID!): Question
-        updateQuestion(_id: ID!, question: String, options: [String]): Question
+        updateQuestion(_id: ID!, index: Int, question: String, options: [String], selectionType: SelectionType): Question
 
         addMuscleGroup(name: String!, imageFile: Upload!, stretchIds: [ID]!): MuscleGroup
         deleteMuscleGroup(_id: ID!): MuscleGroup
