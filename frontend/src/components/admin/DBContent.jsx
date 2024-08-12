@@ -38,11 +38,6 @@ const DBContent = () => {
                     <Stretches />
                 </>
             }
-
-{/*            <AddQuestion isOpen={isAddQuestionOpen} onClose={closeAddQuestionModal} />   
-            <AddMuscleGroup isOpen={isAddMuscleGroupOpen} onClose={closeAddMuscleGroupModal}/> 
-            <AddStretch isOpen={isAddStretchOpen} onClose={closeAddStretchModal}/>*/}
-
         </>
     )
 }

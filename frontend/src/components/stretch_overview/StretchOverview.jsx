@@ -81,7 +81,7 @@ function StretchOverview() {
                     </div>
                 ) : (
                     <>
-                        {muscleGroup.stretches.map((stretch) => (
+                        {muscleGroup.stretches.map((stretch) => (   // TODO: limit to 4 stretches
                             <StretchCard key={stretch._id} stretch={stretch} />
                         ))}
                         <button className='btn btn-primary' style={styles.button} onClick={startRoutine}>Start Routine</button>

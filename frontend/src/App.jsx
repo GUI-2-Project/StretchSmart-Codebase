@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './app.css';
 import Login from './components/login/Login';
@@ -21,6 +21,10 @@ import DBContent from './components/admin/DBContent';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 
 
+
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { CookiesProvider, useCookies } from 'react-cookie';
+
 const client = new ApolloClient({
   link: createUploadLink({
     //uri: 'https://api.stretchsmart.xyz/graphql',
@@ -35,17 +39,49 @@ const client = new ApolloClient({
 });
 
 const App = () => {
+    const [cookies, setCookie] = useCookies(['userToken']);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showMainContent, setShowMainContent] = useState(true);
+    const [user, setUser] = useState(null);
+    const [userToken, setUserToken] = useState(null);
+
+
+    // check if user is already logged in
+    // fixes logout on refresh
+    const auth = getAuth();
+    useEffect(() => {
+        onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser) {
+                console.log('User is signed in');
+                setUser(firebaseUser);
+                firebaseUser.getIdToken().then((token) => {
+                    setUserToken(token);
+                });
+                handleLogin();
+            } else {
+                console.log('User is signed out');
+            }
+        });
+    });
 
     const handleLogin = () => {
-        setIsAuthenticated(true);
+        // check valid auth
+
+        // set user in cookie for all pages
+        // (all children of the root path '/')
+        setCookie('userToken', userToken, { path: '/' });
         setShowMainContent(false);
+        setIsAuthenticated(true);
     };
 
     const handleLogout = () => {
         setIsAuthenticated(false);
         setShowMainContent(true);
+        signOut(auth).then(() => {
+            console.log('User signed out');
+        }).catch((error) => {
+            console.log('Error signing out: ', error);
+        });
     };
 
     const PrivateRoute = ({ element }) => {
@@ -59,7 +95,7 @@ const App = () => {
                     isAuthenticated={isAuthenticated}
                     onLogin={handleLogin}
                     onLogout={handleLogout}
-                    user="USER"
+                    user={"USER"} // TODO:
                 />
                 <Routes>
                     <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />

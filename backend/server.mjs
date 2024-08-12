@@ -16,6 +16,8 @@ import connectDB from './config/db.mjs';
 import typeDefs from "./schema/typeDefs.mjs";
 import resolvers from "./schema/resolvers.mjs";
 import { dirname } from 'path';
+import jwt from 'jsonwebtoken';
+import { initializeApp, getAuth } from "firebase-admin/app";
 
 // parse config from .env file
 dotenvx.config();
@@ -37,9 +39,16 @@ const server = new ApolloServer({
 });
 await server.start();
 
+// Configure & Init Firebase
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+
 // Configure static serving. Used for images
 app.use(express.static(dirname('./') + '/static_content'));
-
 
 // Configure session management
 const sessionOptions = {
@@ -68,6 +77,35 @@ store.on('error', function(error) {
 });
 sessionOptions.store = store;
 
+
+
+// configure cookies
+const authenticate = async (req, res, next) => {
+  const token = req.session.userToken;
+  if (!token) {
+    return next();
+  }
+  try {
+    // check token against firebase
+    auth.verifyIdToken(token)
+    .then((decodedToken) => {
+      
+    })
+    .catch((error) => {});
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    session.store = decodedToken;
+    next();
+  } catch (error) {
+
+    console.log(error);
+    return next();
+  }
+}
+
+
+
+
 app.use(
   "/",
   cors({  // handle cross-origin requests for multi-user access
@@ -79,19 +117,26 @@ app.use(
   bodyParser.json(),
   graphqlUploadExpress(),   // This is the middleware for handling file uploads
   expressMiddleware(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
+    context: async ({ req }) => ({
+      // get token from cookie
+      //console.log(req.cookies);
+      // check token with firebase
+      // throw error if invalid
+      // set session user
+      token: req.cookies.userToken
+    }),
   })
 );
 
 // set session user to user from cookie
-app.post('/setUser', async (req, res) => {
-  try {
-    req.session.user = req.body.user;
-    res.send({ message: "created user session" }).status(201);  // 201 Created
-  } catch (error) {
-    console.log(error);
-  }
-});
+//app.post('/setUser', async (req, res) => {
+//  try {
+//    req.session.user = req.body.user;
+//    res.send({ message: "created user session" }).status(201);  // 201 Created
+//  } catch (error) {
+//    console.log(error);
+//  }
+//});
 
 // configure dev playground
 //const graphQLPlayground = expressPlayground.default;

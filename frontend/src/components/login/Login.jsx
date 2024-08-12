@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import health2 from '../../assets/health2.png';
 import health3 from '../../assets/health3.png';
 import Health1 from '../../assets/Health1.png';
 import { auth } from '../../firebase/FireBase';
 import { signInWithEmailAndPassword } from "firebase/auth";
+
 import Signup from '../../components/signup/Signup';
 import { useMutation } from '@apollo/client';
 import { SET_SESSION_USER } from '../../mutations/userMutations';
@@ -12,7 +13,9 @@ import { useQuery } from '@apollo/client';
 import { GET_SESSION_USER } from '../../queries/userQueries';
 
 const Login = ({ onLogin }) => {
-const [setSessionUser] = useMutation(SET_SESSION_USER);
+
+
+const [setSessionUser] = useMutation(SET_SESSION_USER); 
 
 // handle setting user for session
 const storeUser = async (uid) => {
