@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import health2 from '../../assets/health2.png';
 import health3 from '../../assets/health3.png';
 import Health1 from '../../assets/Health1.png';
+import info from '../../assets/info.png'
 import { auth } from '../../firebase/FireBase';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import Signup from '../../components/signup/Signup';
 
 const Login = ({ onLogin }) => {
@@ -20,6 +21,21 @@ const Login = ({ onLogin }) => {
             await signInWithEmailAndPassword(auth, email, password);
             setSuccess('Login Successful!');
             onLogin();
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    const handleResetPassword = async () => {
+        if (!email) {
+            setError("Please enter your email address to reset your password.");
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            setSuccess("Password reset email sent! Check your inbox.");
+            setError(null);
         } catch (error) {
             setError(error.message);
         }
@@ -64,6 +80,27 @@ const Login = ({ onLogin }) => {
             textAlign: 'left',
             marginLeft: '20px',
             maxWidth: '400px'
+        },
+        infographicContainer: {
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column', // Stack the quote and image vertically
+            justifyContent: 'center', // Center vertically in the container
+            alignItems: 'center', // Center horizontally in the container
+            padding: '200px 600px 0 0',
+        },
+        infographicImage: {
+            maxWidth: '80%',
+            maxHeight: '80%',
+            objectFit: 'contain',
+            borderRadius: '10px',
+        },
+        infographicQuote: {
+            fontSize: '24px',
+            fontStyle: 'italic',
+            color: '#333',
+            marginBottom: '20px',
+            textAlign: 'center',
         },
         formContainer: {
             display: 'flex',
@@ -171,6 +208,11 @@ const Login = ({ onLogin }) => {
                     <p style={styles.quote}>Let us help you stretch smarter to feel better!</p>
                 </div>
             </div>
+            {/* Infographic Section */}
+            <div style={styles.infographicContainer}>
+                <p style={styles.infographicQuote}>{`"One stretch a day keeps the physical therapist away"`}</p>
+                <img src={info} alt="Benefits of Stretching" style={styles.infographicImage}/>
+            </div>
             <div style={styles.formContainer}>
                 <h2 style={styles.title}>Login Page</h2>
                 <form style={styles.form} onSubmit={handleLogin}>
@@ -188,17 +230,18 @@ const Login = ({ onLogin }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                    {success && <p style={{ color: 'green' }}>{success}</p>}
+                    {error && <p style={{color: 'red'}}>{error}</p>}
+                    {success && <p style={{color: 'green'}}>{success}</p>}
                     <button type="submit" style={styles.button}>Sign In</button>
                     {/* {isAuthenticated && <QuestionsPage />} */}
                 </form>
                 <p style={styles.text}> Not a member yet? Click below to Sign Up!</p>
                 <button style={styles.linkButton} onClick={openSignupModal}>Create Account</button>
-                <button style={styles.linkButton}>Reset Password</button>
-            </div>
-            {/* Signup modal */}
-            <Signup isOpen={isSignupModalOpen} onClose={closeSignupModal} />
+                <button style={styles.linkButton} onClick={handleResetPassword}>Reset Password</button>
+        </div>
+    {/* Signup modal */
+    }
+    <Signup isOpen={isSignupModalOpen} onClose={closeSignupModal} />
             <div style={styles.bottomRightTextBox}>
                 <p>Try out our new web app today and learn how you can relieve your muscle pain! Click the button below to be redirected to our sign-up page.</p>
                 <div style={styles.bottomRightButton} onClick={openSignupModal}>
