@@ -1,56 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
-import MuscleGroupRow from './MuscleGroupRow'
-import StretchRow from './StretchRow'
-import QuestionRow from './QuestionRow'
 
-// Query backed for list of questions for questionnaire
-const GET_QUESTIONS = gql`
-    query GetQuestions {
-        questions {
-            id
-            question
-            options
-        }
-    }
-`;
+// Import table components for each type of content in DB
+import Questions from './Questions';
+import MuscleGroups from './MuscleGroups';
+import Stretches from './Stretches';
 
-// Query backed for list of muscles
-const GET_MUSCLE_GROUPS = gql`
-    query GetMuscleGroups {
-        muscleGroups {
-            id
-            name
-            imageURL
-        }
-    }
-`;
+// Import form components for adding new content to DB
+import AddQuestion from './AddQuestion';
+import AddMuscleGroup from './AddMuscleGroup';
+import AddStretch from './AddStretch';
 
-// Query backed for list of stretches
-const GET_STRETCHES = gql`
-    query GetStretches {
-        stretches {
-            id
-            title
-            description
-            goodFor
-            badFor
-            imageURL
-            instructions
-        }
-    }
-`;
+// Import queries
+import { GET_QUESTIONS } from '../../queries/questionQueries';
+import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
+import { GET_STRETCHES } from '../../queries/stretchQueries';
 
 const DBContent = () => {
-    // Destructure muscles, stretches, and questions from backend
-    // loading - true if data is still being fetched
+
+    // Query backend for list of questions for questionnaire
     const questions = useQuery(GET_QUESTIONS);
     const muscles = useQuery(GET_MUSCLE_GROUPS);
     const stretches = useQuery(GET_STRETCHES);
 
-    let loadingAny = muscles.loading || stretches.loading || questions.loading;
-    let errorAny = muscles.error || stretches.error || questions.error;
-
+    // guard for failed or hanging queries
+    const loadingAny = muscles.loading || stretches.loading || questions.loading;
+    const errorAny = muscles.error || stretches.error || questions.error;
     if (loadingAny) return <p>Loading...</p>;
     if (errorAny) return <p>Something Went Wrong</p>;
 
@@ -58,11 +33,16 @@ const DBContent = () => {
         <>
             { !loadingAny && !errorAny && 
                 <>
-                    {/* {questions.data.questions.map(question => ( <QuestionRow question={question}/> ))} */}
-                    {/* {muscles.data.muscles.map(muscle => ( <MuscleGroupRow muscleGroup={muscle}/> ))} */}
-                    {stretches.data.stretches.map(stretch => ( <StretchRow stretch={stretch}/> ))}
+                    <Questions />
+                    <MuscleGroups />
+                    <Stretches />
                 </>
             }
+
+{/*            <AddQuestion isOpen={isAddQuestionOpen} onClose={closeAddQuestionModal} />   
+            <AddMuscleGroup isOpen={isAddMuscleGroupOpen} onClose={closeAddMuscleGroupModal}/> 
+            <AddStretch isOpen={isAddStretchOpen} onClose={closeAddStretchModal}/>*/}
+
         </>
     )
 }

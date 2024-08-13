@@ -13,21 +13,22 @@ import StretchOverview from './components/stretch_overview/StretchOverview';
 import StretchRoutine from './components/stretch_overview/StretchRoutine';
 
 
-const apolloDefaultOptions = {
-  watchQuery: {
-    fetchPolicy: 'no-cache',
-    errorPolicy: 'ignore',
-  },
-  query: {
-    fetchPolicy: 'no-cache',
-    errorPolicy: 'all',
-  },
-}
+import Stretches from './components/admin/Stretches';
+import Questions from './components/admin/Questions';
+import MuscleGroups from './components/admin/MuscleGroups';
+import DBContent from './components/admin/DBContent';
+
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+
 
 const client = new ApolloClient({
-  uri: 'http://localhost:5000/graphql',   // TODO: replace hardcoded value with env variable
+  link: createUploadLink({
+    uri: 'https://api.stretchsmart.xyz/graphql',
+    headers: {
+      "apollo-require-preflight": "true"
+    }
+  }),
   cache: new InMemoryCache(),
-  defaultOptions: apolloDefaultOptions
 });
 
 const App = () => {
@@ -47,14 +48,7 @@ const App = () => {
     const PrivateRoute = ({ element }) => {
         return isAuthenticated ? element : <Navigate to="/" />;
     };
-<<<<<<< Updated upstream
 
-  const PrivateRoute = ({ element }) => {
-      return isAuthenticated ? element : <Navigate to="/" />;
-  };
-
-=======
->>>>>>> Stashed changes
     return (
         <Router>
             <ApolloProvider client={client}>
@@ -71,6 +65,7 @@ const App = () => {
                     <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
                     <Route path="/muscle-overview" element={<PrivateRoute element={<StretchOverview />} />} />
                     <Route path="/aboutus" element={<AboutUs />} />
+                    <Route path="/ADMIN" element={<PrivateRoute element={<DBContent />} />} />
                 </Routes>
                 {showMainContent && <Footer />}
             </ApolloProvider>

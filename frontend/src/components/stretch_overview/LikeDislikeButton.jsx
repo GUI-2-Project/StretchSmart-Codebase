@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import circle from '../../assets/circleFill.png'
 import neutralIcon from '../../assets/neutralLike.png'
 import likeIcon from '../../assets/like.png'
@@ -12,14 +12,34 @@ import { NoFragmentCyclesRule } from 'graphql'
  * @returns {JSX.Element} button element with an icon.
  */
 
-const icons = [
-  neutralIcon,
-  likeIcon,
-  dislikeIcon
-]
+
+// Pretend to set prefrerences
+const preferences = {
+  icons: [
+    neutralIcon,
+    likeIcon,
+    dislikeIcon
+  ],
+  index: 0,
+  current: () => { null },
+  cycleToNext: () => {
+    null
+  }
+};
+// Can't assign these during the object declaration
+// I hate JS
+preferences.icon = () => preferences.icons[preferences.index];
+preferences.cycleToNext = () => preferences.index = (preferences.index + 1) % 3;
 
 
 const LikeDislikeButton = () => {
+  
+  const cyclePreference = () => {
+    preferences.cycleToNext();
+    setPreference(preferences.icon());
+  }
+
+  const [preference, setPreference] = useState(preferences.icon());
   
     const styles = {
         button: {
@@ -45,19 +65,11 @@ const LikeDislikeButton = () => {
     }
 
   return (
-    <div style={styles.button}>
+    <div style={styles.button} onClick={cyclePreference}>
         <img style={styles.circle} src={circle}/>
-        <img style={styles.icon} src={icons[0]}/>
+        <img style={styles.icon} src={preference}/>
     </div>
   )
 }
 
 export default LikeDislikeButton
-
-
-//   const handleAreaClick = (muscle) => {
-//     onMuscleSelect(muscle);
-// onClick={(e) => {
-//   e.preventDefault();
-//   handleAreaClick('chest');
-// }

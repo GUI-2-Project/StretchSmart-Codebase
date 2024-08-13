@@ -6,14 +6,10 @@ import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
-<<<<<<< Updated upstream
-import { Link } from "react-router-dom";
-=======
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { getAuth } from 'firebase/auth';
 import {getFirestore, doc, getDoc} from "firebase/firestore";
-
->>>>>>> Stashed changes
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Header component to be used site-wide.
@@ -34,9 +30,6 @@ import {getFirestore, doc, getDoc} from "firebase/firestore";
  * />
  */
 
-<<<<<<< Updated upstream
-function Header({ isAuthenticated, onLogin, onLogout, user }) {
-=======
 function Header({ isAuthenticated, onLogin, onLogout }) {
   const [userName, setUserName] = useState('');
   const auth = getAuth();
@@ -69,7 +62,13 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
     }
   }, [isAuthenticated, auth, db]);
 
->>>>>>> Stashed changes
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  // const handleHamburgerClick = (e) => {
+  //   if (isAuthenticated) navigate('/ADMIN');
+  // }
+
   const styles = {
     header: {
       display: "flex",
@@ -98,6 +97,7 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
     icon: {
       padding: "10px",
       width: "60px",
+      cursor: "pointer"
     },
     logoContainer: {
       height: '91px',

@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase/FireBase';
-<<<<<<< Updated upstream
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import Modal from './Modal'
-=======
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import Modal from '../Modal.jsx'
->>>>>>> Stashed changes
+import Modal from '../Modal.jsx'
 
 const Signup = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState('');

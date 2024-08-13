@@ -1,10 +1,10 @@
 {
   "name": "app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.mjs",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "nodemon server/index.js",
+    "start": "node server.mjs",
+    "dev": "nodemon server.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,13 +12,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@apollo/server": "^4.10.5",
     "@dotenvx/dotenvx": "^1.6.4",
+    "apollo-server-express": "^3.13.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "express-graphql": "^0.12.0",
+    "graphql": "^16.9.0",
+    "graphql-http": "^1.22.1",
+    "graphql-playground-middleware-express": "^1.7.23",
+    "graphql-upload": "^16.0.2",
     "jsdoc": "^4.0.3",
     "mongoose": "^8.5.1",
+    "nanoid": "^5.0.7",
     "react-card-flip": "^1.2.3",
     "windups": "^1.2.2"
   },

@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Option Schema for mongoose connection to MongoDB database
-const OptionSchema = new mongoose.Schema({
-    option: {
-        type: String,
-        required: [true, 'Please add an option']
-    }
-});
+//const OptionSchema = new mongoose.Schema({
+//    option: {
+//        type: String,
+//        required: [true, 'Please add an option']
+//    }
+//});
 
 // Question Schema for mongoose connection to MongoDB database
 const QuestionSchema = new mongoose.Schema({
@@ -22,7 +22,7 @@ const QuestionSchema = new mongoose.Schema({
     ]
 });
 
-module.exports = mongoose.model('Question', QuestionSchema);
+export default mongoose.model('Question', QuestionSchema);
 
 
 /**
