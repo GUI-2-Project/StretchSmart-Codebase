@@ -39,38 +39,6 @@ export const UserContext = createContext();
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    //const [showMainContent, setShowMainContent] = useState(true);
-    //const [firebaseUser, setFirebaseUser] = useState(null);
-    //const [checkPersistence, setCheckPersistence] = useState(false);
-    //const [currentUser, setCurrentUser] = useState(null);
-    //const session = {currentUser, setCurrentUser}; 
-
-
-    //const [setSessionUser] = useMutation(SET_SESSION_USER);
-    //const getSessionUser = useQuery(GET_SESSION_USER);
-
-    // check if user is already logged in
-    // fixes logout on refresh
-    //const auth = getAuth();
-    //useEffect( () => {
-    //    onAuthStateChanged(auth, (newFirebaseUser) => {
-    //        handleAuthChange();
-    //    }), [];
-    //});
-//
-    //const handleAuthChange = () => {
-    //    // set session user
-    //    handleLogin();
-    //}
-    
-    const handleLogin = () => {
-        //const { loading, error, data } = useQuery(GET_SESSION_USER);
-        //if (loading) return 'Loading...';
-        //if (error) return `Error! ${error.message}`;
-        //setUser(data);
-        setShowMainContent(false);
-        setIsAuthenticated(true);
-    };
 
     const handleLogout = () => {
         signOut(auth).then(() => {
@@ -98,48 +66,13 @@ const App = () => {
             console.log('Error signing out: ', error);
         });
 
-
-        //let data = JSON.stringify({
-        //    "idToken": idToken
-        //  });
-      
-
-
     };
-
-    //const PrivateRoute = ({ element }) => {
-    //    return isAuthenticated ? element : <Navigate to="/" />;
-    //};
-
 
     return (
         <ApolloProvider client={client}>
             <ContentWrapper/>
         </ApolloProvider>
     );
-
-    //return (
-    //    <UserContext.Provider value={session}>
-    //        <Router>
-    //                <ApolloProvider client={client}>
-    //                    <Header
-    //                        isAuthenticated={isAuthenticated}
-    //                        onLogout={handleLogout}
-    //                    />
-    //                    <Routes>
-    //                        <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
-    //                        <Route path="/signup" element={<Signup />} />
-    //                        <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
-    //                        <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
-    //                        <Route path="/muscle-overview" element={<PrivateRoute element={<StretchOverview />} />} />
-    //                        <Route path="/aboutus" element={<AboutUs />} />
-    //                        <Route path="/ADMIN" element={<PrivateRoute element={<DBContent />} />} />
-    //                    </Routes>
-    //                    </ApolloProvider>
-    //                    {showMainContent && <Footer />}
-    //        </Router>
-    //        </UserContext.Provider>
-    //);
 }
 
 export default App;

@@ -37,7 +37,7 @@ const DELETE_USER = gql`
 
 const UPDATE_USER = gql`
     mutation updateUser(
-      $_id: ID!
+      $_id: String!
       $email: String
       $firstName: String
       $lastName: String

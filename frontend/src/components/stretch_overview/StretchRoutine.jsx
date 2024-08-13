@@ -67,7 +67,8 @@ const StretchRoutine = ({ muscleGroup }) => {
         marginTop: '75px',
         //maxWidth: '800px',
         //maxHeight: '600px'
-        height: '90%'
+        height: '90%',
+        width: '90%'
     },
     formContainer: {
         display: 'flex',
@@ -78,7 +79,7 @@ const StretchRoutine = ({ muscleGroup }) => {
         borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         width: '100%',
-        maxWidth: '800px',
+        //maxWidth: '800px',
         position: 'relative',
         top: '0',
         alignSelf: 'flex-start'
@@ -92,6 +93,7 @@ const StretchRoutine = ({ muscleGroup }) => {
     },
     form: {
         display: 'flex',
+        gridColumn: '1',
         flexDirection: 'column',
         width: '100%',
         gap: '10px'
@@ -137,26 +139,37 @@ const StretchRoutine = ({ muscleGroup }) => {
     text: {
         textAlign: 'left',
         marginTop: '20px',
-        fontSize: '14px',
+        fontSize: '24px',
         color: '#666'
     },
     image: {
         borderRadius: '10px',
         margin: 'auto',
         padding: '20px'
+    },
+    timerContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '20px',
+        marginTop: '20px'
+    },
+    instructionsContainer: {
+      fontSize: '20px',
     }
 };
 
   return (
-    <div styles={styles.container}>
-      <div styles={styles.formContainer}>
+    <div>
         <h2 style={styles.title}>{currentStretch.title}</h2>
         <div sytle={styles.form}>
             <p style={styles.text}>{currentStretch.description}</p>
             <img src={currentStretch.imageURL} style={styles.image}/>
+        </div>
+        <div style={styles.instructionsContainer}>
             <StretchStepParser stretchInstructions={currentStretch.instructions}/>
         </div>
-        <div>
+        <div style={styles.timerContainer}>
         { (countdownPlaying) ? (
           <CountdownCircleTimer
             isPlaying={countdownPlaying}
@@ -164,7 +177,7 @@ const StretchRoutine = ({ muscleGroup }) => {
             duration={currentStretch.durationSeconds}
             colors={['#004777', '#F7B801', '#A30000', '#A30000']}
             colorsTime={[15, 7, 3, 0]}
-            size={100}
+            size={300}
             onComplete={ async () => {await new Promise(resolve => setTimeout(resolve, 1000)) ; incrementStretch();} }
           >
             {({ remainingTime }) => remainingTime}
@@ -180,7 +193,6 @@ const StretchRoutine = ({ muscleGroup }) => {
             <button className='btn btn-primary' onClick={incrementStretch} style={styles.button}>Next Stretch</button>
           )}
         </div>
-      </div>
     </div>
   )
 }

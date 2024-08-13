@@ -6,7 +6,7 @@ import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 //import { UserContext } from '../App';
 import { UserContext } from './ContentWrapper';
 //import { useQuery } from '@apollo/client';
@@ -33,13 +33,8 @@ import { UserContext } from './ContentWrapper';
 
 function Header({ isAuthenticated, onLogout }) {
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  const navigate = useNavigate(); // Initialize useNavigate
+  //const navigate = useNavigate(); // Initialize useNavigate
   const name = (currentUser != undefined) ? currentUser.firstName.toUpperCase() : 'USER';
-  //const name = 'USER';
-
-  // const handleHamburgerClick = (e) => {
-  //   if (isAuthenticated) navigate('/ADMIN');
-  // }
 
   const styles = {
     header: {
@@ -126,14 +121,12 @@ function Header({ isAuthenticated, onLogout }) {
                   <>
                     <li><Link className="dropdown-item" to="landing">HOME</Link></li>
                     <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
-                    <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
-
-                    {/*TODO: delete*/}
+                    {/*<li><Link className="dropdown-item" to="/history">HISTORY</Link></li>*/}
                     <li><Link className="dropdown-item" to="/ADMIN">ADMIN</Link></li>
 
                   </>
               )}
-              <li><Link className="dropdown-item" to="/about">ABOUT US</Link></li>
+              <li><Link className="dropdown-item" to="/AboutUs">ABOUT US</Link></li>
             </ul>
           </div>
           <img
@@ -148,7 +141,9 @@ function Header({ isAuthenticated, onLogout }) {
             {isAuthenticated && (
                 <>
                   <li><Link className="dropdown-item" to="landing">HOME</Link></li>
-                  <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
+                  { //currentUser.muscleName &&
+                    <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
+                  }
                   <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
                 </>
             )}

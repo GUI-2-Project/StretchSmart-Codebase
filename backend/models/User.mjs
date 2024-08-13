@@ -22,11 +22,15 @@ const UserSchema = new mongoose.Schema({
     likedStretchIDs: [  // NOTE: This is an array of strings
         { 
         type: String,
+        unique: true,
+        dropDups: true
         }
     ],
     dislikedStretchIDs: [   // NOTE: This is an array of strings
         {
         type: String,
+        unique: true,
+        dropDups: true
         }
     ],
 });

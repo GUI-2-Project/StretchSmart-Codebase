@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import fullBody from '../assets/BodyScaled.png';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from './ContentWrapper';
 
-const Body = ({ onMuscleSelect }) => {  // TODO: rename to BodyMap for clarity
+const Body = ({ onMuscleSelect }) => {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleAreaClick = (muscleName) => {
+    // if a new muscle group is selected...
+    if (muscleName != currentUser.muscleName) {
+      // clear questionnaire selections
+      currentUser.questionnaireSelections = null;
+      // set muscleName in currentUser
+      currentUser.muscleName = muscleName;
+    }
     onMuscleSelect(muscleName);
-    navigate('/questionnaire', { state: { muscleName } });
+    //navigate('/questionnaire', { state: { muscleName } });
+    navigate('/questionnaire');
   };
+
+  // TODO: Set Selected Muscle in Context
 
   return (
     <div className="body-container">

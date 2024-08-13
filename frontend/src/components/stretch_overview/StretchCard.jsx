@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import LikeDislikeButton from './LikeDislikeButton';
-import { useQuery } from '@apollo/client';
-import { GET_STRETCH } from '../../queries/stretchQueries';
+import { useQuery, useMutation } from '@apollo/client';
 import StretchDetails from './StretchDetails';
+import { UPDATE_USER } from '../../mutations/userMutations';
+import { UserContext } from '../ContentWrapper';
 
 /**
  * Unfinished stretch card element to represent 
@@ -20,6 +21,48 @@ const StretchCard = ({ stretch }) => {  // stretch object
     const [isStretchDetailsOpen, setIsStretchDetailsOpen] = useState(false);
     const openStretchDetailsModal = () => setIsStretchDetailsOpen(true);
     const closeStretchDetailsModal = () => setIsStretchDetailsOpen(false);
+    const { currentUser, setCurrentUser } = useContext(UserContext);
+    const [updateUser] = useMutation(UPDATE_USER);
+
+    const handlePreference = (preference) => {
+        let likedStretchIDs = currentUser.likedStretchIDs;
+        let dislikedStretchIDs = currentUser.dislikedStretchIDs;
+
+        console.log("s:" + stretch._id);
+
+        // update user preference for stretch
+        //console.log("preference: " + preference);
+        switch (preference) {
+            case "like":
+                console.log("bliked: " + likedStretchIDs);
+                likedStretchIDs.push(stretch._id);
+                console.log("aliked: " + likedStretchIDs);
+                dislikedStretchIDs = dislikedStretchIDs.filter(id => id !== stretch._id);
+                break;
+            case "dislike":
+                dislikedStretchIDs.push(stretch._id);
+                likedStretchIDs = likedStretchIDs.filter(id => id !== stretch._id);
+                break;
+            case "neutral":
+                likedStretchIDs = likedStretchIDs.filter(id => id !== stretch._id);
+                dislikedStretchIDs = dislikedStretchIDs.filter(id => id !== stretch._id);
+            default:
+                // do nothing :)
+        }
+
+        async function updateAndRefreshUser() {
+            return await updateUser({
+                variables: {
+                    _id: currentUser._id,
+                    likedStretchIDs: likedStretchIDs,
+                    dislikedStretchIDs: dislikedStretchIDs
+                }
+            });
+        }
+        updateAndRefreshUser().then((data) => {
+            //setCurrentUser(data.data.updateUser);
+        }).catch((error) => {console.log(error)});
+    }
 
     const styles = {
         card: {
@@ -79,7 +122,7 @@ const StretchCard = ({ stretch }) => {  // stretch object
     <>
         <div className="stretch-card" style={styles.card}>
             <div style={styles.button}>
-                <LikeDislikeButton />
+                <LikeDislikeButton clickHandler={handlePreference} stretch={stretch} />
             </div>
             <div style={styles.displayArea} onClick={openStretchDetailsModal}>
                 <h4 style={styles.title}>{stretch.title}</h4>      

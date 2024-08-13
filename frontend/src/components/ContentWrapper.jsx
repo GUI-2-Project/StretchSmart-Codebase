@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext, useDeferredValue } from 'react';
+import React, { useState, useEffect, createContext, } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './login/Login';
 import Signup from "./signup/Signup";
@@ -7,20 +7,12 @@ import Header from './Header';
 import Footer from './Footer';
 import LandingPage from './LandingPage';
 import QuestionsPage from './QuestionsPage';
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import StretchOverview from './stretch_overview/StretchOverview';
-import StretchRoutine from './stretch_overview/StretchRoutine';
-import Stretches from './admin/Stretches';
-import Questions from './admin/Questions';
-import MuscleGroups from './admin/MuscleGroups';
 import DBContent from './admin/DBContent';
-import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
-import { getAuth, onAuthStateChanged, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import axios from 'axios';
-import { auth } from '../firebase/FireBase';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, } from '@apollo/client';
 import { SET_SESSION_USER } from '../mutations/userMutations';
-import { GET_SESSION_USER } from '../queries/userQueries';
 
 
 
@@ -30,13 +22,9 @@ export const UserContext = createContext();
 const ContentWrapper = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showMainContent, setShowMainContent] = useState(true);
-    const [firebaseUser, setFirebaseUser] = useState(null);
-    const [checkPersistence, setCheckPersistence] = useState(false);
     const [sessionUser, setCurrentUser] = useState(null);
     const session = {currentUser: sessionUser, setCurrentUser}; 
     const [setSessionUser] = useMutation(SET_SESSION_USER);
-    const getSessionUser = useQuery(GET_SESSION_USER);
-
 
     // check if user is already logged in
     // fixes logout on refresh
@@ -50,13 +38,13 @@ const ContentWrapper = () => {
     }, []);
 
     const handleLogin = () => {
+        // see Login.jsx for 
+        // cookie and session info
         const user = getAuth().currentUser;
         async function fetchSessionUser() {
-            const xyz = await setSessionUser({ variables: { _id: user.uid } });
-            return xyz;
-            }
+            return await setSessionUser({ variables: { _id: user.uid } });
+        }
         fetchSessionUser().then((data) => {
-            console.log(data.data.setSessionUser);
             setCurrentUser(data.data.setSessionUser);
         })
         
@@ -74,7 +62,6 @@ const ContentWrapper = () => {
                 headers: { 
                   'Content-Type': 'application/json', 
                 },
-                //credentials: 'include',
                 data : {}
             };
             return axios.request(config)
@@ -89,14 +76,6 @@ const ContentWrapper = () => {
         }).catch((error) => {
             console.log('Error signing out: ', error);
         });
-
-
-        //let data = JSON.stringify({
-        //    "idToken": idToken
-        //  });
-      
-
-
     };
 
     const PrivateRoute = ({ element }) => {

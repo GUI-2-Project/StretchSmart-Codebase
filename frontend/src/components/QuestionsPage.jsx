@@ -4,66 +4,52 @@ import bodyImage from '../assets/fullBodyFrontBack.png';
 import leftArrow from '../assets/leftArrow.png';
 import rightArrow from '../assets/rightArrow.png';
 import {useLocation} from 'react-router-dom';
-import { UserContext } from '../App';
+import { UserContext } from './ContentWrapper';
+import { useQuery } from '@apollo/client';
+import { GET_QUESTIONS } from '../queries/questionQueries';
 
 function QuestionsPage() {
 
+    const { currentUser, setCurrentUser } = useContext(UserContext);
     // accept 'muscleName' arg from previous page
-    const location = useLocation();
-    const muscleName = location.state.muscleName;   
-
+    // const location = useLocation();
+    //const muscleName = location.state.muscleName;   
+    
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selections, setSelections] = useState({});
     const navigate = useNavigate(); // Initialize useNavigate
+    const [selections, setSelections] = useState(
+        currentUser.questionnaireSelections || {}
+    );
 
-    const questions = [
-        {
-            id: 'q1',
-            title: `HOW ARE YOU FEELING TODAY?`,
-            options: [
-                'Tired',
-                'Energetic',
-                'Moderate Energy'
-            ]
-        },
-        {
-            id: 'q2',
-            title: `WHAT ARE YOU FEELING IN YOUR ` + muscleName.toUpperCase() + `?`,
-            options: [
-                'Soreness',
-                'Pain',
-                'Stiffness / Lack of Mobility',
-                'No Discomfort'
-            ]
-        },
-        {
-            id: 'q3',
-            title: `WHAT IS YOUR GOAL FOR TODAY'S SESSION?`,
-            options: [
-                'Pain Relief',
-                'Muscle Recovery',
-                'Improved Mobility',
-                'I Just Wanna Stretch!',
-                'Strength'
-            ]
-        },
-        {
-            id: 'q4',
-            title: `DO YOU HAVE ACCESS TO RESISTANCE BANDS?`,
-            options: [
-                'Yes',
-                'No'
-            ]
+    // Redirect to landing page if muscleName is not set
+    const muscleName = currentUser.muscleName;
+    if (!muscleName) {
+        navigate('/landing');
+    }
+    
+    // load questions
+    const { loading, error, data } = useQuery(GET_QUESTIONS);
+    if (loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
+    if (error) return <p>Something Went Wrong</p>;
+    const questions = data.questions;
+
+
+    const questionAnswered = (questionIndex) => {
+        const question = questions[questionIndex];
+        if (question.selectionType === 'single') {
+            return selections[questionIndex] !== undefined;
+        } else {
+            return Object.values(selections[questionIndex] || {}).some(value => value);
         }
-    ];
+    }
 
     const allQuestionsAnswered = () => {
         return questions.every((question) => {
-            const id = question.id;
-            if (question.title.includes('ACCESS')) {
-                return selections[id] !== undefined;
+            const index = question.index;
+            if (question.selectionType === 'single') {
+                return selections[index] !== undefined;
             } else {
-                return Object.values(selections[id] || {}).some(value => value);
+                return Object.values(selections[index] || {}).some(value => value);
             }
         });
     };
@@ -75,7 +61,9 @@ function QuestionsPage() {
     };
 
     const nextQuestion = () => {
-        if (currentQuestionIndex < questions.length - 1) {
+        if (!questionAnswered(currentQuestionIndex)) {
+            alert('Please select at least one option before moving on.');
+        } else if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
     };
@@ -86,19 +74,19 @@ function QuestionsPage() {
         }
     };
 
-    const handleSelectionChange = (option) => {
-        const questionId = questions[currentQuestionIndex].id;
-        if (questions[currentQuestionIndex].title.includes('ACCESS')) {
+    const handleSelectionChange = (optionIndex) => {
+        const questionIndex = questions[currentQuestionIndex].index;
+        if (questions[currentQuestionIndex].selectionType === 'single') {
             setSelections({
                 ...selections,
-                [questionId]: option
+                [questionIndex]: optionIndex
             });
         } else {
             setSelections({
                 ...selections,
-                [questionId]: {
-                    ...selections[questionId],
-                    [option]: !selections[questionId]?.[option]
+                [questionIndex]: {
+                    ...selections[questionIndex],
+                    [optionIndex]: !selections[questionIndex]?.[optionIndex]
                 }
             });
         }
@@ -107,6 +95,10 @@ function QuestionsPage() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (allQuestionsAnswered() && isAnyCheckboxSelected()) {
+
+            // Save selections to currentUser's session
+            currentUser.questionnaireSelections = selections;
+
             // Nav to muscle overview page and pass selected muscle name
             navigate('/muscle-overview', {state: {muscleName: muscleName}});
         } else {
@@ -205,16 +197,16 @@ function QuestionsPage() {
         <div style={styles.frontPage}>
             <main style={styles.mainContent}>
                 <div style={styles.leftSide}>
-                    <h2 style={styles.questionsTitle}>{questions[currentQuestionIndex].title}</h2>
+                    <h2 style={styles.questionsTitle}>{questions[currentQuestionIndex].question}</h2>
                     <div style={styles.question}>
                         <div style={styles.options}>
-                            {questions[currentQuestionIndex].options.map((option, index) => (
-                                <label key={index} style={styles.label}>
+                            {questions[currentQuestionIndex].options.map((option, optionIndex) => (
+                                <label key={optionIndex} style={styles.label}>
                                     <input 
-                                        type={questions[currentQuestionIndex].title.includes('ACCESS') ? 'radio' : 'checkbox'}
+                                        type={(questions[currentQuestionIndex].selectionType == "single")  ? 'radio' : 'checkbox'}
                                         style={styles.checkbox}
-                                        checked={questions[currentQuestionIndex].title.includes('ACCESS') ? selections[questions[currentQuestionIndex].id] === option : selections[questions[currentQuestionIndex].id]?.[option] || false}
-                                        onChange={() => handleSelectionChange(option)}
+                                        checked={(questions[currentQuestionIndex].selectionType == "single") ? selections[questions[currentQuestionIndex].index] === optionIndex : selections[questions[currentQuestionIndex].index]?.[optionIndex] || false}
+                                        onChange={() => handleSelectionChange(optionIndex)}
                                     />
                                     {option}
                                 </label>
