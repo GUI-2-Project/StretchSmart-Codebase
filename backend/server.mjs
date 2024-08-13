@@ -15,9 +15,13 @@ import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 import connectDB from './config/db.mjs';
 import typeDefs from "./schema/typeDefs.mjs";
 import resolvers from "./schema/resolvers.mjs";
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import jwt from 'jsonwebtoken';
-import { initializeApp, getAuth } from "firebase-admin/app";
+import { initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
+import admin from "firebase-admin";
+import serviceAccountKey from "./config/serviceAccountKey.json" assert { type: "json" };
+import { nextTick } from "process";
 
 // parse config from .env file
 dotenvx.config();
@@ -34,27 +38,31 @@ const httpServer = http.createServer(app);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
+  playground: true,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 //  uploads: false,
 });
 await server.start();
 
 // Configure & Init Firebase
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-};
-const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp({
+  credential: admin.credential.cert(serviceAccountKey)
+});
 const auth = getAuth(firebaseApp);
-
-// Configure static serving. Used for images
-app.use(express.static(dirname('./') + '/static_content'));
 
 // Configure session management
 const sessionOptions = {
+  name: 'sid',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    rolling: true,
+  },
   maxage: 1000 * 60 * 60 * 24, // 1 day
 };
 if (process.env.NODE_ENV === 'production') {
@@ -75,74 +83,75 @@ const store = new MongoDBStore({
 store.on('error', function(error) {
   console.log(error);
 });
+store.on('success', function(success) {
+  console.log(success);
+});
 sessionOptions.store = store;
+app.use(session(sessionOptions));  // handle session management && cookies
 
+// Listen for session login requests from frontend
+app.post('/sessionLogin', cors(), bodyParser.json(), (req, res) => {
+  const idToken = req.body.idToken;
+  const expiresIn = 60 * 60 * 24 * 5 * 1000;  // 5 days
 
-
-// configure cookies
-const authenticate = async (req, res, next) => {
-  const token = req.session.userToken;
-  if (!token) {
-    return next();
-  }
-  try {
-    // check token against firebase
-    auth.verifyIdToken(token)
-    .then((decodedToken) => {
-      
+  getAuth().verifyIdToken(idToken)
+  .then((decodedToken) => {
+    req.session.regenerate((err) => {
+      if (err) next(err);
+      req.session.uid = decodedToken.uid;
+      req.session.save((err) => {
+        if (err) return next(err);
+        console.log(req.session.uid);
+        res.send({ message: "Sign In Successful" })
+      });
     })
-    .catch((error) => {});
+  })
+  //.then(() => {
+  //})
+  //.catch((error) => {
+  //  console.log(error);
+  //});
+});
 
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    session.store = decodedToken;
-    next();
-  } catch (error) {
+// Listen for session login requests from frontend
+app.post('/sessionLogout', cors(), bodyParser.json(), (req, res) => {
 
-    console.log(error);
-    return next();
-  }
-}
+    req.session.uid = null;
+    req.session.save();
+    console.log(req.session.uid);
+    res.send({ message: "Sign In Successful" })
 
+});
 
-
+// Configure static serving. Used for images
+app.use(express.static(dirname('./') + '/static_content'));
 
 app.use(
   "/",
   cors({  // handle cross-origin requests for multi-user access
     credentials: true,
+    // allowed headers cookies
     origin: process.env.FRONTEND_URL || 
-            "http://localhost:3000",
+    "http://localhost:3000",
   }),
-  session(sessionOptions),  // handle session management && cookies
   bodyParser.json(),
+  (req, _, next) => {
+    console.log(req.session);
+    return next();
+  },
   graphqlUploadExpress(),   // This is the middleware for handling file uploads
-  expressMiddleware(server, {
-    context: async ({ req }) => ({
-      // get token from cookie
-      //console.log(req.cookies);
-      // check token with firebase
-      // throw error if invalid
-      // set session user
-      token: req.cookies.userToken
-    }),
+  expressMiddleware(server, { // Apollo Server middleware
+    context: async ({req, res}) => {
+      return { req };
+    },
   })
-);
-
-// set session user to user from cookie
-//app.post('/setUser', async (req, res) => {
-//  try {
-//    req.session.user = req.body.user;
-//    res.send({ message: "created user session" }).status(201);  // 201 Created
-//  } catch (error) {
-//    console.log(error);
-//  }
-//});
+);  // ONLY GRAPHQL REQUESTS FROM HERE ON
 
 // configure dev playground
-//const graphQLPlayground = expressPlayground.default;
-//if (process.env.NODE_ENV === 'development') {
-//    app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }));
-//}
+const graphQLPlayground = expressPlayground.default;
+if (process.env.NODE_ENV === 'development') {
+    app.get('/playground', graphQLPlayground({ endpoint: '/graphql' }));
+}
 
 // Modified server startup
 await new Promise((resolve) => httpServer.listen({ port }, resolve));

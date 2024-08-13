@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 const ADD_USER = gql`
   mutation addUser(
-      $_id: ID!
+      $_id: String!
       $email: String!
       $firstName: String!
       $lastName: String!
@@ -28,7 +28,7 @@ const ADD_USER = gql`
 `;
 
 const DELETE_USER = gql`
-  mutation deleteUser($_id: ID!) {
+  mutation deleteUser($_id: String!) {
     deleteUser(_id: $_id) {
         _id
     }
@@ -63,9 +63,14 @@ const UPDATE_USER = gql`
 `;
 
 const SET_SESSION_USER = gql`
-  mutation setSessionUser($_id: ID!) {
+  mutation setSessionUser($_id: String!) {
     setSessionUser(_id: $_id) {
       _id
+      email
+      firstName
+      lastName
+      likedStretchIDs
+      dislikedStretchIDs
     }
   }
 `;

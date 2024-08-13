@@ -25,8 +25,13 @@ const resolvers = {
         userById: async (_, { _id }) => {
             return await User.findById(_id);
         },
-        getSessionUser: async (_, __, { user }) => {
-            return session.user;
+        getSessionUser: async (_, __, { req }) => {
+            console.log("===========");
+            const asdf = await req.session.user;
+            console.log(asdf);
+            console.log("===========");
+            //return req.session.user;
+            return asdf;
         },
         questions: async () => {
             //return await Question.find().sort({index: 'asc'});
@@ -35,14 +40,14 @@ const resolvers = {
         questionById: async (_, { _id }) => {
             return await Question.findById(_id);
         },
-        muscleGroups: async () => {
+        muscleGroups: async (_, args, { req }) => {
+            console.log("req.session.uid: " + req.session.uid);
             const mgs = await MuscleGroup.find();
             mgs.forEach(mg => {
                 mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
                 mg.stretches = mg.stretchIds.map( async (_id) => {
                     const str = await Stretch.findById(_id);
                     str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
-                    console.log(str);
                     return str;
                 });
             });
@@ -53,18 +58,16 @@ const resolvers = {
             mg.stretches = mg.stretchIds.map( async (_id) => {
                 const str = await Stretch.findById(_id);
                 str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
-                console.log(str);
                 return str;
             });
             return mg;
         },
-        muscleGroupByName: async (_, { name }) => {
+        muscleGroupByName: async (_, { name }, contextValue) => {
             const mg = await MuscleGroup.findOne({name: {'$regex': name, '$options': 'i'}});
             mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
             mg.stretches = mg.stretchIds.map( async (_id) => {
                 const str = await Stretch.findById(_id);
                 str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
-                console.log(str);
                 return str;
             });
             return mg;
@@ -98,8 +101,10 @@ const resolvers = {
             ).exec();
         },
         // set session user to user from cookie
-        async setSessionUser(_, { _id }) {
-            return session.user = _id;
+        async setSessionUser(_, { _id }, { req }) {
+            const user = await User.findById(_id);
+            req.session.user = (user) ? user : null;
+            return user;
         },
 
         async addQuestion(_, { question, options, selectionType }) {

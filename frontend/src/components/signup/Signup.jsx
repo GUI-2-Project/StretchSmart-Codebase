@@ -37,10 +37,11 @@ const Signup = ({ isOpen, onClose }) => {
         refetchQueries: [{ query: GET_USERS }]
     });
 
-    
+
     const storeUserInfo = async (uid, firstName, lastName, email) => {
         try {
             // add user with empty liked and disliked stretch IDs
+            console.log(uid, firstName, lastName, email);
             const userAdded = await addUser({variables: {_id: uid, firstName: firstName, lastName: lastName, email: email, likedStretchIDs: [], dislikedStretchIDs: []}});
             if (!userAdded) {
                 throw new Error('Failed to store user information');

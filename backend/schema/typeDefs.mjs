@@ -2,7 +2,7 @@ const typeDefs = `#graphql
     scalar Upload
 
     type User {
-        _id: ID!
+        _id: String!
         email: String!
         firstName: String!
         lastName: String!
@@ -68,10 +68,10 @@ const typeDefs = `#graphql
     }
 
     type Mutation {
-        addUser(_id: ID!, email: String!, firstName: String!, lastName: String!, likedStretchIDs: [String]!, dislikedStretchIDs: [String]!): User
-        deleteUser(_id: ID!): User
-        updateUser(_id: ID!, email: String, firstName: String, lastName: String, likedStretchIDs: [String], dislikedStretchIDs: [String]): User
-        setSessionUser(_id: ID!): User
+        addUser(_id: String!, email: String!, firstName: String!, lastName: String!, likedStretchIDs: [String]!, dislikedStretchIDs: [String]!): User
+        deleteUser(_id: String!): User
+        updateUser(_id: String!, email: String, firstName: String, lastName: String, likedStretchIDs: [String], dislikedStretchIDs: [String]): User
+        setSessionUser(_id: String!): User
 
         addQuestion(question: String!, options: [String]!, selectionType: SelectionType!): Question
         deleteQuestion(_id: ID!): Question

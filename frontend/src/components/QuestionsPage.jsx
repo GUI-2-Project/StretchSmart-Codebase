@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import bodyImage from '../assets/fullBodyFrontBack.png';
 import leftArrow from '../assets/leftArrow.png';
 import rightArrow from '../assets/rightArrow.png';
 import {useLocation} from 'react-router-dom';
+import { UserContext } from '../App';
 
 function QuestionsPage() {
 

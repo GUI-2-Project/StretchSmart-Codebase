@@ -14,7 +14,7 @@ const GET_USERS = gql`
 `;
 
 const GET_USER = gql`
-  query getUser($_id: ID!) {
+  query getUser($_id: String!) {
     user(_id: $_id) {
       _id
       email

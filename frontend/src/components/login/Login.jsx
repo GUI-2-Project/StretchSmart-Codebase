@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import health2 from '../../assets/health2.png';
 import health3 from '../../assets/health3.png';
 import Health1 from '../../assets/Health1.png';
 import { auth } from '../../firebase/FireBase';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, setPersistence, signInWithEmailAndPassword, browserSessionPersistence } from "firebase/auth";
 
 import Signup from '../../components/signup/Signup';
 import { useMutation } from '@apollo/client';
@@ -12,50 +12,76 @@ import { SET_SESSION_USER } from '../../mutations/userMutations';
 import { useQuery } from '@apollo/client';
 import { GET_SESSION_USER } from '../../queries/userQueries';
 
-const Login = ({ onLogin }) => {
+//import { UserContext } from '../../App';
+import { UserContext } from '../ContentWrapper';
+
+import axios from 'axios';
 
 
-const [setSessionUser] = useMutation(SET_SESSION_USER); 
 
-// handle setting user for session
-const storeUser = async (uid) => {
-    try {
-        setSessionUser({ variables: { _id: uid } });
-    } catch (error) {
-        setError(error.message);
-    }
+const postIdTokenToSessionLogin = (url, idToken) => {
+    let data = JSON.stringify({
+      "idToken": idToken
+    });
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: url,
+      headers: { 
+        'Content-Type': 'application/json', 
+      },
+      //credentials: 'include',
+      data : data
+    };
+    
+    return axios.request(config)
+    .then((response) => {
+      //response.json()
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
-const getSessionUser = async () => {
-    try {
-        const user = await useQuery(GET_SESSION_USER);
-        return user;
-    } catch (error) {
-        setError(error.message);
-    }
-}
 
-
+const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    const [setSessionUser] = useMutation(SET_SESSION_USER);
+    const getSessionUser = useQuery(GET_SESSION_USER);
+    const { currentUser, setCurrentUser } = useContext(UserContext);
+    
     // open sign up as modal instead
     const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const uid = userCredential.user.uid;
-            
-            // handle setting user for session
-            storeUser(uid);
-            console.log(getSessionUser());
-
-
-            setSuccess('Login Successful!');
-            onLogin();
+            // configure firebase auth persistence to browser session
+            await setPersistence(auth, browserSessionPersistence).then(() => {
+                // sign into firebase
+                signInWithEmailAndPassword(auth, email, password)
+                // send userID token to backend for auth
+                .then(async (userCredential) => {
+                    return userCredential.user.getIdToken().then((idToken) => {
+                        //async () => {
+                        //    const user = getAuth().currentUser;
+                        //        await user;
+                        //        await setSessionUser({ variables: { _id: user.uid } });
+                        //        const data = await getSessionUser;
+                        //        console.log(data.data.getSessionUser);
+                        //        setCurrentUser(data.data.getSessionUser);
+                        //};
+                            
+                            setSuccess('Login Successful!');
+                            onLogin();
+                        return postIdTokenToSessionLogin('http://localhost:5000/sessionLogin', idToken);
+                    });
+                });
+            });
         } catch (error) {
             setError(error.message);
         }

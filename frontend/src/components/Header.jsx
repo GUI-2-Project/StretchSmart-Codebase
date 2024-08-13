@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import backButton from '../assets/backButtonIcon.png'
 import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
@@ -7,6 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+//import { UserContext } from '../App';
+import { UserContext } from './ContentWrapper';
+//import { useQuery } from '@apollo/client';
+//import { GET_SESSION_USER } from '../queries/userQueries';
 
 /**
  * Header component to be used site-wide.
@@ -14,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
  * @param {boolean} isAuthenticated - true if user is authenticated
  * @param {function} onLogin - function to run on user login
  * @param {function} onLogout - functio to run on user logout
- * @param {string} user - The user that's signed in.
+ * @param {object} user - The user that's signed in.
  * @returns {JSX.Element} A rendered header element.
  * 
  * @example
@@ -27,9 +31,11 @@ import { useNavigate } from 'react-router-dom';
  * />
  */
 
-function Header({ isAuthenticated, onLogin, onLogout, user }) {
-
+function Header({ isAuthenticated, onLogout }) {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate(); // Initialize useNavigate
+  const name = (currentUser != undefined) ? currentUser.firstName.toUpperCase() : 'USER';
+  //const name = 'USER';
 
   // const handleHamburgerClick = (e) => {
   //   if (isAuthenticated) navigate('/ADMIN');
@@ -93,7 +99,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
                 <>
                   <Link style={styles.a} to="landing">HOME</Link>
                   <Link style={styles.a} to="/questionnaire">QUESTIONNAIRE</Link>
-                  <Link style={styles.a} to="/history">HISTORY</Link>
+                  {/*<Link style={styles.a} to="/history">HISTORY</Link>*/}
                 </>
             )}
             <Link style={styles.a} to="/AboutUs">ABOUT US</Link>
@@ -102,7 +108,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
         <div style={styles.segment}>
           {isAuthenticated && (
               <>
-                <span style={styles.a}>WELCOME, {user}</span>
+                <span style={styles.a}>WELCOME, {name}</span>
                 <button className="btn btn-primary" style={styles.btn} onClick={onLogout}>Logout</button>
               </>
           )}
