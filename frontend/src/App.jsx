@@ -47,11 +47,14 @@ const App = () => {
     const PrivateRoute = ({ element }) => {
         return isAuthenticated ? element : <Navigate to="/" />;
     };
+<<<<<<< Updated upstream
 
   const PrivateRoute = ({ element }) => {
       return isAuthenticated ? element : <Navigate to="/" />;
   };
 
+=======
+>>>>>>> Stashed changes
     return (
         <Router>
             <ApolloProvider client={client}>

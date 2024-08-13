@@ -1,4 +1,4 @@
-import React from 'react'
+import { React, useState, useEffect } from 'react'
 import backButton from '../assets/backButtonIcon.png'
 import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
@@ -6,7 +6,14 @@ import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
+<<<<<<< Updated upstream
 import { Link } from "react-router-dom";
+=======
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { getAuth } from 'firebase/auth';
+import {getFirestore, doc, getDoc} from "firebase/firestore";
+
+>>>>>>> Stashed changes
 
 /**
  * Header component to be used site-wide.
@@ -27,7 +34,42 @@ import { Link } from "react-router-dom";
  * />
  */
 
+<<<<<<< Updated upstream
 function Header({ isAuthenticated, onLogin, onLogout, user }) {
+=======
+function Header({ isAuthenticated, onLogin, onLogout }) {
+  const [userName, setUserName] = useState('');
+  const auth = getAuth();
+  const db = getFirestore();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const user = auth.currentUser;
+
+      if (user) {
+        const displayName = user.displayName;
+        if (displayName) {
+          setUserName(displayName);
+        } else {
+          // Fetch user's first and last name from Firestore
+          const userDocRef = doc(db, 'users', user.uid);
+          getDoc(userDocRef).then((docSnap) => {
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
+              const fullName = `${userData.firstName} ${userData.lastName}`;
+              setUserName(fullName);
+            } else {
+              console.log('No such document!');
+            }
+          }).catch((error) => {
+            console.error('Error fetching user data:', error);
+          });
+        }
+      }
+    }
+  }, [isAuthenticated, auth, db]);
+
+>>>>>>> Stashed changes
   const styles = {
     header: {
       display: "flex",
@@ -94,7 +136,7 @@ function Header({ isAuthenticated, onLogin, onLogout, user }) {
         <div style={styles.segment}>
           {isAuthenticated && (
               <>
-                <span style={styles.a}>WELCOME, {user}</span>
+                <span style={styles.a}>WELCOME, {userName}</span>
                 <button className="btn btn-primary" style={styles.btn} onClick={onLogout}>Logout</button>
               </>
           )}

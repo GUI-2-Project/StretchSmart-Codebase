@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase/FireBase';
+<<<<<<< Updated upstream
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Modal from './Modal'
+=======
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import Modal from '../Modal.jsx'
+>>>>>>> Stashed changes
 
 const Signup = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState('');
@@ -11,11 +17,26 @@ const Signup = ({ isOpen, onClose }) => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
+    const auth = getAuth();
+    const db = getFirestore(); // Initialize Firestore
+
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const uid = userCredential.user.uid;
+            const user = userCredential.user;
+
+            await updateProfile(user, {
+                displayName: `${firstName} ${lastName}`
+            });
+
+            // Save the user's first and last name in Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                firstName: firstName,
+                lastName: lastName,
+                email: email
+            });
 
             // Call backend to store user info
             await storeUserInfo(uid, firstName, lastName, email);
