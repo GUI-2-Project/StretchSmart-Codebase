@@ -12,7 +12,7 @@ import session from 'express-session';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const STATIC_FILE_PATH = 'http://api.stretchsmart.xyz:5000/';
+const STATIC_FILE_PATH = 'https://api.stretchsmart.xyz/';
 //const STATIC_FILE_PATH = 'http://localhost:5000/';
 
 const resolvers = {
