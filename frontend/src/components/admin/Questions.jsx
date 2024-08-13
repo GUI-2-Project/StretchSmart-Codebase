@@ -55,12 +55,14 @@ export default function Questions({ questions }) {
         <table className='table table-hover mt-3'style={styles.table}>
           <thead>
             <tr>
-              <th colSpan='4' style={styles.tableTitle}>Questions</th>
+              <th colSpan='6' style={styles.tableTitle}>Questions</th>
             </tr>
             <tr>
               <th>Unique ID</th>
+              <th>Index</th>
               <th>Question</th>
               <th>Options</th>
+              <th>Selection Type</th>
               <th>Modify</th>
             </tr>
           </thead>

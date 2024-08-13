@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client';
-import { DELETE_MUSCLE_GROUP } from '../../mutations/muscleGroupMutations';
+import { DELETE_MUSCLE_GROUP, UPDATE_MUSCLE_GROUP } from '../../mutations/muscleGroupMutations';
 import { GET_MUSCLE_GROUPS } from '../../queries/muscleGroupQueries';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { assertValidExecutionArguments } from 'graphql/execution/execute';
 import { stringifyForDisplay } from '@apollo/client/utilities';
-import AddMuscleGroup from './AddMuscleGroup';
+import ModifyMuscleGroup from './ModifyMuscleGroup';
 
 const MuscleGroupRow = ({ muscleGroup }) => {
+  const [isModifyMuscleGroupOpen, setIsModifyMuscleGroupOpen] = useState(false);
+  const openModifyMuscleGroupModal = () => setIsModifyMuscleGroupOpen(true);
+  const closeModifyMuscleGroupModal = () => setIsModifyMuscleGroupOpen(false);
  
   const [deleteMuscleGroup] = useMutation(DELETE_MUSCLE_GROUP, {
     variables: { _id: muscleGroup._id },
@@ -16,7 +19,7 @@ const MuscleGroupRow = ({ muscleGroup }) => {
   });
 
   const handleModify = (e) => {
-    //TODO: implement
+    openModifyMuscleGroupModal();
   }
 
   const handleDelete = (e) => {
@@ -75,6 +78,9 @@ const MuscleGroupRow = ({ muscleGroup }) => {
         <td>
           <button className="btn btn-warning" style={styles.button} onClick={handleModify}>Modify</button>
           <button className="btn btn-danger" style={styles.button} onClick={handleDelete}>DELETE</button>
+        </td>
+        <td>
+          <ModifyMuscleGroup isOpen={isModifyMuscleGroupOpen} onClose={closeModifyMuscleGroupModal} muscleGroup={muscleGroup}/>
         </td>
     </tr>
   )

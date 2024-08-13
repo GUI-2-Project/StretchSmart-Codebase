@@ -6,6 +6,8 @@ const ADD_STRETCH = gql`
     $description: String!
     $goodFor: [String]
     $badFor: [String]
+    $durationSeconds: Int
+    $reps: Int
     $imageFile: Upload!
     $instructions: String!
   ) {
@@ -15,6 +17,8 @@ const ADD_STRETCH = gql`
       goodFor: $goodFor
       badFor: $badFor
       imageFile: $imageFile
+      durationSeconds: $durationSeconds
+      reps: $reps
       instructions: $instructions
     ) {
       _id
@@ -22,6 +26,8 @@ const ADD_STRETCH = gql`
       description
       goodFor
       badFor
+      durationSeconds
+      reps
       imageURL
       instructions
     }
@@ -43,7 +49,9 @@ const UPDATE_STRETCH = gql`
     $description: String
     $goodFor: [String]
     $badFor: [String]
-    $imageURL: String
+    $durationSeconds: Int
+    $reps: Int
+    $imageFile: Upload
     $instructions: String
   ) {
     updateStretch(
@@ -52,7 +60,9 @@ const UPDATE_STRETCH = gql`
       description: $description
       goodFor: $goodFor
       badFor: $badFor
-      imageURL: $imageURL
+      imageFile: $imageFile
+      durationSeconds: $durationSeconds
+      reps: $reps
       instructions: $instructions
     ) {
       _id
@@ -60,6 +70,8 @@ const UPDATE_STRETCH = gql`
       description
       goodFor
       badFor
+      durationSeconds
+      reps
       imageURL
       instructions
     }

@@ -1,5 +1,6 @@
 import React from 'react'
 import Modal from '../Modal'
+import StretchStepParser from './StretchStepParser';
 
 const StretchDetails = ({ isOpen, onClose, stretch }) => {
 
@@ -99,7 +100,7 @@ const StretchDetails = ({ isOpen, onClose, stretch }) => {
                 <div style={styles.form}>
                     <p>{stretch.description}</p>
                     <img src={stretch.imageURL} style={styles.image}/>
-                    <p>{stretch.instructions}</p>
+                    <StretchStepParser stretchInstructions={stretch.instructions}/>
                 </div>
             </div>
         </Modal>

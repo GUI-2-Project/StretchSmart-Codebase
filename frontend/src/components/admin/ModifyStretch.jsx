@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { ADD_STRETCH } from '../../mutations/stretchMutations';
+import { UPDATE_STRETCH } from '../../mutations/stretchMutations';
 import { GET_STRETCHES } from '../../queries/stretchQueries';
 import Modal from '../Modal'
 
 
-const AddStretch = ({ isOpen, onClose }) => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [goodFor, setGoodFor] = useState(['']);
-    const [badFor, setBadFor] = useState(['']);
+const ModifyStretch = ({ isOpen, onClose, stretch }) => {
+    const [title, setTitle] = useState(stretch.title);
+    const [description, setDescription] = useState(stretch.description);
+    const [goodFor, setGoodFor] = useState(stretch.goodFor); 
+    const [badFor, setBadFor] = useState(stretch.badFor);
     const [imageFile, setImageFile] = useState(null);
-    const [instructions, setInstructions] = useState('');
-    const [durationSeconds, setDurationSeconds] = useState('');
-    const [reps, setReps] = useState('');
+    const [instructions, setInstructions] = useState(stretch.instructions);
+    const [durationSeconds, setDurationSeconds] = useState(undefined);
+    const [reps, setReps] = useState(undefined);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
@@ -41,13 +41,14 @@ const AddStretch = ({ isOpen, onClose }) => {
         setBadFor(tmpBadFor);
     }
 
-    const [addStretch] = useMutation(ADD_STRETCH, {
-        variables: { title: title,
+    const [updateStretch] = useMutation(UPDATE_STRETCH, {
+        variables: { _id: stretch._id, 
+            title: title,
             description: description,
             goodFor: goodFor,
             badFor: badFor,
-            durationSeconds: durationSeconds,
-            reps: reps,
+            durationSeconds: Number(durationSeconds),
+            reps: Number(reps),
             imageFile: imageFile,
             instructions: instructions },
         refetchQueries: [{ query: GET_STRETCHES }]
@@ -56,33 +57,26 @@ const AddStretch = ({ isOpen, onClose }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (title === ''
-            || description === ''
-            || imageFile === null
-            || instructions === '') {
-            return alert('Please fill out all fields');
-        }
-
-        if (isNaN(durationSeconds)) {
+        if (isNaN(durationSeconds) && durationSeconds !== undefined) {
             return alert('Duration must be a number');
         }
 
-        if (isNaN(reps)) {
+        if (isNaN(reps) && reps !== undefined) {
             return alert('Reps must be a number');
         }
 
         try {
-            addStretch(
+            updateStretch(
                 title,
                 description,
                 goodFor,
                 badFor,
-                durationSeconds,
-                reps,
                 imageFile,
+                Number(durationSeconds),
+                Number(reps),
                 instructions
             );
-            setSuccess('Muscle Group Added Successfully!');
+            setSuccess('Stretch Updated Successfully!');
             setError(null);
             setTimeout(onClose, 2000);
             onClose();
@@ -178,7 +172,7 @@ const AddStretch = ({ isOpen, onClose }) => {
         <Modal>
             <div style={styles.formContainer}>
                 <button style={styles.closeButton} onClick={onClose}>&times;</button>
-                <h2 style={styles.title}>Add a Stretch</h2>
+                <h2 style={styles.title}>Modify a Stretch</h2>
                 <form style={styles.form} onSubmit={handleSubmit}>
                     
                     <input
@@ -227,7 +221,7 @@ const AddStretch = ({ isOpen, onClose }) => {
 
                     {/* HANDLE IMAGE UPLOAD */}
                     <div style={styles.input}>
-                        <label htmlFor="image">Upload an Image:</label>
+                        <label htmlFor="image">Replace Current Image:</label>
                         <input
                             type="file"
                             onChange={(e) => setImageFile(e.target.files[0])}
@@ -243,7 +237,7 @@ const AddStretch = ({ isOpen, onClose }) => {
                     />
 
                     <input
-                        type="text"
+                        type="number"
                         value={durationSeconds}
                         onChange={(e) => setDurationSeconds(e.target.value)}
                         placeholder="Enter Duration for the Stretch"
@@ -251,7 +245,7 @@ const AddStretch = ({ isOpen, onClose }) => {
                     />
 
                     <input
-                        type="text"
+                        type="number"
                         value={reps}
                         onChange={(e) => setReps(e.target.value)}
                         placeholder="Enter The Number of Reps for the Stretch"
@@ -266,11 +260,11 @@ const AddStretch = ({ isOpen, onClose }) => {
 
                     {error ? (<p style={styles.error}>{error}</p>) :
                     (success && <p style={styles.success}>{success}</p>)}
-                    <button type="submit" style={styles.button}>Add Muscle Group to Database</button>
+                    <button type="submit" style={styles.button}>Update Stretch</button>
                 </form>
             </div>
         </Modal>
     ) : null;
 }
 
-export default AddStretch
+export default ModifyStretch

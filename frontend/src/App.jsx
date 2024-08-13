@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext, createContext, useDeferredValue } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './app.css';
 import Login from './components/login/Login';
@@ -11,65 +11,67 @@ import QuestionsPage from './components/QuestionsPage';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import StretchOverview from './components/stretch_overview/StretchOverview';
 import StretchRoutine from './components/stretch_overview/StretchRoutine';
-
-
 import Stretches from './components/admin/Stretches';
 import Questions from './components/admin/Questions';
 import MuscleGroups from './components/admin/MuscleGroups';
 import DBContent from './components/admin/DBContent';
-
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
-
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import axios from 'axios';
+import { SET_SESSION_USER } from './mutations/userMutations';
+import { auth } from './firebase/FireBase';
+import ContentWrapper from './components/ContentWrapper';
 
 const client = new ApolloClient({
   link: createUploadLink({
-    uri: 'https://api.stretchsmart.xyz/graphql',
+    //uri: 'https://api.stretchsmart.xyz/graphql',
+    uri: 'http://localhost:5000/graphql',
     headers: {
       "apollo-require-preflight": "true"
-    }
+    },
+    credentials: 'include',
+    //credentials: 'same-origin',
   }),
   cache: new InMemoryCache(),
 });
 
+export const UserContext = createContext();
+
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [showMainContent, setShowMainContent] = useState(true);
-
-    const handleLogin = () => {
-        setIsAuthenticated(true);
-        setShowMainContent(false);
-    };
 
     const handleLogout = () => {
-        setIsAuthenticated(false);
-        setShowMainContent(true);
-    };
+        signOut(auth).then(() => {
+            console.log('User signed out');
+            let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: "http://localhost:5000/sessionLogout",
+                headers: { 
+                  'Content-Type': 'application/json', 
+                },
+                //credentials: 'include',
+                data : {}
+            };
+            return axios.request(config)
+              .then((response) => {
+                setIsAuthenticated(false);
+                setShowMainContent(true);
+            })
+              .catch((error) => {
+                console.log(error);
+            });
 
-    const PrivateRoute = ({ element }) => {
-        return isAuthenticated ? element : <Navigate to="/" />;
+        }).catch((error) => {
+            console.log('Error signing out: ', error);
+        });
+
     };
 
     return (
-        <Router>
-            <ApolloProvider client={client}>
-                <Header
-                    isAuthenticated={isAuthenticated}
-                    onLogin={handleLogin}
-                    onLogout={handleLogout}
-                    user="USER"
-                />
-                <Routes>
-                    <Route path="/" element={showMainContent ? <Login onLogin={handleLogin} /> : <Navigate to="/landing" />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/landing" element={<PrivateRoute element={<LandingPage />} />} />
-                    <Route path="/questionnaire" element={<PrivateRoute element={<QuestionsPage />} />} />
-                    <Route path="/muscle-overview" element={<PrivateRoute element={<StretchOverview />} />} />
-                    <Route path="/aboutus" element={<AboutUs />} />
-                    <Route path="/ADMIN" element={<PrivateRoute element={<DBContent />} />} />
-                </Routes>
-                {showMainContent && <Footer />}
-            </ApolloProvider>
-        </Router>
+        <ApolloProvider client={client}>
+            <ContentWrapper/>
+        </ApolloProvider>
     );
 }
 

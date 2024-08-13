@@ -20,6 +20,14 @@ const StretchSchema = new mongoose.Schema({
         type: String,
         }
     ],
+    durationSeconds: {
+        type: Number,
+        required: [true, 'Please add a duration in seconds']  
+    },
+    reps: {
+        type: Number,
+        required: [true, 'Please add a number of repetitions']
+    },
     imageURL: {
         type: String,
         required: [true, 'Please add an image']
@@ -31,16 +39,3 @@ const StretchSchema = new mongoose.Schema({
 });
 
 export default mongoose.model('Stretch', StretchSchema);
-
-
-/**
- * Forward Head Tilt
- *      Best for: 1a-c, 2a-b, 3a-d
- *      Not good for: none
- *      Image:
- *      Step - by - Step:
- *          Sit up with your shoulders straight
- *          Tilt your chin down to your chest and hold
- *          Feel the tension in the back of your neck
- * 
- */

@@ -8,6 +8,8 @@ const GET_STRETCHES = gql`
         description
         goodFor
         badFor
+        durationSeconds
+        reps
         imageURL
         instructions
     }
@@ -22,6 +24,8 @@ const GET_STRETCH = gql`
         description
         goodFor
         badFor
+        durationSeconds
+        reps
         imageURL
         instructions
     }

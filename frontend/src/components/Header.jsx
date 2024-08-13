@@ -1,4 +1,5 @@
-import { React, useState, useEffect } from 'react'
+
+import { React, useState, useEffect, useContext } from 'react'
 import backButton from '../assets/backButtonIcon.png'
 import logo from '../assets/stretchSmartLogo.png'
 import profileIcon from '../assets/profileIcon.png'
@@ -6,6 +7,7 @@ import hamburgerIcon from '../assets/hamburgerIcon.png'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from "react-router-dom";
+import { UserContext } from './ContentWrapper';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { getAuth } from 'firebase/auth';
 import {getFirestore, doc, getDoc} from "firebase/firestore";
@@ -17,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
  * @param {boolean} isAuthenticated - true if user is authenticated
  * @param {function} onLogin - function to run on user login
  * @param {function} onLogout - functio to run on user logout
- * @param {string} user - The user that's signed in.
+ * @param {object} user - The user that's signed in.
  * @returns {JSX.Element} A rendered header element.
  * 
  * @example
@@ -127,7 +129,7 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
                 <>
                   <Link style={styles.a} to="landing">HOME</Link>
                   <Link style={styles.a} to="/questionnaire">QUESTIONNAIRE</Link>
-                  <Link style={styles.a} to="/history">HISTORY</Link>
+                  {/*<Link style={styles.a} to="/history">HISTORY</Link>*/}
                 </>
             )}
             <Link style={styles.a} to="/AboutUs">ABOUT US</Link>
@@ -154,10 +156,12 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
                   <>
                     <li><Link className="dropdown-item" to="landing">HOME</Link></li>
                     <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
-                    <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
+                    {/*<li><Link className="dropdown-item" to="/history">HISTORY</Link></li>*/}
+                    <li><Link className="dropdown-item" to="/ADMIN">ADMIN</Link></li>
+
                   </>
               )}
-              <li><Link className="dropdown-item" to="/about">ABOUT US</Link></li>
+              <li><Link className="dropdown-item" to="/AboutUs">ABOUT US</Link></li>
             </ul>
           </div>
           <img
@@ -172,7 +176,9 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
             {isAuthenticated && (
                 <>
                   <li><Link className="dropdown-item" to="landing">HOME</Link></li>
-                  <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
+                  { //currentUser.muscleName &&
+                    <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
+                  }
                   <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
                 </>
             )}

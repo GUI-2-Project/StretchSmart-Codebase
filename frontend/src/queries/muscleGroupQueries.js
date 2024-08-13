@@ -10,6 +10,10 @@ const GET_MUSCLE_GROUPS = gql`
         _id
         title
         description
+        goodFor
+        badFor
+        durationSeconds
+        reps
         imageURL
         instructions
       }
@@ -27,6 +31,10 @@ const GET_MUSCLE_GROUP_BYID = gql`
           _id
           title
           description
+          goodFor
+          badFor
+          durationSeconds
+          reps
           imageURL
           instructions
         }
@@ -44,6 +52,10 @@ const GET_MUSCLE_GROUP_BYNAME = gql`
           _id
           title
           description
+          goodFor
+          badFor
+          durationSeconds
+          reps
           imageURL
           instructions
         }

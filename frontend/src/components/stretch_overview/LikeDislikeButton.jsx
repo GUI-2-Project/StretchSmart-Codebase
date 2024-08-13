@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import circle from '../../assets/circleFill.png'
 import neutralIcon from '../../assets/neutralLike.png'
 import likeIcon from '../../assets/like.png'
 import dislikeIcon from '../../assets/dislike.png'
-import { NetworkStatus } from '@apollo/client'
-import { NoFragmentCyclesRule } from 'graphql'
+import { updateCurrentUser } from 'firebase/auth'
+import { UserContext } from '../ContentWrapper';
 
 /**
  * A small icon to "like" or "dislike"
@@ -12,13 +12,17 @@ import { NoFragmentCyclesRule } from 'graphql'
  * @returns {JSX.Element} button element with an icon.
  */
 
-
-// Pretend to set prefrerences
+// Preferences object to store the current preference about a given stretch
 const preferences = {
   icons: [
     neutralIcon,
     likeIcon,
     dislikeIcon
+  ],
+  states: [
+    "neutral",
+    "like",
+    "dislike"
   ],
   index: 0,
   current: () => { null },
@@ -26,21 +30,52 @@ const preferences = {
     null
   }
 };
+
+
+
+
+
 // Can't assign these during the object declaration
 // I hate JS
 preferences.icon = () => preferences.icons[preferences.index];
-preferences.cycleToNext = () => preferences.index = (preferences.index + 1) % 3;
+preferences.state = () => preferences.states[preferences.index];
+preferences.cycleToNext = () => preferences.index = ((preferences.index + 1) % 3);
 
+const LikeDislikeButton = ({ clickHandler, stretch }) => {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const init = () => {
+    if (currentUser.likedStretchIDs.includes(stretch._id)) {
+      return 1;
+    } else if (currentUser.dislikedStretchIDs.includes(stretch._id)) {
+      return 2;
+    } else {
+      return 0;
+    }
+  }
+  const [index, setIndex] = useState(init());
+  const icons = [neutralIcon, likeIcon, dislikeIcon, neutralIcon, ];
+  const states = ["neutral", "like", "dislike"];
+  const [preferenceState, setPreferenceState] = useState(preferences.state());
+  const [preferenceIcon, setPreferenceIcon] = useState(preferences.icons[index]);
 
-const LikeDislikeButton = () => {
-  
+  console.log("=============");
+  console.log(stretch._id);
+  //console.log("index: " + index);
+  //console.log(currentUser.likedStretchIDs.includes(stretch._id));
+  //console.log(currentUser.dislikedStretchIDs.includes(stretch._id));
+
   const cyclePreference = () => {
-    preferences.cycleToNext();
-    setPreference(preferences.icon());
+    setIndex((index + 1) % 3);
+    console.log((3 + 1) % 3);
+    console.log("index: " + index);
+    setPreferenceIcon(icons[index]);
+    console.log("icon: " + icons[index]);
+    setPreferenceState(states[index]);
+    console.log("state: " + states[index]);
+    clickHandler(states[index]);
   }
 
-  const [preference, setPreference] = useState(preferences.icon());
-  
+
     const styles = {
         button: {
           display: "flex",
@@ -67,7 +102,7 @@ const LikeDislikeButton = () => {
   return (
     <div style={styles.button} onClick={cyclePreference}>
         <img style={styles.circle} src={circle}/>
-        <img style={styles.icon} src={preference}/>
+        <img key={stretch._id} style={styles.icon} src={icons[index]}/>
     </div>
   )
 }
