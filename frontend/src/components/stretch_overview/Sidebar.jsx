@@ -1,6 +1,5 @@
 import React from 'react'
 import SidebarQuestionnaire from './SidebarQuestionnaire'
-import hamstringsImage from '../../assets/hamstrings.png'  // TODO: refactor to accept object from backend
 
 /**
  * Sidebar to display info about the muscle group,
@@ -14,7 +13,6 @@ import hamstringsImage from '../../assets/hamstrings.png'  // TODO: refactor to 
  */
 
 const Sidebar = ({ muscleGroup }) => {
-    // TODO: refactor to accept object from backend
     const styles = {
         aside: {
             display: "grid",
@@ -38,9 +36,9 @@ const Sidebar = ({ muscleGroup }) => {
   return (
     <aside style={styles.aside}>
         <div>
-            <h1 style={styles.title}>Muscle Group:</h1>          {/* Title */}
-            <img src={muscleGroup.imageURL} style={styles.img} />   {/* Muscle image // TODO: refactor to accept object from backend */}
-            <h1 style={styles.title}>{muscleGroup.name.toUpperCase()}</h1>    {/* Muscle name */}
+            <h1 style={styles.title}>Muscle Group:</h1>
+            <img src={muscleGroup.imageURL} style={styles.img} />
+            <h1 style={styles.title}>{muscleGroup.name.toUpperCase()}</h1>
         </div>
         <SidebarQuestionnaire />{/* Embedded questionnaire */}
     </aside>

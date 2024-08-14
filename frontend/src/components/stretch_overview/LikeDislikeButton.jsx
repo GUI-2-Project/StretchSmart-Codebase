@@ -31,10 +31,6 @@ const preferences = {
   }
 };
 
-
-
-
-
 // Can't assign these during the object declaration
 // I hate JS
 preferences.icon = () => preferences.icons[preferences.index];
@@ -60,9 +56,6 @@ const LikeDislikeButton = ({ clickHandler, stretch }) => {
 
   console.log("=============");
   console.log(stretch._id);
-  //console.log("index: " + index);
-  //console.log(currentUser.likedStretchIDs.includes(stretch._id));
-  //console.log(currentUser.dislikedStretchIDs.includes(stretch._id));
 
   const cyclePreference = () => {
     setIndex((index + 1) % 3);

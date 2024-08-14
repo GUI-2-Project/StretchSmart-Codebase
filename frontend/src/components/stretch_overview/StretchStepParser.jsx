@@ -1,5 +1,8 @@
 import React from 'react'
 
+/* This component is used to parse the stretch instructions into a list of steps.
+ * It is far easier to store them as a simple string */
+
 const StretchStepParser = ({ stretchInstructions }) => {
     const steps = stretchInstructions.split(';');
 

@@ -16,9 +16,15 @@ import { SET_SESSION_USER } from '../mutations/userMutations';
 
 
 
-
+// Create UserContext
+// Used throughout the app to reference the current user
+// It is set by a query to the backend and is tied to the session by a cookie
 export const UserContext = createContext();
 
+
+// Main component that wraps the entire app
+// Helpful because I need to be able to make queries to the backend
+// relatively early in the app's lifecycle
 const ContentWrapper = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showMainContent, setShowMainContent] = useState(true);
@@ -37,9 +43,10 @@ const ContentWrapper = () => {
         });
     }, []);
 
+    // Set the current user in the session,
+    // then move to the landing page
     const handleLogin = () => {
-        // see Login.jsx for 
-        // cookie and session info
+        // see Login.jsx for cookie and session info
         const user = getAuth().currentUser;
         async function fetchSessionUser() {
             return await setSessionUser({ variables: { _id: user.uid } });

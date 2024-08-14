@@ -41,7 +41,6 @@ function StretchOverview() {
             display: 'flex',
             width: '100%',
             height: '100%',
-            //overflow: 'hidden',
             alignItems: 'center',
             justifyContent: 'center',
             padding: '0',
