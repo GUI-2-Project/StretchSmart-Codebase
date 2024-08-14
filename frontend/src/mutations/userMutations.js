@@ -62,6 +62,9 @@ const UPDATE_USER = gql`
   }
 `;
 
+
+/* fetches user from server-side session
+ * based on the cookie sent with the request */
 const SET_SESSION_USER = gql`
   mutation setSessionUser($_id: String!) {
     setSessionUser(_id: $_id) {

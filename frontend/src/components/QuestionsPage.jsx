@@ -1,20 +1,22 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import bodyImage from '../assets/fullBodyFrontBack.png';
 import leftArrow from '../assets/leftArrow.png';
 import rightArrow from '../assets/rightArrow.png';
-import {useLocation} from 'react-router-dom';
 import { UserContext } from './ContentWrapper';
-import { useQuery } from '@apollo/client';
 import { GET_QUESTIONS } from '../queries/questionQueries';
 
-function QuestionsPage() {
 
+/* Attaches a *selections* object to the currentUser object in the UserContext.
+ * This can be used elsewhere to filter or sort stretches based on these answers.
+ * This does not persist throught refreshes, and is reset when a new muscle group is selected.
+ */
+
+function QuestionsPage() {
+    // Get the current user object from the UserContext
     const { currentUser, setCurrentUser } = useContext(UserContext);
-    // accept 'muscleName' arg from previous page
-    // const location = useLocation();
-    //const muscleName = location.state.muscleName;   
-    
+
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const navigate = useNavigate(); // Initialize useNavigate
     const [selections, setSelections] = useState(
@@ -27,7 +29,7 @@ function QuestionsPage() {
         navigate('/landing');
     }
     
-    // load questions
+    // load questions from backend
     const { loading, error, data } = useQuery(GET_QUESTIONS);
     if (loading) return <p>Loading...</p>;// <Spinner />; // TODO: improve
     if (error) return <p>Something Went Wrong</p>;

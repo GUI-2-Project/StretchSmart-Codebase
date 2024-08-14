@@ -31,14 +31,10 @@ const postIdTokenToSessionLogin = (url, idToken) => {
       headers: { 
         'Content-Type': 'application/json', 
       },
-      //credentials: 'include',
       data : data
     };
     
     return axios.request(config)
-    .then((response) => {
-      //response.json()
-    })
     .catch((error) => {
       console.log(error);
     });
@@ -66,16 +62,7 @@ const Login = ({ onLogin }) => {
                 signInWithEmailAndPassword(auth, email, password)
                 // send userID token to backend for auth
                 .then(async (userCredential) => {
-                    return userCredential.user.getIdToken().then((idToken) => {
-                        //async () => {
-                        //    const user = getAuth().currentUser;
-                        //        await user;
-                        //        await setSessionUser({ variables: { _id: user.uid } });
-                        //        const data = await getSessionUser;
-                        //        console.log(data.data.getSessionUser);
-                        //        setCurrentUser(data.data.getSessionUser);
-                        //};
-                            
+                    return userCredential.user.getIdToken().then((idToken) => {                            
                             setSuccess('Login Successful!');
                             onLogin();
                         return postIdTokenToSessionLogin('http://localhost:5000/sessionLogin', idToken);

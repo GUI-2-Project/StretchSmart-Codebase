@@ -3,7 +3,6 @@ import { auth } from '../../firebase/FireBase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import Modal from '../Modal.jsx'
-import Modal from '../Modal.jsx'
 import { useMutation } from '@apollo/client'
 import { ADD_USER } from '../../mutations/userMutations';
 import { GET_USERS } from '../../queries/userQueries';

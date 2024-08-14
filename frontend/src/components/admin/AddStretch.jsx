@@ -266,7 +266,7 @@ const AddStretch = ({ isOpen, onClose }) => {
 
                     {error ? (<p style={styles.error}>{error}</p>) :
                     (success && <p style={styles.success}>{success}</p>)}
-                    <button type="submit" style={styles.button}>Add Muscle Group to Database</button>
+                    <button type="submit" style={styles.button}>Add Stretch to Database</button>
                 </form>
             </div>
         </Modal>

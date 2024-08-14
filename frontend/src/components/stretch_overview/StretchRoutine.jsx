@@ -10,8 +10,6 @@ const StretchRoutine = ({ muscleGroup }) => {
   const [countdownPlaying, setCountdownPlaying] = useState(false);
   const [key , setKey] = useState(0);
 
-  //let prevStretch = (current <= 0) ? null : stretches[current - 1];
-  //let nextStretch = (tail - current < 0) ? null : stretches[current + 1];
   const getNextStretch = () => {
     return (tail - index < 0) ? null : stretches[index + 1];
   };
@@ -34,11 +32,11 @@ const StretchRoutine = ({ muscleGroup }) => {
 
   const incrementStretch = () => {
     if (index < tail) {
-      // These need to be ordered this way
-      // because setIndex takes too long to run
-      // leading to a race condition
-      // causing setCurrentStretch to behave
-      // unpredictably
+      /* These need to be ordered this way
+       * because setIndex takes too long to run
+       * leading to a race condition
+       * causing setCurrentStretch to behave
+       * unpredictably */
       setCurrentStretch(stretches[index+1]);
       setIndex(index+1);
       stopTimer();
@@ -48,6 +46,11 @@ const StretchRoutine = ({ muscleGroup }) => {
 
   const decrementStretch = () => {
     if (index > 0) {
+      /* These need to be ordered this way
+       * because setIndex takes too long to run
+       * leading to a race condition
+       * causing setCurrentStretch to behave
+       * unpredictably */
       setCurrentStretch(stretches[index-1]);
       setIndex(index-1);
       stopTimer();
@@ -65,8 +68,6 @@ const StretchRoutine = ({ muscleGroup }) => {
         backgroundColor: '#fff',
         margin: 'auto',
         marginTop: '75px',
-        //maxWidth: '800px',
-        //maxHeight: '600px'
         height: '90%',
         width: '90%'
     },
@@ -79,7 +80,6 @@ const StretchRoutine = ({ muscleGroup }) => {
         borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         width: '100%',
-        //maxWidth: '800px',
         position: 'relative',
         top: '0',
         alignSelf: 'flex-start'

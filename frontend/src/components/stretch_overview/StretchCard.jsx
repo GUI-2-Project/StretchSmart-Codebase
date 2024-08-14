@@ -31,7 +31,6 @@ const StretchCard = ({ stretch }) => {  // stretch object
         console.log("s:" + stretch._id);
 
         // update user preference for stretch
-        //console.log("preference: " + preference);
         switch (preference) {
             case "like":
                 console.log("bliked: " + likedStretchIDs);
@@ -60,6 +59,9 @@ const StretchCard = ({ stretch }) => {  // stretch object
             });
         }
         updateAndRefreshUser().then((data) => {
+            // Resetting the current user has bizarre side effects
+            // I did not have time to resolve.
+            // Disabled for now.
             //setCurrentUser(data.data.updateUser);
         }).catch((error) => {console.log(error)});
     }

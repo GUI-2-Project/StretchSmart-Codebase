@@ -1,5 +1,8 @@
 import React from "react";
 
+// Modal component to display content in a modal
+// used in various components
+
 const Modal = ({ children }) => {
     const styles = {
         overlay: {

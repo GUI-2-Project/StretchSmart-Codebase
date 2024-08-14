@@ -2,18 +2,14 @@ import Question from '../models/Question.mjs';
 import MuscleGroup from '../models/MuscleGroup.mjs';
 import Stretch from '../models/Stretch.mjs';
 import User from '../models/User.mjs'
-import storeUpload from '../storeUpload.mjs';
-import { Query } from 'mongoose';
 import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs";
 import fs, { createWriteStream, unlink } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import session from 'express-session';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const STATIC_FILE_PATH = 'http://api.stretchsmart.xyz:5000/';
-//const STATIC_FILE_PATH = 'http://localhost:5000/';
+const STATIC_FILE_PATH = process.env.BACKEND_URL || 'http://localhost:5000/';
 
 const resolvers = {
     Upload: GraphQLUpload,  // required for the Upload scalar type
@@ -26,25 +22,24 @@ const resolvers = {
             return await User.findById(_id);
         },
         getSessionUser: async (_, __, { req }) => {
-            console.log("===========");
-            const asdf = await req.session.user;
-            console.log(asdf);
-            console.log("===========");
-            //return req.session.user;
-            return asdf;
+            return await req.session.user;
         },
         questions: async () => {
-            //return await Question.find().sort({index: 'asc'});
-            return await Question.find();
+            // sort questions by index before returning
+            // mongoDB does not guarantee order of documents
+            return await Question.find().sort({index: 'asc'});
         },
         questionById: async (_, { _id }) => {
             return await Question.findById(_id);
         },
-        muscleGroups: async (_, args, { req }) => {
-            console.log("req.session.uid: " + req.session.uid);
+        muscleGroups: async (_, args ) => {
             const mgs = await MuscleGroup.find();
             mgs.forEach(mg => {
+                // set imageURL property to path of image file
                 mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
+
+                // populate stretches array by id before return
+                // set their imageURLs as well
                 mg.stretches = mg.stretchIds.map( async (_id) => {
                     const str = await Stretch.findById(_id);
                     str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
@@ -55,6 +50,12 @@ const resolvers = {
         },
         muscleGroupById: async (_, { _id }) => {
             const mg = await MuscleGroup.findById(_id);
+            
+            // set imageURL property to path of image file
+            mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
+
+            // populate stretches array by id before return
+            // set their imageURLs as well
             mg.stretches = mg.stretchIds.map( async (_id) => {
                 const str = await Stretch.findById(_id);
                 str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
@@ -64,7 +65,12 @@ const resolvers = {
         },
         muscleGroupByName: async (_, { name }, contextValue) => {
             const mg = await MuscleGroup.findOne({name: {'$regex': name, '$options': 'i'}});
+
+            // set imageURL property to path of image file
             mg.imageURL = `${STATIC_FILE_PATH}${mg._id}`;
+
+            // populate stretches array by id before return
+            // set their imageURLs as well
             mg.stretches = mg.stretchIds.map( async (_id) => {
                 const str = await Stretch.findById(_id);
                 str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
@@ -75,12 +81,14 @@ const resolvers = {
         stretches: async () => {
             const strs = await Stretch.find();
             strs.forEach(str => {
+                // set imageURL property to path of image file
                 str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
             });
             return strs;
         },
         stretchById: async (_, { _id }) => {
             const str = await Stretch.findById(_id);
+            // set imageURL property to path of image file
             str.imageURL = `${STATIC_FILE_PATH}${str._id}`;
             return str;
         }
@@ -100,7 +108,7 @@ const resolvers = {
                 { new: true }
             ).exec();
         },
-        // set session user to user from cookie
+        // set session user to user from cookie; null if no user
         async setSessionUser(_, { _id }, { req }) {
             const user = await User.findById(_id);
             req.session.user = (user) ? user : null;
@@ -123,7 +131,8 @@ const resolvers = {
         },
 
         async addMuscleGroup(_, { name, imageFile, stretchIds }) {
-            // Create a new MuscleGroup object
+            // Create a new MuscleGroup object first
+            // Its _id is needed to set the imageURL property and store the image file
             const mg = await MuscleGroup.create({ name, stretchIds });
 
             // Set the imageURL property to the path of the image file
@@ -193,6 +202,7 @@ const resolvers = {
             return str;
         },
         async deleteStretch(_, { _id }) {
+            // Delete image
             const imagePath = path.join(__dirname, '../static_content/', _id.toString());
             fs.unlink(imagePath, (err => { 
                 if (err) {
@@ -246,9 +256,9 @@ const resolvers = {
             ).exec();
         },
 
+        // this is not used, and has been left here in case of future utility:
         async singleUpload(_, { file, name }) {
             const { createReadStream } = await file;
-            //const { url } = await storeUpload({ stream, filename });
             await new Promise((resolve, reject) => {
                 const stream = createReadStream()
                     .pipe(createWriteStream(

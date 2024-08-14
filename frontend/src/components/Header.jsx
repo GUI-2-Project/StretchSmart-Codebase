@@ -17,26 +17,17 @@ import { useNavigate } from 'react-router-dom';
  * Header component to be used site-wide.
  *
  * @param {boolean} isAuthenticated - true if user is authenticated
- * @param {function} onLogin - function to run on user login
  * @param {function} onLogout - functio to run on user logout
- * @param {object} user - The user that's signed in.
  * @returns {JSX.Element} A rendered header element.
  * 
- * @example
- * // Render header for the user John Doe
- * <Header 
- *    isAuthenticated={isAuthenticated}
- *      onLogin={handleLogin}
- *      onLogout={handleLogout}
- *      user="John Doe"
- * />
  */
 
-function Header({ isAuthenticated, onLogin, onLogout }) {
+function Header({ isAuthenticated, onLogout }) {
   const [userName, setUserName] = useState('');
   const auth = getAuth();
   const db = getFirestore();
 
+  // Fetch user info from Firestore for display
   useEffect(() => {
     if (isAuthenticated) {
       const user = auth.currentUser;
@@ -63,13 +54,6 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
       }
     }
   }, [isAuthenticated, auth, db]);
-
-
-  const navigate = useNavigate(); // Initialize useNavigate
-
-  // const handleHamburgerClick = (e) => {
-  //   if (isAuthenticated) navigate('/ADMIN');
-  // }
 
   const styles = {
     header: {
@@ -176,10 +160,8 @@ function Header({ isAuthenticated, onLogin, onLogout }) {
             {isAuthenticated && (
                 <>
                   <li><Link className="dropdown-item" to="landing">HOME</Link></li>
-                  { //currentUser.muscleName &&
                     <li><Link className="dropdown-item" to="/questionnaire">QUESTIONNAIRE</Link></li>
-                  }
-                  <li><Link className="dropdown-item" to="/history">HISTORY</Link></li>
+                  {/*<li><Link className="dropdown-item" to="/history">HISTORY</Link></li>*/}
                 </>
             )}
             <li><Link className="dropdown-item" to="/AboutUs">ABOUT US</Link></li>
